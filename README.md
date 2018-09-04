@@ -1,3 +1,17 @@
+# PixelInspector
+A simple utility to zoom in and inspect pixels on the screen
+
+## Background
+Way back during the very early days of Windows - 3.1 and possibly as far back as 2.0 or earlier, the Windows SDK included a tool called ZoomIn. At some point, it was removed from the SDK. I don't remember when.
+
+It was a pretty limited tool, and used a scrollbar for changing the zoom level, which is not what a scrollbar is expected to do.
+
+## TODO: Add more descriptive information
+
+---
+The following is the VSTS default README.md. I intend to incorporate some of it into mine.
+---
+
 # Introduction 
 TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
