@@ -1,0 +1,197 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
+	xmlns:m="clr-namespace:ZoomIn.Model"
+	xmlns:vm="clr-namespace:ZoomIn.ViewModel"
+
+	x:Class="ZoomIn.View.MainViewMenuBar"
+	d:DataContext="{d:DesignInstance vm:MainViewModel}"
+	d:DesignWidth="525"
+	>
+	<!--<ToolBar>-->
+	<Menu>
+		<Menu.Style>
+			<Style TargetType="Menu" BasedOn="{StaticResource {x:Type Menu}}">
+				<Style.Triggers>
+					<MultiDataTrigger>
+						<MultiDataTrigger.Conditions>
+							<Condition Binding="{Binding ViewSettings.Model.IsMenuAlwaysVisible}" Value="False"/>
+							<Condition Binding="{Binding IsKeyboardFocusWithin,RelativeSource={x:Static RelativeSource.Self}}" Value="False"/>
+						</MultiDataTrigger.Conditions>
+						<Setter Property="Height" Value="0"/>
+					</MultiDataTrigger>
+				</Style.Triggers>
+			</Style>
+		</Menu.Style>
+
+		<MenuItem Header="_File">
+			<MenuItem Header="Save _As" InputGestureText="Ctrl+S" Command="{Binding SaveAsCommand}"/>
+
+			<Separator/>
+			<MenuItem Header="_Print" InputGestureText="Ctrl+P" Command="{Binding PrintCommand}"/>
+
+			<Separator/>
+			<MenuItem Header="E_xit" InputGestureText="Alt+F4" Command="{Binding ExitCommand}"/>
+		</MenuItem>
+
+		<MenuItem Header="_Edit">
+			<MenuItem Header="_Copy" InputGestureText="Ctrl+C" Command="{Binding CopyCommand}"/>
+		</MenuItem>
+
+		<MenuItem
+			Header="_View"
+			DataContext="{Binding ViewSettings}"
+			d:DataContext="{d:DesignInstance vm:ViewSettingsViewModel}"
+			>
+			<MenuItem Header="_Zoom">
+				<MenuItem
+					Header="_100%" InputGestureText="Alt+1"
+					Command="{Binding SetZoomFactorCommand}" CommandParameter="1"
+					IsChecked="{Binding Model.ZoomFactor,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},ConverterParameter=1}"
+					/>
+				<MenuItem
+					Header="_200%" InputGestureText="Alt+2"
+					Command="{Binding SetZoomFactorCommand}" CommandParameter="2"
+					IsChecked="{Binding Model.ZoomFactor,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},ConverterParameter=2}"
+					/>
+				<MenuItem
+					Header="_300%" InputGestureText="Alt+3"
+					Command="{Binding SetZoomFactorCommand}" CommandParameter="3"
+					IsChecked="{Binding Model.ZoomFactor,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},ConverterParameter=3}"
+					/>
+				<MenuItem
+					Header="_400%" InputGestureText="Alt+4"
+					Command="{Binding SetZoomFactorCommand}" CommandParameter="4"
+					IsChecked="{Binding Model.ZoomFactor,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},ConverterParameter=4}"
+					/>
+				<MenuItem
+					Header="_500%" InputGestureText="Alt+5"
+					Command="{Binding SetZoomFactorCommand}" CommandParameter="5"
+					IsChecked="{Binding Model.ZoomFactor,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},ConverterParameter=5}"
+					/>
+				<MenuItem
+					Header="_600%" InputGestureText="Alt+6"
+					Command="{Binding SetZoomFactorCommand}" CommandParameter="6"
+					IsChecked="{Binding Model.ZoomFactor,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},ConverterParameter=6}"
+					/>
+				<MenuItem
+					Header="_700%" InputGestureText="Alt+7"
+					Command="{Binding SetZoomFactorCommand}" CommandParameter="7"
+					IsChecked="{Binding Model.ZoomFactor,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},ConverterParameter=7}"
+					/>
+				<MenuItem
+					Header="_800%" InputGestureText="Alt+8"
+					Command="{Binding SetZoomFactorCommand}" CommandParameter="8"
+					IsChecked="{Binding Model.ZoomFactor,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},ConverterParameter=8}"
+					/>
+				<MenuItem
+					Header="1_000%" InputGestureText="Alt+0"
+					Command="{Binding SetZoomFactorCommand}" CommandParameter="10"
+					IsChecked="{Binding Model.ZoomFactor,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},ConverterParameter=10}"
+					/>
+				<MenuItem
+					Header="1200%"
+					Command="{Binding SetZoomFactorCommand}" CommandParameter="12"
+					IsChecked="{Binding Model.ZoomFactor,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},ConverterParameter=12}"
+					/>
+				<MenuItem
+					Header="1600%"
+					Command="{Binding SetZoomFactorCommand}" CommandParameter="16"
+					IsChecked="{Binding Model.ZoomFactor,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},ConverterParameter=16}"
+					/>
+			</MenuItem>
+			<MenuItem Header="Zoom _In" InputGestureText="Ctrl+PgUp" Command="{Binding IncreaseZoomCommand}"/>
+			<MenuItem Header="Zoom _Out" InputGestureText="Ctrl+PgDn" Command="{Binding DecreaseZoomCommand}"/>
+			<Separator/>
+
+			<MenuItem Header="_Refresh" InputGestureText="F5" Command="{Binding Parent.RefreshCommand}"/>
+			<MenuItem Header="_Auto Refresh" InputGestureText="Ctrl+F5" IsCheckable="True" IsChecked="{Binding Model.IsAutoRefreshing}"/>
+
+			<Separator/>
+			<MenuItem Header="Always On _Top" InputGestureText="Ctrl+T" IsCheckable="True" IsChecked="{Binding Model.IsAlwaysOnTop}"/>
+			<MenuItem Header="Show _Grid When Zoomed" InputGestureText="Ctrl+G" IsCheckable="True" IsChecked="{Binding Model.IsGridVisibleWhenZoomed}"/>
+
+			<Separator/>
+			<MenuItem Header="Always Show _Menu" InputGestureText="" IsCheckable="True" IsChecked="{Binding Model.IsMenuAlwaysVisible}"/>
+			<MenuItem Header="_Status Bar" InputGestureText="" IsCheckable="True" IsChecked="{Binding Model.IsStatusBarVisible}"/>
+			<MenuItem Header="Show _Color Value As">
+				<MenuItem
+					Header="_Decimal" InputGestureText="255,255,255"
+					Command="{Binding SetColorValueDisplayFormatCommand}"
+					CommandParameter="{x:Static m:ColorValueDisplayFormat.Decimal}"
+					IsChecked="{Binding Model.ColorValueDisplayFormat,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},
+						ConverterParameter={x:Static m:ColorValueDisplayFormat.Decimal}}"
+					/>
+				<MenuItem
+					Header="He_x" InputGestureText="FFFFFF"
+					Command="{Binding SetColorValueDisplayFormatCommand}"
+					CommandParameter="{x:Static m:ColorValueDisplayFormat.Hex}"
+					IsChecked="{Binding Model.ColorValueDisplayFormat,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},
+						ConverterParameter={x:Static m:ColorValueDisplayFormat.Hex}}"
+					/>
+				<MenuItem
+					Header="_Hex With Hash" InputGestureText="#FFFFFF"
+					Command="{Binding SetColorValueDisplayFormatCommand}"
+					CommandParameter="{x:Static m:ColorValueDisplayFormat.HexWithHash}"
+					IsChecked="{Binding Model.ColorValueDisplayFormat,Mode=OneWay,
+						Converter={StaticResource IsEqualConverter},
+						ConverterParameter={x:Static m:ColorValueDisplayFormat.HexWithHash}}"
+					/>
+			</MenuItem>
+		</MenuItem>
+
+		<MenuItem Header="_Tools">
+			<MenuItem Header="_Locate" InputGestureText="L" IsCheckable="True" IsChecked="{Binding IsToolStateLocate,Mode=OneWay}" Command="{Binding ChooseToolLocateCommand}"/>
+			<MenuItem Header="_Move" InputGestureText="M" IsCheckable="True" IsChecked="{Binding IsToolStateMove,Mode=OneWay}" Command="{Binding ChooseToolMoveCommand}"/>
+			<MenuItem Header="_Select" InputGestureText="S" IsCheckable="True" IsChecked="{Binding IsToolStateSelect,Mode=OneWay}" Command="{Binding ChooseToolSelectCommand}"/>
+
+			<Separator/>
+			<MenuItem Header="_Options..." InputGestureText="" Command="{Binding OptionsCommand}"/>
+		</MenuItem>
+
+		<MenuItem Header="_Help">
+			<MenuItem Header="_About ZoomIn.NET" Command="{Binding AboutCommand}"/>
+		</MenuItem>
+
+	</Menu>
+
+	<!--<Separator HorizontalAlignment="Right" />
+			<CheckBox
+				HorizontalAlignment="Right"
+				ToolTip="Auto Refresh" ToolTipService.ShowDuration="{x:Static sys:Int32.MaxValue}"
+				ToolBar.OverflowMode="Never"
+				>
+				<Image Source="Images/refresh_icon.png" Stretch="None"/>
+			</CheckBox>-->
+
+	<!--<ToolBar.Style>
+				<Style TargetType="{x:Type ToolBar}">
+					<Setter Property="Margin" Value="-8,-1,-14,0"/>
+					<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+					<Setter Property="BorderBrush" Value="#B6BCCC"/>
+					<Setter Property="BorderThickness" Value="0,0,0,1"/>-->
+
+	<!--<Style.Triggers>
+						<Trigger Property="IsKeyboardFocusWithin" Value="False">
+							<Setter Property="Margin" Value="-8,-27,-14,0"/>
+						</Trigger>
+					</Style.Triggers>-->
+	<!--</Style>
+			</ToolBar.Style>
+		</ToolBar>-->
+</UserControl>

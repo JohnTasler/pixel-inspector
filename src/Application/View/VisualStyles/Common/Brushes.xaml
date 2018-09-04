@@ -1,0 +1,22 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	>
+
+	<SolidColorBrush x:Key="ControlDarkDarkBrush" Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
+	<SolidColorBrush x:Key="ControlDarkBrush" Color="{DynamicResource {x:Static SystemColors.ControlDarkColorKey}}"/>
+	<SolidColorBrush x:Key="ControlMediumBrush" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+	<SolidColorBrush x:Key="ControlLightBrush" Color="{DynamicResource {x:Static SystemColors.ControlLightLightColorKey}}"/>
+	<SolidColorBrush x:Key="ControlLightLightBrush" Color="{DynamicResource {x:Static SystemColors.ControlLightLightColorKey}}"/>
+
+	<SolidColorBrush x:Key="MenuBarBackgroundBrush" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}" />
+	<SolidColorBrush x:Key="MenuBarBorderBrush" Color="{DynamicResource {x:Static SystemColors.ControlDarkColorKey}}" />
+
+	<SolidColorBrush x:Key="MainViewBackgroundBrush" Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}" />
+
+	<SolidColorBrush x:Key="CaptureToolBackgroundBrush" Color="#efF0F0F0" />
+	<SolidColorBrush x:Key="CaptureToolForegroundBrush" Color="#ff000000" />
+
+	<SolidColorBrush x:Key="CaptureDragBackgroundBrush" Color="#01FFFFFF" />
+	<SolidColorBrush x:Key="CaptureDragBorderBrush" Color="#ff3399FF" />
+</ResourceDictionary>

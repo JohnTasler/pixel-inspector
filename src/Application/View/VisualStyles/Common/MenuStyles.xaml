@@ -1,0 +1,15 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	>
+	
+	<Style TargetType="Menu" BasedOn="{StaticResource {x:Type Menu}}">
+		<Setter Property="Background" Value="{DynamicResource MenuBarBackgroundBrush}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource MenuBarBorderBrush}"/>
+		<Setter Property="BorderThickness" Value="0,0,0,1"/>
+	</Style>
+
+	<Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+	</Style>
+
+</ResourceDictionary>

@@ -1,0 +1,41 @@
+﻿<app:ToolViewUserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
+	xmlns:app="clr-namespace:ZoomIn"
+	xmlns:vm="clr-namespace:ZoomIn.ViewModel"
+
+	x:Class="ZoomIn.View.LocateToolView"
+	x:Name="this"
+	d:DataContext="{d:DesignInstance vm:LocateToolViewModel}"
+	d:DesignWidth="280" d:DesignHeight="120"
+	HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+	Background="{DynamicResource CaptureToolBackgroundBrush}"
+	Foreground="{DynamicResource CaptureToolForegroundBrush}"
+	FontSize="11pt"
+	Cursor="../Cursors/Locate.cur"
+	>
+	<app:ToolViewUserControl.Resources>
+		<Style TargetType="ContentControl">
+			<Setter Property="IsTabStop" Value="False"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ContentControl">
+						<Grid>
+							<TextBlock TextWrapping="Wrap" Text="{TemplateBinding Content}" Margin="1,1,0,0" Foreground="White"/>
+							<TextBlock TextWrapping="Wrap" Text="{TemplateBinding Content}"/>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</app:ToolViewUserControl.Resources>
+
+	<StackPanel>
+		<ContentControl Content="Click here and drag to the area of the screen you want to zoom in on."/>
+		<ContentControl />
+		<ContentControl Content="Press ESC to exit the Locate tool."/>
+	</StackPanel>
+	
+</app:ToolViewUserControl>

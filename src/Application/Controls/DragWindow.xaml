@@ -1,0 +1,24 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
+	xmlns:vm="clr-namespace:ZoomIn.ViewModel"
+
+	x:Class="ZoomIn.DragWindow"
+	d:DesignWidth="300" d:DesignHeight="200"
+	d:DataContext="{d:DesignInstance vm:LocatingToolViewModel}"
+	
+	Background="{DynamicResource CaptureDragBackgroundBrush}"
+	>
+	<Grid LayoutTransform="{Binding Parent.DpiTransform}">
+
+		<Border BorderBrush="{DynamicResource CaptureDragBorderBrush}" BorderThickness="4" CornerRadius="2">
+			<FrameworkElement x:Name="PART_InnerContent"/>
+		</Border>
+
+		<Border BorderBrush="#5f000000" BorderThickness="1" Padding="2" CornerRadius="2">
+			<Border BorderBrush="#5fFFFFFF" BorderThickness="1"/>
+		</Border>
+	</Grid>
+</Window>

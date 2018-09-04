@@ -1,0 +1,150 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
+	xmlns:app="clr-namespace:ZoomIn"
+	xmlns:m="clr-namespace:ZoomIn.Model"
+	xmlns:vw="clr-namespace:ZoomIn.View"
+	xmlns:vm="clr-namespace:ZoomIn.ViewModel"
+
+	x:Class="ZoomIn.View.MainViewStatusBar"
+	d:DataContext="{d:DesignInstance vm:MainViewModel}"
+	d:DesignWidth="525"
+	Visibility="{Binding ViewSettings.Model.IsStatusBarVisible,Converter={StaticResource BooleanToVisibilityConverter}}"
+	>
+	<StatusBar>
+
+		<StatusBarItem>
+			<StackPanel Orientation="Horizontal">
+				<Image
+					Grid.Column="0"
+					Width="16" Height="16"
+					Margin="0,0,4,0"
+					HorizontalAlignment="Center"
+					Stretch="Uniform"
+					Source="Images/Position.ico"
+					/>
+				<StackPanel
+					Grid.Column="1"
+					MinWidth="60" VerticalAlignment="Center"
+					Orientation="Horizontal"
+					Visibility="{Binding IsMouseInZoomedBounds,Converter={StaticResource BooleanToVisibleHiddenConverter}}"
+					>
+					<TextBlock Text="{Binding SourceMousePosition.X}" />
+					<TextBlock Text=", " />
+					<TextBlock Text="{Binding SourceMousePosition.Y}" />
+				</StackPanel>
+			</StackPanel>
+		</StatusBarItem>
+
+		<StatusBarItem>
+			<StackPanel Orientation="Horizontal">
+				<Border
+					x:Name="colorBorder"
+					Width="16" Height="16"
+					Margin="0,0,4,0"
+					HorizontalAlignment="Center" VerticalAlignment="Center"
+					BorderBrush="{DynamicResource ControlDarkDarkBrush}"
+					BorderThickness="1"
+					CornerRadius="2"
+					>
+					<Border.Style>
+						<Style TargetType="Border">
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding IsMouseInZoomedBounds}" Value="True">
+									<Setter Property="Background">
+										<Setter.Value>
+											<SolidColorBrush Color="{Binding SourceMousePositionColor}" />
+										</Setter.Value>
+									</Setter>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Border.Style>
+				</Border>
+
+				<ContentControl
+					VerticalAlignment="Center"
+					Content="{Binding SourceMousePositionColor}"
+					Visibility="{Binding IsMouseInZoomedBounds,Converter={StaticResource BooleanToVisibleHiddenConverter}}"
+					>
+					<ContentControl.Style>
+						<Style TargetType="ContentControl">
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding ViewSettings.Model.ColorValueDisplayFormat}" Value="{x:Static m:ColorValueDisplayFormat.HexWithHash}">
+									<Setter Property="ContentTemplate">
+										<Setter.Value>
+											<DataTemplate>
+												<StackPanel MinWidth="65" Orientation="Horizontal">
+													<TextBlock Margin="0,0,0,0" Text="#" />
+													<TextBlock Margin="1,0,0,0" Text="{Binding R,StringFormat='X2'}" />
+													<TextBlock Margin="1,0,0,0" Text="{Binding G,StringFormat='X2'}" />
+													<TextBlock Margin="1,0,0,0" Text="{Binding B,StringFormat='X2'}" />
+												</StackPanel>
+											</DataTemplate>
+										</Setter.Value>
+									</Setter>
+								</DataTrigger>
+
+								<DataTrigger Binding="{Binding ViewSettings.Model.ColorValueDisplayFormat}" Value="{x:Static m:ColorValueDisplayFormat.Hex}">
+									<Setter Property="ContentTemplate">
+										<Setter.Value>
+											<DataTemplate>
+												<StackPanel MinWidth="57" Orientation="Horizontal">
+													<TextBlock Margin="0,0,0,0" Text="{Binding R,StringFormat='X2'}" />
+													<TextBlock Margin="1,0,0,0" Text="{Binding G,StringFormat='X2'}" />
+													<TextBlock Margin="1,0,0,0" Text="{Binding B,StringFormat='X2'}" />
+												</StackPanel>
+											</DataTemplate>
+										</Setter.Value>
+									</Setter>
+								</DataTrigger>
+
+								<DataTrigger Binding="{Binding ViewSettings.Model.ColorValueDisplayFormat}" Value="{x:Static m:ColorValueDisplayFormat.Decimal}">
+									<Setter Property="ContentTemplate">
+										<Setter.Value>
+											<DataTemplate>
+												<StackPanel MinWidth="73" Orientation="Horizontal">
+													<TextBlock Text="{Binding R}" />
+													<TextBlock Text=", " />
+													<TextBlock Text="{Binding G}" />
+													<TextBlock Text=", " />
+													<TextBlock Text="{Binding B}" />
+												</StackPanel>
+											</DataTemplate>
+										</Setter.Value>
+									</Setter>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</ContentControl.Style>
+				</ContentControl>
+			</StackPanel>
+		</StatusBarItem>
+
+		<StatusBarItem
+			Visibility="{Binding Selection.HasSelection,Converter={StaticResource BooleanToVisibleHiddenConverter}}"
+			>
+			<StackPanel Orientation="Horizontal">
+				<Image
+					Grid.Column="0"
+					Width="16" Height="16"
+					Margin="0,0,4,0"
+					HorizontalAlignment="Center"
+					Stretch="Uniform"
+					Source="Images/Selection.ico"
+					/>
+				<StackPanel
+					Grid.Column="1"
+					MinWidth="60" VerticalAlignment="Center"
+					Orientation="Horizontal"
+					>
+					<TextBlock Text="{Binding Selection.SourceRectangle.Width}" />
+					<TextBlock Text=" x " />
+					<TextBlock Text="{Binding Selection.SourceRectangle.Height}" />
+				</StackPanel>
+			</StackPanel>
+		</StatusBarItem>
+	</StatusBar>
+</UserControl>

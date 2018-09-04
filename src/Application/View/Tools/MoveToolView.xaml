@@ -1,0 +1,27 @@
+﻿<app:ToolViewUserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
+	xmlns:app="clr-namespace:ZoomIn"
+	xmlns:controls="clr-namespace:ZoomIn.Controls"
+	xmlns:vm="clr-namespace:ZoomIn.ViewModel"
+	xmlns:vw="clr-namespace:ZoomIn.View"
+
+	x:Class="ZoomIn.View.MoveToolView"
+	d:DataContext="{d:DesignInstance vm:MoveToolViewModel}"
+	d:DesignWidth="280" d:DesignHeight="120"
+	Cursor="Hand"
+	>
+	<Grid>
+		<controls:Thumb Focusable="False">
+			<controls:EventService.EventBindings>
+				<controls:RoutedEventBinding RoutedEvent="Thumb.DragStarted" Command="{Binding DragStartedCommand}"/>
+				<controls:RoutedEventBinding RoutedEvent="Thumb.DragDelta" Command="{Binding DragDeltaCommand}"/>
+				<controls:RoutedEventBinding RoutedEvent="Thumb.DragCompleted" Command="{Binding DragCompletedCommand}"/>
+			</controls:EventService.EventBindings>
+		</controls:Thumb>
+
+		<vw:SelectionView DataContext="{Binding Parent.Selection}" />
+	</Grid>
+</app:ToolViewUserControl>

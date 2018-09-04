@@ -1,0 +1,37 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	>
+
+	<Style TargetType="{x:Type ResizeGrip}" BasedOn="{StaticResource {x:Type ResizeGrip}}">
+		<Setter Property="HorizontalContentAlignment" Value="Right"/>
+		<Setter Property="VerticalContentAlignment" Value="Bottom"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ResizeGrip}">
+					<Grid
+						Margin="{TemplateBinding Padding}"
+						Background="{TemplateBinding Background}"
+						HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+						VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+						>
+						<Grid.Resources>
+							<GeometryGroup x:Key="resizeGlyph">
+								<RectangleGeometry Rect="8,8,2,2"/>
+								<RectangleGeometry Rect="8,4,2,2"/>
+								<RectangleGeometry Rect="8,0,2,2"/>
+								<RectangleGeometry Rect="4,8,2,2"/>
+								<RectangleGeometry Rect="4,4,2,2"/>
+								<RectangleGeometry Rect="0,8,2,2"/>
+							</GeometryGroup>
+						</Grid.Resources>
+
+						<Path Margin="1,1,1,1" Fill="{DynamicResource ControlLightBrush}" Data="{StaticResource resizeGlyph}"/>
+						<Path Margin="0,0,1,1" Fill="{DynamicResource ControlDarkBrush}" Data="{StaticResource resizeGlyph}"/>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+</ResourceDictionary>
