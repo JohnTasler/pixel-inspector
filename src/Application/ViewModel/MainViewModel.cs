@@ -698,7 +698,9 @@
 			this.SourceMousePosition = sourceMousePosition;
 
 			// Update the SourceMousePositionColor property
-			this.SourceMousePositionColor = this.ScreenImage.SourceBitmap.GetPixelColor(x, y);
+			this.SourceMousePositionColor = this.IsMouseInZoomedBounds
+				? this.ScreenImage.SourceBitmap.GetPixelColor(x, y)
+				: Colors.Transparent;
 
 			// Update the IsMouseOverSelection property
 			this.UpdateIsMouseOverSelection();
