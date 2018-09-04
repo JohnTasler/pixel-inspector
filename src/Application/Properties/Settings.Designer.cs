@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ZoomIn.Properties {
+namespace PixelInspector.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -25,9 +25,9 @@ namespace ZoomIn.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::ZoomIn.Model.ViewSettingsModel LatestViewSettings {
+        public global::PixelInspector.Model.ViewSettingsModel LatestViewSettings {
             get {
-                return ((global::ZoomIn.Model.ViewSettingsModel)(this["LatestViewSettings"]));
+                return ((global::PixelInspector.Model.ViewSettingsModel)(this["LatestViewSettings"]));
             }
             set {
                 this["LatestViewSettings"] = value;

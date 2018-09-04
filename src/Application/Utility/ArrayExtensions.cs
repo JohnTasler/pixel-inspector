@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.Utility
+﻿namespace PixelInspector.Utility
 {
 	using System;
 	using System.Collections.Generic;

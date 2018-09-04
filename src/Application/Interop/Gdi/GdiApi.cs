@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.Interop.Gdi
+﻿namespace PixelInspector.Interop.Gdi
 {
 	using System;
 	using System.ComponentModel;
@@ -8,8 +8,8 @@
 	using System.Security;
 	using System.Threading;
 	using Microsoft.Win32.SafeHandles;
-	using ZoomIn.Interop.User;
-	using ZoomIn.Utility;
+	using PixelInspector.Interop.User;
+	using PixelInspector.Utility;
 	
 	public static class GdiApi
 	{

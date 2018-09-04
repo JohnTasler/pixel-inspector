@@ -1,11 +1,11 @@
-﻿namespace ZoomIn.View
+﻿namespace PixelInspector.View
 {
 	using System;
 	using System.ComponentModel;
 	using System.Windows;
 	using System.Windows.Controls;
 	using System.Windows.Media;
-	using ZoomIn.ViewModel;
+	using PixelInspector.ViewModel;
 
 	public class ScreenImageView : Panel
 	{

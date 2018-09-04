@@ -1,9 +1,9 @@
-﻿namespace ZoomIn.Model
+﻿namespace PixelInspector.Model
 {
 	using System;
 	using System.Xml.Serialization;
-	using ZoomIn.ComponentModel.Mvvm;
-	using ZoomIn.Interop.User;
+	using PixelInspector.ComponentModel.Mvvm;
+	using PixelInspector.Interop.User;
 
 	public class WindowPlacementModel : ObservableObject
 	{

@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.Interop.User
+﻿namespace PixelInspector.Interop.User
 {
 	#region Window Messages
 	public enum WM

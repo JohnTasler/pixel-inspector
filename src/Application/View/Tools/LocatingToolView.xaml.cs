@@ -1,7 +1,7 @@
-﻿namespace ZoomIn.View
+﻿namespace PixelInspector.View
 {
 	using System.Windows;
-	using ZoomIn.ViewModel;
+	using PixelInspector.ViewModel;
 
 	/// <summary>
 	/// Interaction logic for LocatingToolView.xaml

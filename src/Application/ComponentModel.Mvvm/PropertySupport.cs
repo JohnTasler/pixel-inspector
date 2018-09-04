@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using ZoomIn.Properties;
+using PixelInspector.Properties;
 
-namespace ZoomIn.ComponentModel.Mvvm
+namespace PixelInspector.ComponentModel.Mvvm
 {
 	///<summary>
 	/// Provides support for extracting property information based on a property expression.

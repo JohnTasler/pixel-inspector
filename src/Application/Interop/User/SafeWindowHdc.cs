@@ -1,7 +1,7 @@
-﻿namespace ZoomIn.Interop.User
+﻿namespace PixelInspector.Interop.User
 {
 	using System;
-	using ZoomIn.Interop.Gdi;
+	using PixelInspector.Interop.Gdi;
 
 	public class SafeWindowHdc : SafeHdc
 	{

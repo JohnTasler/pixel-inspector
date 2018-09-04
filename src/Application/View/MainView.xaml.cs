@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.View
+﻿namespace PixelInspector.View
 {
 	using System;
 	using System.Collections.Generic;
@@ -8,8 +8,8 @@
 	using System.Windows;
 	using System.Windows.Input;
 	using System.Windows.Interop;
-	using ZoomIn.Interop.User;
-	using ZoomIn.ViewModel;
+	using PixelInspector.Interop.User;
+	using PixelInspector.ViewModel;
 
 	/// <summary>
 	/// Interaction logic for MainView.xaml, a view of <see cref="MainViewModel"/>.

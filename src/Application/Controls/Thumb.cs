@@ -2,7 +2,7 @@
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
-namespace ZoomIn.Controls
+namespace PixelInspector.Controls
 {
 	/// <summary>
 	/// </summary>

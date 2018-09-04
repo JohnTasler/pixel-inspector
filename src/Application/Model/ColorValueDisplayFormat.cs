@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.Model
+﻿namespace PixelInspector.Model
 {
 
 	public enum ColorValueDisplayFormat

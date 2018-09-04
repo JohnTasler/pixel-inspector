@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.ComponentModel.Mvvm
+﻿namespace PixelInspector.ComponentModel.Mvvm
 {
 	using System;
 	using System.Collections.Generic;

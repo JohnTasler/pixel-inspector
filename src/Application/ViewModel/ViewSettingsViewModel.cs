@@ -1,12 +1,12 @@
-﻿namespace ZoomIn.ViewModel
+﻿namespace PixelInspector.ViewModel
 {
 	using System;
 	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Windows;
 	using System.Windows.Input;
-	using ZoomIn.ComponentModel.Mvvm;
-	using ZoomIn.Model;
+	using PixelInspector.ComponentModel.Mvvm;
+	using PixelInspector.Model;
 
 	public class ViewSettingsViewModel
 		: ParentedObservableObject<MainViewModel>

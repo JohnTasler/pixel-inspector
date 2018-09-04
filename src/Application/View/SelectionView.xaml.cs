@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.View
+﻿namespace PixelInspector.View
 {
 
 	/// <summary>

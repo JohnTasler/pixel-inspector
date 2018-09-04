@@ -1,12 +1,12 @@
-﻿namespace ZoomIn.ViewModel
+﻿namespace PixelInspector.ViewModel
 {
 	using System;
 	using System.Windows;
 	using System.Windows.Controls.Primitives;
 	using System.Windows.Input;
-	using ZoomIn.ComponentModel.Mvvm;
-	using ZoomIn.Interop.User;
-	using ZoomIn.Utility;
+	using PixelInspector.ComponentModel.Mvvm;
+	using PixelInspector.Interop.User;
+	using PixelInspector.Utility;
 
 	public class SelectToolViewModel
 		: ParentedObservableObject<MainViewModel>

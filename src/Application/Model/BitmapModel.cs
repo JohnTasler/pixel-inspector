@@ -1,10 +1,10 @@
-﻿namespace ZoomIn.Model
+﻿namespace PixelInspector.Model
 {
 	using System;
 	using System.Diagnostics;
 	using System.IO.MemoryMappedFiles;
-	using ZoomIn.Interop.Gdi;
-	using ZoomIn.Interop.User;
+	using PixelInspector.Interop.Gdi;
+	using PixelInspector.Interop.User;
 
 	public class BitmapModel : IDisposable
 	{

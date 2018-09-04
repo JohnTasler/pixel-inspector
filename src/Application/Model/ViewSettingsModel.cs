@@ -1,9 +1,9 @@
-﻿namespace ZoomIn.Model
+﻿namespace PixelInspector.Model
 {
 	using System.ComponentModel;
 	using System.Windows;
 	using System.Xml.Serialization;
-	using ZoomIn.ComponentModel.Mvvm;
+	using PixelInspector.ComponentModel.Mvvm;
 
 	public class ViewSettingsModel : ObservableObject
 	{

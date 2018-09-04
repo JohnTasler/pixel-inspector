@@ -1,11 +1,11 @@
-﻿namespace ZoomIn.Interop.User
+﻿namespace PixelInspector.Interop.User
 {
 	using System;
 	using System.ComponentModel;
 	using System.Runtime.ConstrainedExecution;
 	using System.Runtime.InteropServices;
 	using System.Security;
-	using ZoomIn.Interop.Gdi;
+	using PixelInspector.Interop.Gdi;
 
 	public static class UserApi
 	{

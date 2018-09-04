@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.View
+﻿namespace PixelInspector.View
 {
 
 	public partial class SelectToolView : ToolViewUserControl

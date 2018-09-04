@@ -1,6 +1,6 @@
-﻿namespace ZoomIn.View
+﻿namespace PixelInspector.View
 {
-	using ZoomIn.ViewModel;
+	using PixelInspector.ViewModel;
 
 	/// <summary>
 	/// Implements the view for the <see cref="MoveToolViewModel"/>.

@@ -1,8 +1,8 @@
-﻿namespace ZoomIn.Controls
+﻿namespace PixelInspector.Controls
 {
 	using System.Windows;
 	using System.Windows.Controls;
-	using ZoomIn.Utility;
+	using PixelInspector.Utility;
 
 	/// <summary>
 	/// </summary>

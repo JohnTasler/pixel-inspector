@@ -1,9 +1,9 @@
-﻿namespace ZoomIn.Configuration
+﻿namespace PixelInspector.Configuration
 {
 	using System;
 	using System.ComponentModel;
 	using System.Configuration;
-	using ZoomIn.Utility;
+	using PixelInspector.Utility;
 
 	public static partial class ApplicationSettingsExtensions
 	{

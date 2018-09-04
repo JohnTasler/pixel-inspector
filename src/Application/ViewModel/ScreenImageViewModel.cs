@@ -1,14 +1,14 @@
-﻿namespace ZoomIn.ViewModel
+﻿namespace PixelInspector.ViewModel
 {
 	using System;
 	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Windows;
 	using System.Windows.Interop;
-	using ZoomIn.ComponentModel.Mvvm;
-	using ZoomIn.Interop;
-	using ZoomIn.Interop.Gdi;
-	using ZoomIn.Interop.User;
+	using PixelInspector.ComponentModel.Mvvm;
+	using PixelInspector.Interop;
+	using PixelInspector.Interop.Gdi;
+	using PixelInspector.Interop.User;
 
 	public class ScreenImageViewModel : ParentedObservableObject<MainViewModel>
 	{

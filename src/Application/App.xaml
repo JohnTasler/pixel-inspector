@@ -1,9 +1,9 @@
 ﻿<Application
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:app="clr-namespace:ZoomIn"
+	xmlns:app="clr-namespace:PixelInspector"
 
-	x:Class="ZoomIn.App"
+	x:Class="PixelInspector.App"
 	>
 	<Application.Resources>
 		<ResourceDictionary>

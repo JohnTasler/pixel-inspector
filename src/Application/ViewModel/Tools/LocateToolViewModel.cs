@@ -1,7 +1,7 @@
-﻿namespace ZoomIn.ViewModel
+﻿namespace PixelInspector.ViewModel
 {
-	using ZoomIn.ComponentModel.Mvvm;
-	using ZoomIn.Utility;
+	using PixelInspector.ComponentModel.Mvvm;
+	using PixelInspector.Utility;
 
 	public class LocateToolViewModel
 		: ParentedObservableObject<MainViewModel>

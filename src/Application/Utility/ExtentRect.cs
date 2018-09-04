@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.Utility
+﻿namespace PixelInspector.Utility
 {
 	using System.Windows;
 
@@ -146,7 +146,7 @@
 
 		#region Implicit Conversion Operators
 		/// <summary>
-		/// Performs an implicit conversion from <see cref="ZoomIn.Utility.ExtentRect"/> to <see cref="System.Windows.Rect"/>.
+		/// Performs an implicit conversion from <see cref="PixelInspector.Utility.ExtentRect"/> to <see cref="System.Windows.Rect"/>.
 		/// </summary>
 		/// <param name="extentRect">The extent rect.</param>
 		/// <returns>
@@ -160,7 +160,7 @@
 		}
 
 		/// <summary>
-		/// Performs an implicit conversion from <see cref="System.Windows.Rect"/> to <see cref="ZoomIn.Utility.ExtentRect"/>.
+		/// Performs an implicit conversion from <see cref="System.Windows.Rect"/> to <see cref="PixelInspector.Utility.ExtentRect"/>.
 		/// </summary>
 		/// <param name="rect">The rect.</param>
 		/// <returns>

@@ -1,4 +1,4 @@
-﻿namespace ZoomIn
+﻿namespace PixelInspector
 {
 	using System;
 	using System.ComponentModel;

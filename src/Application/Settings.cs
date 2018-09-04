@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.Properties
+﻿namespace PixelInspector.Properties
 {
 
 	/// <summary>

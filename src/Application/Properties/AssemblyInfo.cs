@@ -5,11 +5,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ZoomIn.Net")]
+[assembly: AssemblyTitle("PixelInspector.Net")]
 [assembly: AssemblyDescription("Pixel inspection utility")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tasler Computing")]
-[assembly: AssemblyProduct("ZoomIn.NET")]
+[assembly: AssemblyProduct("PixelInspector.NET")]
 [assembly: AssemblyCopyright("Copyright © John A. Tasler.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

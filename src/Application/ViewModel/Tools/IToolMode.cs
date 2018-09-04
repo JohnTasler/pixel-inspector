@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.ViewModel
+﻿namespace PixelInspector.ViewModel
 {
 	/// <summary>
 	/// Represents a mode that can be entered and exited.

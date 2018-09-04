@@ -1,11 +1,11 @@
-﻿namespace ZoomIn
+﻿namespace PixelInspector
 {
 	using System;
 	using System.ComponentModel;
 	using System.Windows;
-	using ZoomIn.Configuration;
-	using ZoomIn.View;
-	using ZoomIn.ViewModel;
+	using PixelInspector.Configuration;
+	using PixelInspector.View;
+	using PixelInspector.ViewModel;
 
 	/// <summary>
 	/// Interaction logic for App.xaml
@@ -39,10 +39,10 @@
 		[STAThread]
 		private static int Main()
 		{
-			ZoomIn.Properties.Settings.Default.SetAutoSaveDeferral(TimeSpan.FromSeconds(5));
+			PixelInspector.Properties.Settings.Default.SetAutoSaveDeferral(TimeSpan.FromSeconds(5));
 			var app = new App();
 			var result = app.Run();
-			ZoomIn.Properties.Settings.Default.ClearAutoSaveDeferral();
+			PixelInspector.Properties.Settings.Default.ClearAutoSaveDeferral();
 			return result;
 		}
 

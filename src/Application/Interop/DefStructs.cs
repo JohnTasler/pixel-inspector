@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.Interop
+﻿namespace PixelInspector.Interop
 {
 	using System.Runtime.InteropServices;
 

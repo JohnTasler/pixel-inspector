@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
-namespace ZoomIn.Controls
+namespace PixelInspector.Controls
 {
 	public static class EventService
 	{

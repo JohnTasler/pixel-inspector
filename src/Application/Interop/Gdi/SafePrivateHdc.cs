@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.Interop.Gdi
+﻿namespace PixelInspector.Interop.Gdi
 {
 
 	public class SafePrivateHdc : SafeHdc

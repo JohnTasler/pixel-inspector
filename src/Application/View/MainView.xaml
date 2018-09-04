@@ -4,10 +4,10 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
-	xmlns:vw="clr-namespace:ZoomIn.View"
-	xmlns:vm="clr-namespace:ZoomIn.ViewModel"
+	xmlns:vw="clr-namespace:PixelInspector.View"
+	xmlns:vm="clr-namespace:PixelInspector.ViewModel"
 	
-	x:Class="ZoomIn.View.MainView"
+	x:Class="PixelInspector.View.MainView"
 	d:DataContext="{d:DesignInstance vm:MainViewModel}"
 	TextOptions.TextFormattingMode="Display" UseLayoutRounding="True"
 	FocusManager.FocusedElement="{Binding ElementName=mainContent}"

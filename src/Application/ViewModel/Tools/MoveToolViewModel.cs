@@ -1,9 +1,9 @@
-﻿namespace ZoomIn.ViewModel
+﻿namespace PixelInspector.ViewModel
 {
 	using System.Windows;
 	using System.Windows.Controls.Primitives;
 	using System.Windows.Input;
-	using ZoomIn.ComponentModel.Mvvm;
+	using PixelInspector.ComponentModel.Mvvm;
 
 	public class MoveToolViewModel
 		: ParentedObservableObject<MainViewModel>

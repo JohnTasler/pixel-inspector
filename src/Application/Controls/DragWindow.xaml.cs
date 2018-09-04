@@ -1,4 +1,4 @@
-﻿namespace ZoomIn
+﻿namespace PixelInspector
 {
 	using System;
 	using System.Runtime.InteropServices;
@@ -6,8 +6,8 @@
 	using System.Windows.Input;
 	using System.Windows.Interop;
 	using System.Windows.Media;
-	using ZoomIn.Interop.Gdi;
-	using ZoomIn.Utility;
+	using PixelInspector.Interop.Gdi;
+	using PixelInspector.Utility;
 
 	/// <summary>
 	/// Interaction logic for DragWindow.xaml

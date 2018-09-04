@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.ViewModel
+﻿namespace PixelInspector.ViewModel
 {
 	using System.ComponentModel;
 	using System.Windows;

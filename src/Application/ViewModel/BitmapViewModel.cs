@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.ViewModel
+﻿namespace PixelInspector.ViewModel
 {
 	using System;
 	using System.Collections.Generic;
@@ -7,8 +7,8 @@
 	using System.Windows.Interop;
 	using System.Windows.Media;
 	using System.Windows.Media.Imaging;
-	using ZoomIn.ComponentModel.Mvvm;
-	using ZoomIn.Model;
+	using PixelInspector.ComponentModel.Mvvm;
+	using PixelInspector.Model;
 
 	public class BitmapViewModel : ObservableObject
 	{

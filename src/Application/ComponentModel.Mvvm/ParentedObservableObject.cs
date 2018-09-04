@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.ComponentModel.Mvvm
+﻿namespace PixelInspector.ComponentModel.Mvvm
 {
 
 	public abstract class ParentedObservableObject<TParent> : ObservableObject

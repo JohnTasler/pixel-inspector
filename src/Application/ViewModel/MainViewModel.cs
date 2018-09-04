@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.ViewModel
+﻿namespace PixelInspector.ViewModel
 {
 	using System;
 	using System.Collections.Generic;
@@ -8,10 +8,10 @@
 	using System.Windows.Input;
 	using System.Windows.Media;
 	using System.Windows.Threading;
-	using ZoomIn.ComponentModel.Mvvm;
-	using ZoomIn.Interop.Gdi;
-	using ZoomIn.Model;
-	using ZoomIn.Utility;
+	using PixelInspector.ComponentModel.Mvvm;
+	using PixelInspector.Interop.Gdi;
+	using PixelInspector.Model;
+	using PixelInspector.Utility;
 
 	public class MainViewModel : ObservableObject
 	{
@@ -32,9 +32,9 @@
 			this.ApplicationState = new ApplicationStateLoading();
 
 			// Get the latest view settings model from persistence
-			if (ZoomIn.Properties.Settings.Default.LatestViewSettings == null)
-				ZoomIn.Properties.Settings.Default.LatestViewSettings = new ViewSettingsModel();
-			this.ViewSettings = new ViewSettingsViewModel(this, ZoomIn.Properties.Settings.Default.LatestViewSettings);
+			if (PixelInspector.Properties.Settings.Default.LatestViewSettings == null)
+				PixelInspector.Properties.Settings.Default.LatestViewSettings = new ViewSettingsModel();
+			this.ViewSettings = new ViewSettingsViewModel(this, PixelInspector.Properties.Settings.Default.LatestViewSettings);
 
 			// Create a scaling transform if the system is using a non-standard DPI
 			var dpiScaleX = GdiApi.DpiScaleX;

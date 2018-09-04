@@ -1,4 +1,4 @@
-﻿namespace ZoomIn.Configuration
+﻿namespace PixelInspector.Configuration
 {
 	using System;
 	using System.Configuration;

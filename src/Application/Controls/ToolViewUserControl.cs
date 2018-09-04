@@ -1,4 +1,4 @@
-﻿namespace ZoomIn
+﻿namespace PixelInspector
 {
 	using System.Windows;
 	using System.Windows.Controls;
