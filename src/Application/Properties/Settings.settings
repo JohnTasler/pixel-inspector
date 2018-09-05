@@ -1,8 +1,8 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ZoomIn.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PixelInspector.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="LatestViewSettings" Type="ZoomIn.Model.ViewSettingsModel" Scope="User">
+    <Setting Name="LatestViewSettings" Type="PixelInspector.Model.ViewSettingsModel" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

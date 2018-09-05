@@ -14,6 +14,7 @@
 
 			<app:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 			<app:BooleanToVisibilityConverter x:Key="BooleanToVisibleHiddenConverter" TrueValue="Visible" FalseValue="Hidden"/>
+			<app:BooleanToVisibilityConverter x:Key="BooleanToVisibleCollapsedConverter" TrueValue="Visible" FalseValue="Collapsed"/>
 			<app:IsEqualConverter x:Key="IsEqualConverter"/>
 
 			<!-- This prevents an optimization that limits the nested resource dictionary depth -->

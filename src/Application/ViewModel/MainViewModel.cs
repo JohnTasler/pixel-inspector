@@ -415,7 +415,7 @@
 		#region ChooseToolLocateCommand
 
 		/// <summary>
-		/// Gets the ChooseToolCapture command.
+		/// Gets the ChooseToolLocate command.
 		/// </summary>
 		public ICommand ChooseToolLocateCommand
 		{
@@ -437,7 +437,7 @@
 		#region ChooseToolLocatingCommand
 
 		/// <summary>
-		/// Gets the ChooseToolCapture command.
+		/// Gets the ChooseToolLocating command.
 		/// </summary>
 		public ICommand ChooseToolLocatingCommand
 		{

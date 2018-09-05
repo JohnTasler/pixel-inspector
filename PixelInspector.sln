@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Application\Application.csproj", "{83DC7F04-3BE5-48FC-ABD8-56A74F1106C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PixelInspector.Application", "src\Application\PixelInspector.Application.csproj", "{83DC7F04-3BE5-48FC-ABD8-56A74F1106C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -112,38 +112,6 @@
 
 		#endregion Methods
 
-		#region Overloaded Operators
-		/// <summary>Compares two rectangles for value equality.</summary>
-		/// <param name="rect1">The first rectangle to compare.</param>
-		/// <param name="rect2">The second rectangle to compare.</param>
-		/// <returns>
-		/// Returns <c>true</c> if the specified rectangles have the same value; otherwise <c>false</c>.
-		/// </returns>
-		/// 
-		public static bool operator ==(ExtentRect rect1, ExtentRect rect2)
-		{
-			return rect1.X == rect2.X
-			    && rect1.Y == rect2.Y
-			    && rect1.Width == rect2.Width
-			    && rect1.Height == rect2.Height;
-		}
-
-		/// <summary>Compares two rectangles for value inequality.</summary>
-		/// <param name="rect1">The first rectangle to compare.</param>
-		/// <param name="rect2">The second rectangle to compare.</param>
-		/// <returns>
-		/// Returns <c>false</c> if the specified rectangles have the same value; otherwise <c>true</c>.
-		/// </returns>
-		/// 
-		public static bool operator !=(ExtentRect rect1, ExtentRect rect2)
-		{
-			return rect1.X != rect2.X
-			    || rect1.Y != rect2.Y
-			    || rect1.Width != rect2.Width
-			    || rect1.Height != rect2.Height;
-		}
-		#endregion Overloaded Operators
-
 		#region Implicit Conversion Operators
 		/// <summary>
 		/// Performs an implicit conversion from <see cref="PixelInspector.Utility.ExtentRect"/> to <see cref="System.Windows.Rect"/>.
@@ -191,12 +159,18 @@
 
 		public static bool Equals(ExtentRect rect1, ExtentRect rect2)
 		{
-			return (((rect1.X.Equals(rect2.X) && rect1.Y.Equals(rect2.Y)) && rect1.Width.Equals(rect2.Width)) && rect1.Height.Equals(rect2.Height));
+			return rect1.X == rect2.X
+			    && rect1.Y == rect2.Y
+			    && rect1.Width == rect2.Width
+			    && rect1.Height == rect2.Height;
 		}
 
 		public override int GetHashCode()
 		{
-			return (((this.X.GetHashCode() ^ this.Y.GetHashCode()) ^ this.Width.GetHashCode()) ^ this.Height.GetHashCode());
+			return this.X.GetHashCode()
+				^ this.Y.GetHashCode()
+				^ this.Width.GetHashCode()
+				^ this.Height.GetHashCode();
 		}
 
 		#endregion Overrides

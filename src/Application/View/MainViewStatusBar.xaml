@@ -114,7 +114,7 @@
 		</StatusBarItem>
 
 		<StatusBarItem
-			Visibility="{Binding Selection.HasSelection,Converter={StaticResource BooleanToVisibleHiddenConverter}}"
+			Visibility="{Binding Selection.HasSelection,Converter={StaticResource BooleanToVisibleCollapsedConverter}}"
 			>
 			<StackPanel Orientation="Horizontal">
 				<Image
