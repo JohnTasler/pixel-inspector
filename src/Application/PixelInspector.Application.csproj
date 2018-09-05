@@ -352,6 +352,10 @@
       <Project>{ca6287d9-6f8b-4f6d-8d44-d8359a43d644}</Project>
       <Name>Tasler.Interop</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.UI.Wpf\Tasler.UI.Wpf.csproj">
+      <Project>{cc6be222-de4b-412a-9743-80c187f43ee1}</Project>
+      <Name>Tasler.UI.Wpf</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ComponentModel\" />

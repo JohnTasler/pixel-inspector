@@ -1,10 +1,7 @@
 ﻿namespace PixelInspector.View
 {
 	using System;
-	using System.Collections.Generic;
 	using System.ComponentModel;
-	using System.Diagnostics;
-	using System.Linq;
 	using System.Windows;
 	using System.Windows.Input;
 	using System.Windows.Interop;
@@ -41,7 +38,6 @@
 		private bool HasSetWindowPlacement { get; set; }
 		private MainViewModel ViewModel { get; set; }
 		private HwndSource HwndSource { get; set; }
-		private List<InputBinding> SavedInputBindings { get; set; }
 		#endregion Private Implementation
 
 		#region Event Handlers
@@ -52,9 +48,8 @@
 
 		private void this_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			var oldViewModel = e.OldValue as MainViewModel;
-			if (oldViewModel != null)
-				((INotifyPropertyChanged)oldViewModel).PropertyChanged -= this.ViewModel_PropertyChanged;
+			if (e.OldValue is INotifyPropertyChanged oldViewModel)
+				oldViewModel.PropertyChanged -= this.ViewModel_PropertyChanged;
 
 			this.ViewModel = e.NewValue as MainViewModel;
 			if (this.ViewModel != null)
@@ -147,22 +142,6 @@
 			{
 				case "ApplicationState":
 					break;
-			}
-		}
-
-		private void menuBar_IsKeyboardFocusWithinChanged(object sender, DependencyPropertyChangedEventArgs e)
-		{
-			var isKeyboardFocusWithinMenu = (bool)e.NewValue;
-			if (isKeyboardFocusWithinMenu)
-			{
-				this.SavedInputBindings = this.InputBindings.OfType<InputBinding>().ToList();
-				this.InputBindings.Clear();
-			}
-			else
-			{
-				Debug.Assert(this.SavedInputBindings != null);
-				this.InputBindings.AddRange(this.SavedInputBindings);
-				this.SavedInputBindings = null;
 			}
 		}
 		#endregion Event Handlers

@@ -3,10 +3,9 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	xmlns:vw="clr-namespace:PixelInspector.View"
 	xmlns:vm="clr-namespace:PixelInspector.ViewModel"
-	
+
 	x:Class="PixelInspector.View.MainView"
 	d:DataContext="{d:DesignInstance vm:MainViewModel}"
 	TextOptions.TextFormattingMode="Display" UseLayoutRounding="True"
@@ -16,13 +15,13 @@
 	Left="680" Top="330"
 	Width="525" Height="350"
 	MinWidth="280" MinHeight="120"
-	Title="ZoomIn.NET"
+	Title="Pixel Inspector"
 	>
 	<Window.Style>
 		<Style TargetType="Window">
 			<Setter Property="Topmost" Value="{Binding ViewSettings.Model.IsAlwaysOnTop,Mode=OneWay}"/>
 			<Setter Property="ResizeMode" Value="CanResizeWithGrip"/>
-			
+
 			<Style.Triggers>
 				<Trigger Property="WindowState" Value="Minimized">
 					<Setter Property="Topmost" Value="False"/>
@@ -42,7 +41,9 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<vw:MainViewMenuBar Grid.Row="0" x:Name="menuBar" IsKeyboardFocusWithinChanged="menuBar_IsKeyboardFocusWithinChanged" />
+		<vw:MainViewMenuBar
+			Grid.Row="0" x:Name="menuBar"
+			/>
 
 		<Grid
 			Grid.Row="1" x:Name="mainContent"
@@ -102,41 +103,41 @@
 				Grid.Column="1" Grid.Row="1"
 				Fill="{Binding Background,ElementName=verticalScrollBar}"
 				/>-->
+
+			<Grid.InputBindings>
+
+				<KeyBinding Gesture="Ctrl+S" Command="{Binding SaveAsCommand}"/>
+				<KeyBinding Gesture="Ctrl+P" Command="{Binding PrintCommand}"/>
+				<KeyBinding Gesture="Ctrl+C" Command="{Binding CopyCommand}"/>
+				<KeyBinding Gesture="F5" Command="{Binding RefreshCommand}"/>
+
+				<KeyBinding Gesture="Ctrl+F5" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsAutoRefreshing"/>
+				<KeyBinding Gesture="Ctrl+T" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsAlwaysOnTop"/>
+				<KeyBinding Gesture="Ctrl+G" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsGridVisibleWhenZoomed"/>
+
+				<KeyBinding Gesture="Alt+1" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="1"/>
+				<KeyBinding Gesture="Alt+2" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="2"/>
+				<KeyBinding Gesture="Alt+3" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="3"/>
+				<KeyBinding Gesture="Alt+4" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="4"/>
+				<KeyBinding Gesture="Alt+5" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="5"/>
+				<KeyBinding Gesture="Alt+6" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="6"/>
+				<KeyBinding Gesture="Alt+7" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="7"/>
+				<KeyBinding Gesture="Alt+8" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="8"/>
+				<KeyBinding Gesture="Alt+0" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="10"/>
+
+				<KeyBinding Gesture="Ctrl+PgUp" Command="{Binding ViewSettings.IncreaseZoomCommand}"/>
+				<KeyBinding Gesture="Ctrl+PgDn" Command="{Binding ViewSettings.DecreaseZoomCommand}"/>
+
+				<KeyBinding Gesture="Ctrl+Alt+F12" Command="{Binding GarbageCollectCommand}"/>
+
+				<KeyBinding Key="C" Command="{Binding ChooseToolLocateCommand}"/>
+				<KeyBinding Key="L" Command="{Binding ChooseToolLocateCommand}"/>
+				<KeyBinding Key="M" Command="{Binding ChooseToolMoveCommand}"/>
+				<KeyBinding Key="S" Command="{Binding ChooseToolSelectCommand}"/>
+
+			</Grid.InputBindings>
 		</Grid>
 
 		<vw:MainViewStatusBar Grid.Row="2" />
 	</Grid>
-
-	<Window.InputBindings>
-
-		<KeyBinding Gesture="Ctrl+S" Command="{Binding SaveAsCommand}"/>
-		<KeyBinding Gesture="Ctrl+P" Command="{Binding PrintCommand}"/>
-		<KeyBinding Gesture="Ctrl+C" Command="{Binding CopyCommand}"/>
-		<KeyBinding Gesture="F5" Command="{Binding RefreshCommand}"/>
-
-		<KeyBinding Gesture="Ctrl+F5" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsAutoRefreshing"/>
-		<KeyBinding Gesture="Ctrl+T" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsAlwaysOnTop"/>
-		<KeyBinding Gesture="Ctrl+G" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsGridVisibleWhenZoomed"/>
-
-		<KeyBinding Gesture="Alt+1" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="1"/>
-		<KeyBinding Gesture="Alt+2" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="2"/>
-		<KeyBinding Gesture="Alt+3" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="3"/>
-		<KeyBinding Gesture="Alt+4" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="4"/>
-		<KeyBinding Gesture="Alt+5" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="5"/>
-		<KeyBinding Gesture="Alt+6" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="6"/>
-		<KeyBinding Gesture="Alt+7" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="7"/>
-		<KeyBinding Gesture="Alt+8" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="8"/>
-		<KeyBinding Gesture="Alt+0" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="10"/>
-
-		<KeyBinding Gesture="Ctrl+PgUp" Command="{Binding ViewSettings.IncreaseZoomCommand}"/>
-		<KeyBinding Gesture="Ctrl+PgDn" Command="{Binding ViewSettings.DecreaseZoomCommand}"/>
-
-		<KeyBinding Gesture="Ctrl+Alt+F12" Command="{Binding GarbageCollectCommand}"/>
-		
-		<KeyBinding Key="C" Command="{Binding ChooseToolLocateCommand}"/>
-		<KeyBinding Key="L" Command="{Binding ChooseToolLocateCommand}"/>
-		<KeyBinding Key="M" Command="{Binding ChooseToolMoveCommand}"/>
-		<KeyBinding Key="S" Command="{Binding ChooseToolSelectCommand}"/>
-
-	</Window.InputBindings>
 </Window>
