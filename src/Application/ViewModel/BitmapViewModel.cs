@@ -7,8 +7,8 @@
 	using System.Windows.Interop;
 	using System.Windows.Media;
 	using System.Windows.Media.Imaging;
-	using Tasler.ComponentModel;
 	using PixelInspector.Model;
+	using Tasler.ComponentModel;
 
 	public class BitmapViewModel : ViewModel
 	{

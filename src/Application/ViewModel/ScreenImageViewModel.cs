@@ -5,11 +5,10 @@
 	using System.Diagnostics;
 	using System.Windows;
 	using System.Windows.Interop;
-	using Tasler.ComponentModel;
-
 	using PixelInspector.Interop;
 	using PixelInspector.Interop.Gdi;
 	using PixelInspector.Interop.User;
+	using Tasler.ComponentModel;
 
 	public class ScreenImageViewModel : ChildViewModel<MainViewModel>
 	{

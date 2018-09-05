@@ -1,10 +1,9 @@
 ﻿namespace PixelInspector.Model
 {
 	using System;
-	using System.ComponentModel;
 	using System.Xml.Serialization;
-	using Tasler.ComponentModel;
 	using PixelInspector.Interop.User;
+	using Tasler.ComponentModel;
 
 	public class WindowPlacementModel : ViewModel
 	{

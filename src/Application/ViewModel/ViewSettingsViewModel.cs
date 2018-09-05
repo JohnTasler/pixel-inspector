@@ -5,8 +5,8 @@
 	using System.Diagnostics;
 	using System.Windows;
 	using System.Windows.Input;
-	using Tasler.ComponentModel;
 	using PixelInspector.Model;
+	using Tasler.ComponentModel;
 
 	public class ViewSettingsViewModel
 		: ChildViewModel<MainViewModel>

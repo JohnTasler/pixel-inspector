@@ -10,7 +10,7 @@
 	using Microsoft.Win32.SafeHandles;
 	using PixelInspector.Interop.User;
 	using PixelInspector.Utility;
-	
+
 	public static class GdiApi
 	{
 		#region Constants

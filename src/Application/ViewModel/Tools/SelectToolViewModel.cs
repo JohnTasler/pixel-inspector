@@ -4,9 +4,9 @@
 	using System.Windows;
 	using System.Windows.Controls.Primitives;
 	using System.Windows.Input;
-	using Tasler.ComponentModel;
 	using PixelInspector.Interop.User;
 	using PixelInspector.Utility;
+	using Tasler.ComponentModel;
 
 	public class SelectToolViewModel
 		: ChildViewModel<MainViewModel>

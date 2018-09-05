@@ -8,10 +8,10 @@
 	using System.Windows.Input;
 	using System.Windows.Media;
 	using System.Windows.Threading;
-	using Tasler.ComponentModel;
 	using PixelInspector.Interop.Gdi;
 	using PixelInspector.Model;
 	using PixelInspector.Utility;
+	using Tasler.ComponentModel;
 
 	public class MainViewModel : ViewModel
 	{

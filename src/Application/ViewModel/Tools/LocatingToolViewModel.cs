@@ -1,8 +1,8 @@
 ﻿namespace PixelInspector.ViewModel
 {
 	using System.Windows;
-	using Tasler.ComponentModel;
 	using PixelInspector.Utility;
+	using Tasler.ComponentModel;
 
 	public class LocatingToolViewModel
 		: ChildViewModel<MainViewModel>

@@ -1,11 +1,10 @@
 ﻿namespace PixelInspector.ViewModel
 {
 	using System;
-	using System.ComponentModel;
 	using System.Windows;
 	using System.Windows.Input;
-	using Tasler.ComponentModel;
 	using PixelInspector.Utility;
+	using Tasler.ComponentModel;
 
 	public class SelectionViewModel : ChildViewModel<MainViewModel>
 	{
