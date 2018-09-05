@@ -4,19 +4,19 @@
 	using System.Windows;
 	using System.Windows.Controls.Primitives;
 	using System.Windows.Input;
-	using PixelInspector.ComponentModel.Mvvm;
+	using Tasler.ComponentModel;
 	using PixelInspector.Interop.User;
 	using PixelInspector.Utility;
 
 	public class SelectToolViewModel
-		: ParentedObservableObject<MainViewModel>
+		: ChildViewModel<MainViewModel>
 		, IToolMode
 	{
 		#region Instance Fields
-		private Point dragStart;
-		private Rect dragRect = Rect.Empty;
-		private double lastHorizontalChange;
-		private double lastVerticalChange;
+		private Point _dragStart;
+		private Rect _dragRect = Rect.Empty;
+		private double _lastHorizontalChange;
+		private double _lastVerticalChange;
 		#endregion Instance Fields
 
 		#region Constructors
@@ -33,24 +33,24 @@
 		{
 			get
 			{
-				return this.dragStartedCommand ??
-					(this.dragStartedCommand = new RelayCommand<DragStartedEventArgs>(this.DragStarted));
+				return this._dragStartedCommand ??
+					(this._dragStartedCommand = new RelayCommand<DragStartedEventArgs>(this.DragStarted));
 			}
 		}
-		private RelayCommand<DragStartedEventArgs> dragStartedCommand;
+		private RelayCommand<DragStartedEventArgs> _dragStartedCommand;
 
 		private void DragStarted(DragStartedEventArgs e)
 		{
 			// Get the point where the mouse was clicked
-			this.dragStart = this.Parent.ZoomedMousePosition;
+			this._dragStart = this.Parent.ZoomedMousePosition;
 
 			// Get the drag rect
-			this.dragRect = new Rect(this.dragStart.X, this.dragStart.Y, 0, 0);
-			this.dragRect.Inflate(
+			this._dragRect = new Rect(this._dragStart.X, this._dragStart.Y, 0, 0);
+			this._dragRect.Inflate(
 				Math.Abs(UserApi.GetSystemMetrics(SM.CxDrag)),
 				Math.Abs(UserApi.GetSystemMetrics(SM.CyDrag)));
 
-			this.lastHorizontalChange = this.lastVerticalChange = 0;
+			this._lastHorizontalChange = this._lastVerticalChange = 0;
 			this.Parent.Selection.UpdateZoomedRectangleActualFromInput(null);
 			e.Handled = true;
 		}
@@ -61,28 +61,28 @@
 		{
 			get
 			{
-				return this.dragDeltaCommand ??
-					(this.dragDeltaCommand = new RelayCommand<DragDeltaEventArgs>(this.DragDelta));
+				return this._dragDeltaCommand ??
+					(this._dragDeltaCommand = new RelayCommand<DragDeltaEventArgs>(this.DragDelta));
 			}
 		}
-		private RelayCommand<DragDeltaEventArgs> dragDeltaCommand;
+		private RelayCommand<DragDeltaEventArgs> _dragDeltaCommand;
 
 		private void DragDelta(DragDeltaEventArgs e)
 		{
 			// Calculate the change
-			var horizontalChange = e.HorizontalChange - this.lastHorizontalChange;
-			var verticalChange = e.VerticalChange - this.lastVerticalChange;
-			this.lastHorizontalChange = e.HorizontalChange;
-			this.lastVerticalChange = e.VerticalChange;
+			var horizontalChange = e.HorizontalChange - this._lastHorizontalChange;
+			var verticalChange = e.VerticalChange - this._lastVerticalChange;
+			this._lastHorizontalChange = e.HorizontalChange;
+			this._lastVerticalChange = e.VerticalChange;
 
 			// Check to see if the mosue has moved outside of the drag rect
-			if (!this.dragRect.IsEmpty && this.dragRect.Contains(this.Parent.ZoomedMousePosition))
-				this.dragRect = Rect.Empty;
+			if (!this._dragRect.IsEmpty && this._dragRect.Contains(this.Parent.ZoomedMousePosition))
+				this._dragRect = Rect.Empty;
 
 			// Only process if the mouse has moved outside of the drag rect
-			if (this.dragRect.IsEmpty)
+			if (this._dragRect.IsEmpty)
 			{
-				var rect = new ExtentRect(this.dragStart, this.Parent.ZoomedMousePosition);
+				var rect = new ExtentRect(this._dragStart, this.Parent.ZoomedMousePosition);
 				this.Parent.Selection.UpdateZoomedRectangleActualFromInput(rect);
 			}
 
@@ -95,11 +95,11 @@
 		{
 			get
 			{
-				return this.dragCompletedCommand ??
-					(this.dragCompletedCommand = new RelayCommand<DragCompletedEventArgs>(this.DragCompleted));
+				return this._dragCompletedCommand ??
+					(this._dragCompletedCommand = new RelayCommand<DragCompletedEventArgs>(this.DragCompleted));
 			}
 		}
-		private RelayCommand<DragCompletedEventArgs> dragCompletedCommand;
+		private RelayCommand<DragCompletedEventArgs> _dragCompletedCommand;
 
 		private void DragCompleted(DragCompletedEventArgs e)
 		{

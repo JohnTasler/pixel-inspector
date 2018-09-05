@@ -1,15 +1,15 @@
 ﻿namespace PixelInspector.ViewModel
 {
-	using PixelInspector.ComponentModel.Mvvm;
-	using PixelInspector.Utility;
+	using Tasler;
+	using Tasler.ComponentModel;
 
 	public class LocateToolViewModel
-		: ParentedObservableObject<MainViewModel>
+		: ChildViewModel<MainViewModel>
 		, IToolMode
 	{
 		#region Instance Fields
-		private object previousToolState;
-		private bool isExiting;
+		private object _previousToolState;
+		private bool _isExiting;
 		#endregion Instance Fields
 
 		#region Constructors
@@ -26,7 +26,7 @@
 		/// </summary>
 		public void EnterMode()
 		{
-			this.previousToolState = this.Parent.ToolState;
+			this._previousToolState = this.Parent.ToolState;
 		}
 
 		/// <summary>
@@ -36,11 +36,11 @@
 		/// otherwise, it should commit its changes.</param>
 		public void ExitMode(bool isReverting)
 		{
-			if (this.isExiting)
+			if (this._isExiting)
 				return;
 
-			using (new DisposeActionScope(() => this.isExiting = true, () => this.isExiting = false))
-				this.Parent.ToolState = this.previousToolState;
+			using (new DisposeScopeExit(() => this._isExiting = true, () => this._isExiting = false))
+				this.Parent.ToolState = this._previousToolState;
 		}
 
 		#endregion IToolMode Members

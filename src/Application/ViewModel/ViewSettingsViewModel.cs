@@ -5,22 +5,22 @@
 	using System.Diagnostics;
 	using System.Windows;
 	using System.Windows.Input;
-	using PixelInspector.ComponentModel.Mvvm;
+	using Tasler.ComponentModel;
 	using PixelInspector.Model;
 
 	public class ViewSettingsViewModel
-		: ParentedObservableObject<MainViewModel>
+		: ChildViewModel<MainViewModel>
 		, IProvideSourceOrigin
 	{
 		#region Constructors
 		public ViewSettingsViewModel(MainViewModel parent, ViewSettingsModel model)
 			: base(parent)
 		{
-			this.model = model;
+			this._model = model;
 
-			// Subscribe to property changes
-			this.model.Subscribe(s => s.AutoRefreshMilliseconds, s => this.RaisePropertyChanged(() => this.AutoRefreshInterval));
-			this.model.Subscribe(s => s.SourceOrigin           , s => this.RaisePropertyChanged(() => this.SourceOrigin));
+			// Subscribe to model property changes and reflect as our own
+			this._model.Subscribe(nameof(model.AutoRefreshMilliseconds), s => this.PropertyChanged.Raise(this, nameof(this.AutoRefreshInterval)));
+			this._model.Subscribe(nameof(model.SourceOrigin           ), s => this.PropertyChanged.Raise(this, nameof(this.SourceOrigin)));
 		}
 		#endregion Constructors
 
@@ -28,10 +28,10 @@
 
 		public ViewSettingsModel Model
 		{
-			get { return this.model; }
-			set { this.SetProperty(ref this.model, value, nameof(Model)); }
+			get { return this._model; }
+			set { this.PropertyChanged.SetProperty(this, value, ref this._model, nameof(Model)); }
 		}
-		private ViewSettingsModel model;
+		private ViewSettingsModel _model;
 
 		public TimeSpan AutoRefreshInterval
 		{
@@ -171,23 +171,23 @@
 		{
 			get
 			{
-				return this.setColorValueDisplayFormatCommand ??
-					(this.setColorValueDisplayFormatCommand =
-						new RelayCommand<ColorValueDisplayFormat>(
+				return this._setColorValueDisplayFormatCommand ??
+					(this._setColorValueDisplayFormatCommand =
+						new RelayCommand<ColorValueDisplayFormat?>(
 							this.SetColorValueDisplayFormatCommandExecute,
 							this.SetColorValueDisplayFormatCommandCanExecute));
 			}
 		}
-		private RelayCommand<ColorValueDisplayFormat> setColorValueDisplayFormatCommand;
+		private RelayCommand<ColorValueDisplayFormat?> _setColorValueDisplayFormatCommand;
 
-		private bool SetColorValueDisplayFormatCommandCanExecute(ColorValueDisplayFormat parameter)
+		private bool SetColorValueDisplayFormatCommandCanExecute(ColorValueDisplayFormat? parameter)
 		{
-			return typeof(ColorValueDisplayFormat).IsEnumDefined(parameter);
+			return parameter.HasValue && typeof(ColorValueDisplayFormat).IsEnumDefined(parameter.Value);
 		}
 
-		private void SetColorValueDisplayFormatCommandExecute(ColorValueDisplayFormat parameter)
+		private void SetColorValueDisplayFormatCommandExecute(ColorValueDisplayFormat? parameter)
 		{
-			this.Model.ColorValueDisplayFormat = parameter;
+			this.Model.ColorValueDisplayFormat = parameter.Value;
 		}
 
 		#endregion SetColorValueDisplayFormatCommand

@@ -76,13 +76,13 @@
 			var oldViewModel = e.OldValue as ScreenImageViewModel;
 			if (oldViewModel != null)
 			{
-				oldViewModel.PropertyChanged -= this.ViewModel_PropertyChanged;
+				((INotifyPropertyChanged)oldViewModel).PropertyChanged -= this.ViewModel_PropertyChanged;
 			}
 
 			this.ViewModel = e.NewValue as ScreenImageViewModel;
 			if (this.ViewModel != null)
 			{
-				this.ViewModel.PropertyChanged += this.ViewModel_PropertyChanged;
+				((INotifyPropertyChanged)this.ViewModel).PropertyChanged += this.ViewModel_PropertyChanged;
 			}
 
 			this.InvalidateVisual();
@@ -92,7 +92,7 @@
 		{
 			switch (e.PropertyName)
 			{
-				case "ZoomedBitmap":
+				case nameof(ScreenImageViewModel.ZoomedBitmap):
 					if (!this.isRendering)
 						this.InvalidateVisual();
 					break;

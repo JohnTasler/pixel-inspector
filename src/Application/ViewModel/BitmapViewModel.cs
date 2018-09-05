@@ -7,10 +7,10 @@
 	using System.Windows.Interop;
 	using System.Windows.Media;
 	using System.Windows.Media.Imaging;
-	using PixelInspector.ComponentModel.Mvvm;
+	using Tasler.ComponentModel;
 	using PixelInspector.Model;
 
-	public class BitmapViewModel : ObservableObject
+	public class BitmapViewModel : ViewModel
 	{
 		public BitmapViewModel()
 		{
@@ -39,9 +39,9 @@
 
 				if (oldSize != this.Size)
 				{
-					this.bitmapSource = null;
+					this._bitmapSource = null;
 					this.InvalidateBitmapSource();
-					this.RaisePropertyChanged("Size");
+					this.PropertyChanged.Raise(this, nameof(this.Size));
 				}
 			}
 		}
@@ -50,7 +50,7 @@
 		{
 			get
 			{
-				if (this.bitmapSource == null)
+				if (this._bitmapSource == null)
 				{
 					//this.bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
 					//  this.Model.Bitmap.Handle, IntPtr.Zero, Int32Rect.Empty, null);
@@ -58,15 +58,15 @@
 					int cx, cy;
 					this.Model.GetSize(out cx, out cy);
 
-					this.bitmapSource = Imaging.CreateBitmapSourceFromMemorySection(
+					this._bitmapSource = Imaging.CreateBitmapSourceFromMemorySection(
 						this.Model.Section.SafeMemoryMappedFileHandle.DangerousGetHandle(),
 						cx, cy, PixelFormats.Bgr24, BitmapModel.GetStride(cx), 0);
 				}
 
-				return this.bitmapSource;
+				return this._bitmapSource;
 			}
 		}
-		private BitmapSource bitmapSource;
+		private BitmapSource _bitmapSource;
 
 		public Color GetPixelColor(int x, int y)
 		{
@@ -102,8 +102,8 @@
 
 		internal void InvalidateBitmapSource()
 		{
-			if (this.bitmapSource != null)
-				((InteropBitmap)this.bitmapSource).Invalidate();
+			if (this._bitmapSource != null)
+				((InteropBitmap)this._bitmapSource).Invalidate();
 			GC.Collect();
 
 			//if (this.bitmapSource != null)

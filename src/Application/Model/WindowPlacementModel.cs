@@ -1,20 +1,21 @@
 ﻿namespace PixelInspector.Model
 {
 	using System;
+	using System.ComponentModel;
 	using System.Xml.Serialization;
-	using PixelInspector.ComponentModel.Mvvm;
+	using Tasler.ComponentModel;
 	using PixelInspector.Interop.User;
 
-	public class WindowPlacementModel : ObservableObject
+	public class WindowPlacementModel : ViewModel
 	{
 		#region Instance Fields
-		private WINDOWPLACEMENT windowPlacement;
+		private WINDOWPLACEMENT _windowPlacement;
 		#endregion Instance Fields
 
 		#region Constructors
 		public WindowPlacementModel()
 		{
-			this.windowPlacement = new WINDOWPLACEMENT();
+			_windowPlacement = new WINDOWPLACEMENT();
 		}
 
 		public WindowPlacementModel(IntPtr hwnd)
@@ -22,7 +23,7 @@
 			if (hwnd == IntPtr.Zero)
 				throw new ArgumentException("Must specify a non-zero window handle.", nameof(hwnd));
 
-			this.windowPlacement = UserApi.GetWindowPlacement(hwnd);
+			_windowPlacement = UserApi.GetWindowPlacement(hwnd);
 		}
 		#endregion Constructors
 
@@ -31,50 +32,50 @@
 		[XmlAttribute]
 		public bool IsMaximized
 		{
-			get { return this.windowPlacement.showCmd == SW.ShowMaximized; }
-			set { this.SetProperty(ref this.windowPlacement.showCmd, value ? SW.ShowMaximized : SW.ShowNormal, nameof(IsMaximized)); }
+			get { return _windowPlacement.showCmd == SW.ShowMaximized; }
+			set { this.PropertyChanged.SetProperty(this, value ? SW.ShowMaximized : SW.ShowNormal, ref _windowPlacement.showCmd); }
 		}
 
 		[XmlAttribute]
 		public int MaximizedX
 		{
-			get { return this.windowPlacement.ptMaxPosition.x; }
-			set { this.SetProperty(ref this.windowPlacement.ptMaxPosition.x, value, nameof(MaximizedX)); }
+			get { return _windowPlacement.ptMaxPosition.x; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.ptMaxPosition.x); }
 		}
 
 		[XmlAttribute]
 		public int MaximizedY
 		{
-			get { return this.windowPlacement.ptMaxPosition.y; }
-			set { this.SetProperty(ref this.windowPlacement.ptMaxPosition.y, value, nameof(MaximizedY)); }
+			get { return _windowPlacement.ptMaxPosition.y; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.ptMaxPosition.y); }
 		}
 
 		[XmlAttribute]
 		public int Left
 		{
-			get { return this.windowPlacement.rcNormalPosition.left; }
-			set { this.SetProperty(ref this.windowPlacement.rcNormalPosition.left, value, nameof(Left)); }
+			get { return _windowPlacement.rcNormalPosition.left; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.rcNormalPosition.left); }
 		}
 
 		[XmlAttribute]
 		public int Top
 		{
-			get { return this.windowPlacement.rcNormalPosition.top; }
-			set { this.SetProperty(ref this.windowPlacement.rcNormalPosition.top, value, nameof(Top)); }
+			get { return _windowPlacement.rcNormalPosition.top; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.rcNormalPosition.top); }
 		}
 
 		[XmlAttribute]
 		public int Right
 		{
-			get { return this.windowPlacement.rcNormalPosition.right; }
-			set { this.SetProperty(ref this.windowPlacement.rcNormalPosition.right, value, nameof(Right)); }
+			get { return _windowPlacement.rcNormalPosition.right; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.rcNormalPosition.right); }
 		}
 
 		[XmlAttribute]
 		public int Bottom
 		{
-			get { return this.windowPlacement.rcNormalPosition.bottom; }
-			set { this.SetProperty(ref this.windowPlacement.rcNormalPosition.bottom, value, nameof(Bottom)); }
+			get { return _windowPlacement.rcNormalPosition.bottom; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.rcNormalPosition.bottom); }
 		}
 
 		#endregion Properties
@@ -103,7 +104,7 @@
 			if (hwnd == IntPtr.Zero)
 				throw new ArgumentException("Must specify a non-zero window handle.", nameof(hwnd));
 
-			UserApi.SetWindowPlacement(hwnd, this.windowPlacement);
+			UserApi.SetWindowPlacement(hwnd, _windowPlacement);
 		}
 
 		#endregion Methods

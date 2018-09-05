@@ -1,17 +1,17 @@
 ﻿namespace PixelInspector.ViewModel
 {
 	using System.Windows;
-	using PixelInspector.ComponentModel.Mvvm;
+	using Tasler.ComponentModel;
 	using PixelInspector.Utility;
 
 	public class LocatingToolViewModel
-		: ParentedObservableObject<MainViewModel>
+		: ChildViewModel<MainViewModel>
 		, IProvideSourceOrigin
 		, IToolMode
 	{
 		#region Instance Fields
-		private object previousToolState;
-		private bool isExiting;
+		private object _previousToolState;
+		private bool _isExiting;
 		#endregion Instance Fields
 
 		#region Constructors
@@ -34,10 +34,10 @@
 
 		public Point SourceOrigin
 		{
-			get { return this.sourceOrigin; }
-			set { this.SetProperty(ref this.sourceOrigin, value, "SourceOrigin"); }
+			get { return this._sourceOrigin; }
+			set { this.PropertyChanged.SetProperty(this, value, ref this._sourceOrigin); }
 		}
-		private Point sourceOrigin;
+		private Point _sourceOrigin;
 
 		#endregion Properties
 
@@ -48,8 +48,8 @@
 		/// </summary>
 		public void EnterMode()
 		{
-			this.sourceOrigin = this.Parent.ViewSettings.Model.SourceOrigin;
-			this.previousToolState = this.Parent.ToolState;
+			this._sourceOrigin = this.Parent.ViewSettings.Model.SourceOrigin;
+			this._previousToolState = this.Parent.ToolState;
 		}
 
 		/// <summary>
@@ -59,7 +59,7 @@
 		/// otherwise, it should commit its changes.</param>
 		public void ExitMode(bool isReverting)
 		{
-			if (this.isExiting)
+			if (this._isExiting)
 				return;
 
 			if (isReverting)
@@ -71,8 +71,8 @@
 				this.Parent.ViewSettings.Model.SourceOrigin = this.SourceOrigin;
 			}
 
-			using (new DisposeActionScope(() => this.isExiting = true, () => this.isExiting = false))
-				this.Parent.ToolState = this.previousToolState;
+			using (new DisposeActionScope(() => this._isExiting = true, () => this._isExiting = false))
+				this.Parent.ToolState = this._previousToolState;
 		}
 
 		#endregion IToolMode Members

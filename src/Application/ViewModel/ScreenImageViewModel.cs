@@ -5,21 +5,22 @@
 	using System.Diagnostics;
 	using System.Windows;
 	using System.Windows.Interop;
-	using PixelInspector.ComponentModel.Mvvm;
+	using Tasler.ComponentModel;
+
 	using PixelInspector.Interop;
 	using PixelInspector.Interop.Gdi;
 	using PixelInspector.Interop.User;
 
-	public class ScreenImageViewModel : ParentedObservableObject<MainViewModel>
+	public class ScreenImageViewModel : ChildViewModel<MainViewModel>
 	{
 		#region Static Fields
 			#if DEBUG
-				private static int invalidHandleCount;
+				private static int _invalidHandleCount;
 			#endif // DEBUG
 		#endregion Static Fields
 
 		#region Instance Fields
-		private ViewSettingsViewModel viewSettings;
+		private ViewSettingsViewModel _viewSettings;
 		#endregion Instance Fields
 
 		#region Constructors
@@ -35,29 +36,29 @@
 		#region Properties
 		public bool IsRefreshNeeded
 		{
-			get { return this.isRefreshNeeded; }
-			set { this.SetProperty(ref this.isRefreshNeeded, value, nameof(IsRefreshNeeded)); }
+			get { return this._isRefreshNeeded; }
+			set { this.PropertyChanged.SetProperty(this, value, ref this._isRefreshNeeded); }
 		}
-		private bool isRefreshNeeded;
+		private bool _isRefreshNeeded;
 
 		public BitmapViewModel SourceBitmap
 		{
-			get { return this.sourceBitmap; }
+			get { return this._sourceBitmap; }
 		}
-		private BitmapViewModel sourceBitmap = new BitmapViewModel();
+		private BitmapViewModel _sourceBitmap = new BitmapViewModel();
 
 		public BitmapViewModel ZoomedBitmap
 		{
-			get { return this.zoomedBitmap; }
+			get { return this._zoomedBitmap; }
 		}
-		private BitmapViewModel zoomedBitmap = new BitmapViewModel();
+		private BitmapViewModel _zoomedBitmap = new BitmapViewModel();
 		#endregion Properties
 
 		#region Methods
 		public void Refresh(Point sourceOrigin)
 		{
 			// Compute the origin and extents of the source rectangle
-			var sourceSize = this.viewSettings.Model.SourceSize;
+			var sourceSize = this._viewSettings.Model.SourceSize;
 			sourceSize.Width = Math.Min(sourceSize.Width, SystemParameters.VirtualScreenWidth);
 			sourceSize.Height = Math.Min(sourceSize.Height, SystemParameters.VirtualScreenHeight);
 			var sourceRect = new Rect(sourceOrigin, sourceSize);
@@ -89,7 +90,7 @@
 						bool isHdcScreenValid = GdiApi.GetPixel(hdcScreen, 0, 0) != -1;
 
 						Debug.WriteLine("{3}: ScreenImageViewModel.Refresh: BitBlt failed: {0} isHdcSourceValid={1} isHdcScreenValid={2}",
-							e.Message, isHdcSourceValid, isHdcScreenValid, invalidHandleCount++);
+							e.Message, isHdcSourceValid, isHdcScreenValid, _invalidHandleCount++);
 					}
 					#endif // DEBUG
 
@@ -100,7 +101,7 @@
 			}
 
 			// Compute the origin and extents of the zoomed rectangle
-			var zoomFactor = this.viewSettings.Model.ZoomFactor;
+			var zoomFactor = this._viewSettings.Model.ZoomFactor;
 			int cxDest = (int)(cxSrc * zoomFactor);
 			int cyDest = (int)(cySrc * zoomFactor);
 
@@ -127,7 +128,7 @@
 			this.IsRefreshNeeded = false;
 
 			// Indicate changed bitmaps
-			this.RaisePropertyChanged(nameof(ZoomedBitmap), nameof(SourceBitmap));
+			this.PropertyChanged.Raise(this, nameof(ZoomedBitmap), nameof(SourceBitmap));
 		}
 		#endregion Methods
 
@@ -135,8 +136,8 @@
 		private void DrawPixelGrid(SafeHdc hdc, int cxDest, int cyDest)
 		{
 			// Draw the pixel grid onto the zoomed bitmap
-			var zoomFactor = (int)this.viewSettings.Model.ZoomFactor;
-			if (this.viewSettings.Model.IsGridVisibleWhenZoomed && zoomFactor > 1)
+			var zoomFactor = (int)this._viewSettings.Model.ZoomFactor;
+			if (this._viewSettings.Model.IsGridVisibleWhenZoomed && zoomFactor > 1)
 			{
 				// Create the pen and select it into the HDC of the zoomed bitmap buffer
 				// TODO: Since this is a private DC, only create/select the pen when pen properties change
@@ -190,13 +191,13 @@
 		private void ResizeSourceBitmap()
 		{
 			// Resize the SourceBitmap
-			this.sourceBitmap.Size = this.viewSettings.Model.SourceSize;
+			this._sourceBitmap.Size = this._viewSettings.Model.SourceSize;
 		}
 
 		private void ResizeZoomedBitmap()
 		{
 			// Resize the ZoomedBitmap
-			this.zoomedBitmap.Size = this.viewSettings.Model.RenderSize;
+			this._zoomedBitmap.Size = this._viewSettings.Model.RenderSize;
 		}
 		#endregion Private Implementation
 
@@ -214,15 +215,15 @@
 			switch (e.PropertyName)
 			{
 				case nameof(this.Parent.ViewSettings):
-					if (this.viewSettings != null)
-						this.viewSettings.Model.PropertyChanged -= this.viewSettings_PropertyChanged;
+					if (this._viewSettings != null)
+						((INotifyPropertyChanged)this._viewSettings.Model).PropertyChanged -= this.viewSettings_PropertyChanged;
 
-					this.viewSettings = this.Parent.ViewSettings;
+					this._viewSettings = this.Parent.ViewSettings;
 
-					if (this.viewSettings != null)
+					if (this._viewSettings != null)
 					{
-						this.viewSettings.Model.PropertyChanged += this.viewSettings_PropertyChanged;
-						this.viewSettings_PropertyChanged(this.viewSettings.Model, new PropertyChangedEventArgs(nameof(this.viewSettings.Model.RenderSize)));
+						((INotifyPropertyChanged)this._viewSettings.Model).PropertyChanged += this.viewSettings_PropertyChanged;
+						this.viewSettings_PropertyChanged(this._viewSettings.Model, new PropertyChangedEventArgs(nameof(this._viewSettings.Model.RenderSize)));
 					}
 					break;
 			}
@@ -232,17 +233,17 @@
 		{
 			switch (e.PropertyName)
 			{
-				case nameof(this.viewSettings.Model.IsGridVisibleWhenZoomed):
+				case nameof(this._viewSettings.Model.IsGridVisibleWhenZoomed):
 					this.IsRefreshNeeded = true;
 					break;
 
-				case nameof(this.viewSettings.Model.RenderSize):
+				case nameof(this._viewSettings.Model.RenderSize):
 					this.ResizeSourceBitmap();
 					this.ResizeZoomedBitmap();
 					this.IsRefreshNeeded = true;
 					break;
 
-				case nameof(this.viewSettings.Model.ZoomFactor):
+				case nameof(this._viewSettings.Model.ZoomFactor):
 					this.ResizeSourceBitmap();
 					this.IsRefreshNeeded = true;
 					break;

@@ -4,10 +4,10 @@
 	using System.ComponentModel;
 	using System.Windows;
 	using System.Windows.Input;
-	using PixelInspector.ComponentModel.Mvvm;
+	using Tasler.ComponentModel;
 	using PixelInspector.Utility;
 
-	public class SelectionViewModel : ParentedObservableObject<MainViewModel>
+	public class SelectionViewModel : ChildViewModel<MainViewModel>
 	{
 		#region Constructors
 		/// <summary>
@@ -17,8 +17,8 @@
 			: base(parent)
 		{
 			// Subsribe to property changes
-			parent.Subscribe(s => s.SourceOrigin, s => this.UpdateZoomedRectangleActual());
-			parent.ViewSettings.Model.Subscribe(s => s.ZoomFactor, s => this.UpdateZoomedRectangleActual());
+			parent.Subscribe(nameof(parent.SourceOrigin), s => this.UpdateZoomedRectangleActual());
+			parent.ViewSettings.Model.Subscribe(nameof(parent.ViewSettings.Model.ZoomFactor), s => this.UpdateZoomedRectangleActual());
 		}
 		#endregion Constructors
 
@@ -27,45 +27,45 @@
 		#region SourceRectangle
 		public Rect? SourceRectangle
 		{
-			get { return this.sourceRectangle; }
+			get { return this._sourceRectangle; }
 			private set
 			{
-				if (this.SetProperty(ref this.sourceRectangle, value, "SourceRectangle"))
+				if (this.PropertyChanged.SetProperty(this, value, ref this._sourceRectangle))
 					this.HasSelection = value.HasValue;
 			}
 		}
-		private Rect? sourceRectangle;
+		private Rect? _sourceRectangle;
 		#endregion SourceRectangle
 
 		#region ZoomedRectangle
 		public Rect? ZoomedRectangle
 		{
-			get { return this.zoomedRectangle; }
+			get { return this._zoomedRectangle; }
 			private set
 			{
-				if (this.SetProperty(ref this.zoomedRectangle, value, "ZoomedRectangle"))
+				if (this.PropertyChanged.SetProperty(this, value, ref this._zoomedRectangle))
 					this.UpdateSourceRectangle();
 			}
 		}
-		private Rect? zoomedRectangle;
+		private Rect? _zoomedRectangle;
 		#endregion ZoomedRectangle
 
 		#region ZoomedRectangleActual
 		public Rect? ZoomedRectangleActual
 		{
-			get { return this.zoomedRectangleActual; }
-			private set { this.SetProperty(ref this.zoomedRectangleActual, value, "ZoomedRectangleActual"); }
+			get { return this._zoomedRectangleActual; }
+			private set { this.PropertyChanged.SetProperty(this, value, ref this._zoomedRectangleActual); }
 		}
-		private Rect? zoomedRectangleActual;
+		private Rect? _zoomedRectangleActual;
 		#endregion ZoomedRectangleActual
 
 		#region HasSelection
 		public bool HasSelection
 		{
-			get { return this.hasSelection; }
-			private set { this.SetProperty(ref this.hasSelection, value, "HasSelection"); }
+			get { return this._hasSelection; }
+			private set { this.PropertyChanged.SetProperty(this, value, ref this._hasSelection); }
 		}
-		private bool hasSelection;
+		private bool _hasSelection;
 		#endregion HasSelection
 
 		#endregion Properties
@@ -79,9 +79,9 @@
 		/// </summary>
 		public ICommand ClearSelectionCommand
 		{
-			get { return this.clearSelectionCommand ?? (this.clearSelectionCommand = new RelayCommand(this.ClearSelectionCommandExecute)); }
+			get { return this._clearSelectionCommand ?? (this._clearSelectionCommand = new RelayCommand(this.ClearSelectionCommandExecute)); }
 		}
-		private RelayCommand clearSelectionCommand;
+		private RelayCommand _clearSelectionCommand;
 
 		private void ClearSelectionCommandExecute()
 		{

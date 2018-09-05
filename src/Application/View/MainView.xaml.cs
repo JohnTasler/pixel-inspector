@@ -54,11 +54,11 @@
 		{
 			var oldViewModel = e.OldValue as MainViewModel;
 			if (oldViewModel != null)
-				oldViewModel.PropertyChanged -= this.ViewModel_PropertyChanged;
+				((INotifyPropertyChanged)oldViewModel).PropertyChanged -= this.ViewModel_PropertyChanged;
 
 			this.ViewModel = e.NewValue as MainViewModel;
 			if (this.ViewModel != null)
-				this.ViewModel.PropertyChanged += this.ViewModel_PropertyChanged;
+				((INotifyPropertyChanged)this.ViewModel).PropertyChanged += this.ViewModel_PropertyChanged;
 
 			this.InvalidateVisual();
 		}

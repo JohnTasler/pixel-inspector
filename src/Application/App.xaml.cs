@@ -26,7 +26,7 @@
 			this.InitializeComponent();
 
 			this.mainViewModel = new MainViewModel();
-			this.mainViewModel.PropertyChanged += this.mainViewModel_PropertyChanged;
+			((INotifyPropertyChanged)this.mainViewModel).PropertyChanged += this.mainViewModel_PropertyChanged;
 
 			this.MainWindow = new MainView();
 			this.MainWindow.DataContext = mainViewModel;

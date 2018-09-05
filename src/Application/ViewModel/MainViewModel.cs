@@ -8,18 +8,18 @@
 	using System.Windows.Input;
 	using System.Windows.Media;
 	using System.Windows.Threading;
-	using PixelInspector.ComponentModel.Mvvm;
+	using Tasler.ComponentModel;
 	using PixelInspector.Interop.Gdi;
 	using PixelInspector.Model;
 	using PixelInspector.Utility;
 
-	public class MainViewModel : ObservableObject
+	public class MainViewModel : ViewModel
 	{
 		#region Instance Fields
-		private bool isInTimerRefresh;
-		private DispatcherTimer refreshTimer;
-		private BitmapModel sourceBitmapBuffer;
-		private BitmapModel zoomedBitmapBuffer;
+		private bool _isInTimerRefresh;
+		private DispatcherTimer _refreshTimer;
+		private BitmapModel _sourceBitmapBuffer;
+		private BitmapModel _zoomedBitmapBuffer;
 		#endregion Instance Fields
 
 		#region Constructors
@@ -44,7 +44,7 @@
 
 			// Create the ScreenImageViewModel
 			this.ScreenImage = new ScreenImageViewModel(this);
-			this.ScreenImage.Subscribe(s => s.IsRefreshNeeded,
+			this.ScreenImage.Subscribe(nameof(this.ScreenImage.IsRefreshNeeded),
 				s =>
 				{
 					if (s.IsRefreshNeeded)
@@ -67,12 +67,12 @@
 		#region Models
 		public BitmapModel SourceBitmap
 		{
-			get { return this.sourceBitmapBuffer; }
+			get { return this._sourceBitmapBuffer; }
 		}
 
 		public BitmapModel ZoomedBitmap
 		{
-			get { return this.zoomedBitmapBuffer; }
+			get { return this._zoomedBitmapBuffer; }
 		}
 		#endregion Models
 
@@ -81,35 +81,35 @@
 		#region ViewSettings
 		public ViewSettingsViewModel ViewSettings
 		{
-			get { return this.viewSettings; }
+			get { return this._viewSettings; }
 			private set
 			{
-				var oldValue = this.viewSettings;
-				if (this.SetProperty(ref this.viewSettings, value, nameof(ViewSettings)))
+				var oldValue = this._viewSettings;
+				if (this.PropertyChanged.SetProperty(this, value, ref this._viewSettings))
 				{
-					if (this.viewSettingsObservers != null)
+					if (this._viewSettingsObservers != null)
 					{
-						foreach (var observer in this.viewSettingsObservers)
+						foreach (var observer in this._viewSettingsObservers)
 							observer.Unsubscribe();
-						this.viewSettingsObservers = null;
+						this._viewSettingsObservers = null;
 					}
 
 					this.ResetRefreshTimer();
 
-					if (this.viewSettings != null)
+					if (this._viewSettings != null)
 					{
-						this.viewSettingsObservers = new List<IPropertyObserverItem>
+						this._viewSettingsObservers = new List<IPropertyObserverItem>
 						{
-							this.viewSettings.Subscribe(s => s.AutoRefreshInterval, s => this.ResetRefreshTimer()),
-							this.viewSettings.Model.Subscribe(s => s.IsAutoRefreshing, s => this.ResetRefreshTimer()),
-							this.viewSettings.Model.Subscribe(s => s.ZoomFactor, s => this.UpdateSourceMousePosition()),
+							this._viewSettings.Subscribe(nameof(_viewSettings.AutoRefreshInterval), s => this.ResetRefreshTimer()),
+							this._viewSettings.Model.Subscribe(nameof(_viewSettings.Model.IsAutoRefreshing), s => this.ResetRefreshTimer()),
+							this._viewSettings.Model.Subscribe(nameof(_viewSettings.Model.ZoomFactor), s => this.UpdateSourceMousePosition()),
 						};
 					}
 				}
 			}
 		}
-		private ViewSettingsViewModel viewSettings;
-		private List<IPropertyObserverItem> viewSettingsObservers;
+		private ViewSettingsViewModel _viewSettings;
+		private List<IPropertyObserverItem> _viewSettingsObservers;
 		#endregion ViewSettings
 
 		#region ScreenImage
@@ -145,7 +145,7 @@
 					this.SourceOriginProvider = this.toolState as IProvideSourceOrigin ?? this.ViewSettings;
 
 					// Raise property change events
-					this.RaisePropertyChanged(nameof(ToolState), nameof(IsToolStateLocate), nameof(IsToolStateMove), nameof(IsToolStateSelect));
+					this.PropertyChanged.Raise(this, nameof(ToolState), nameof(IsToolStateLocate), nameof(IsToolStateMove), nameof(IsToolStateSelect));
 
 					// Update the source mouse position
 					this.UpdateSourceMousePosition();
@@ -181,22 +181,22 @@
 
 		public object ApplicationState
 		{
-			get { return this.applicationState; }
+			get { return this._applicationState; }
 			private set
 			{
-				if (this.SetProperty(ref this.applicationState, value, nameof(ApplicationState))
-				 && this.applicationState is ApplicationStateUnloading)
+				if (this.PropertyChanged.SetProperty(this, value, ref this._applicationState) &&
+					this._applicationState is ApplicationStateUnloading)
 				{
-					using (this.sourceBitmapBuffer)
-					using (this.zoomedBitmapBuffer)
+					using (this._sourceBitmapBuffer)
+					using (this._zoomedBitmapBuffer)
 					{
-						this.sourceBitmapBuffer = null;
-						this.zoomedBitmapBuffer = null;
+						this._sourceBitmapBuffer = null;
+						this._zoomedBitmapBuffer = null;
 					}
 				}
 			}
 		}
-		private object applicationState;
+		private object _applicationState;
 
 		public Point SourceOrigin
 		{
@@ -209,42 +209,42 @@
 
 		public Point SourceMousePosition
 		{
-			get { return this.sourceMousePosition; }
-			private set { this.SetProperty(ref this.sourceMousePosition, value, nameof(SourceMousePosition)); }
+			get { return this._sourceMousePosition; }
+			private set { this.PropertyChanged.SetProperty(this, value, ref this._sourceMousePosition); }
 		}
-		private Point sourceMousePosition;
+		private Point _sourceMousePosition;
 
 		public bool IsMouseOverSelection
 		{
-			get { return this.isMouseOverSelection; }
-			private set { this.SetProperty(ref this.isMouseOverSelection, value, nameof(IsMouseOverSelection)); }
+			get { return this._isMouseOverSelection; }
+			private set { this.PropertyChanged.SetProperty(this, value, ref this._isMouseOverSelection); }
 		}
-		private bool isMouseOverSelection;
+		private bool _isMouseOverSelection;
 
 		public Color SourceMousePositionColor
 		{
-			get { return this.sourceMousePositionColor; }
-			private set { this.SetProperty(ref this.sourceMousePositionColor, value, nameof(SourceMousePositionColor)); }
+			get { return this._sourceMousePositionColor; }
+			private set { this.PropertyChanged.SetProperty(this, value, ref this._sourceMousePositionColor); }
 		}
-		private Color sourceMousePositionColor;
+		private Color _sourceMousePositionColor;
 
 		public Point ZoomedMousePosition
 		{
-			get { return this.zoomedMousePosition; }
+			get { return this._zoomedMousePosition; }
 			set
 			{
-				if (this.SetProperty(ref this.zoomedMousePosition, value, nameof(ZoomedMousePosition)))
+				if (this.PropertyChanged.SetProperty(this, value, ref this._zoomedMousePosition))
 					this.UpdateSourceMousePosition();
 			}
 		}
-		private Point zoomedMousePosition;
+		private Point _zoomedMousePosition;
 
 		public bool IsMouseInZoomedBounds
 		{
-			get { return this.isMouseInZoomedBounds; }
-			set { this.SetProperty(ref this.isMouseInZoomedBounds, value, nameof(IsMouseInZoomedBounds)); }
+			get { return this._isMouseInZoomedBounds; }
+			set { this.PropertyChanged.SetProperty(this, value, ref this._isMouseInZoomedBounds); }
 		}
-		private bool isMouseInZoomedBounds;
+		private bool _isMouseInZoomedBounds;
 
 		#endregion Properties
 
@@ -259,11 +259,11 @@
 		{
 			get
 			{
-				return this.saveAsCommand ??
-					(this.saveAsCommand = new RelayCommand(this.SaveAsCommandExecute, this.SaveAsCommandCanExecute));
+				return this._saveAsCommand ??
+					(this._saveAsCommand = new RelayCommand(this.SaveAsCommandExecute, this.SaveAsCommandCanExecute));
 			}
 		}
-		private RelayCommand saveAsCommand;
+		private RelayCommand _saveAsCommand;
 
 		private bool SaveAsCommandCanExecute()
 		{
@@ -285,11 +285,11 @@
 		{
 			get
 			{
-				return this.printCommand ??
-					(this.printCommand = new RelayCommand(this.PrintCommandExecute, this.PrintCommandCanExecute));
+				return this._printCommand ??
+					(this._printCommand = new RelayCommand(this.PrintCommandExecute, this.PrintCommandCanExecute));
 			}
 		}
-		private RelayCommand printCommand;
+		private RelayCommand _printCommand;
 
 		private bool PrintCommandCanExecute()
 		{
@@ -311,11 +311,11 @@
 		{
 			get
 			{
-				return this.exitCommand ??
-					(this.exitCommand = new RelayCommand(this.ExitCommandExecute));
+				return this._exitCommand ??
+					(this._exitCommand = new RelayCommand(this.ExitCommandExecute));
 			}
 		}
-		private RelayCommand exitCommand;
+		private RelayCommand _exitCommand;
 
 		private void ExitCommandExecute()
 		{
@@ -333,11 +333,11 @@
 		{
 			get
 			{
-				return this.copyCommand ??
-					(this.copyCommand = new RelayCommand(this.CopyCommandExecute, this.CopyCommandCanExecute));
+				return this._copyCommand ??
+					(this._copyCommand = new RelayCommand(this.CopyCommandExecute, this.CopyCommandCanExecute));
 			}
 		}
-		private RelayCommand copyCommand;
+		private RelayCommand _copyCommand;
 
 		private bool CopyCommandCanExecute()
 		{
@@ -394,11 +394,11 @@
 		{
 			get
 			{
-				return this.refreshCommand ??
-					(this.refreshCommand = new RelayCommand(this.RefreshCommandExecute, this.RefreshCommandCanExecute));
+				return this._refreshCommand ??
+					(this._refreshCommand = new RelayCommand(this.RefreshCommandExecute, this.RefreshCommandCanExecute));
 			}
 		}
-		private RelayCommand refreshCommand;
+		private RelayCommand _refreshCommand;
 
 		private bool RefreshCommandCanExecute()
 		{
@@ -421,11 +421,11 @@
 		{
 			get
 			{
-				return this.chooseToolLocateCommand ??
-					(this.chooseToolLocateCommand = new RelayCommand(this.ChooseToolLocateCommandExecute));
+				return this._chooseToolLocateCommand ??
+					(this._chooseToolLocateCommand = new RelayCommand(this.ChooseToolLocateCommandExecute));
 			}
 		}
-		private RelayCommand chooseToolLocateCommand;
+		private RelayCommand _chooseToolLocateCommand;
 
 		private void ChooseToolLocateCommandExecute()
 		{
@@ -443,11 +443,11 @@
 		{
 			get
 			{
-				return this.chooseToolLocatingCommand ??
-					(this.chooseToolLocatingCommand = new RelayCommand<LocatingToolViewModel.Parameters>(this.ChooseToolLocatingCommandExecute));
+				return this._chooseToolLocatingCommand ??
+					(this._chooseToolLocatingCommand = new RelayCommand<LocatingToolViewModel.Parameters>(this.ChooseToolLocatingCommandExecute));
 			}
 		}
-		private RelayCommand<LocatingToolViewModel.Parameters> chooseToolLocatingCommand;
+		private RelayCommand<LocatingToolViewModel.Parameters> _chooseToolLocatingCommand;
 
 		private void ChooseToolLocatingCommandExecute(LocatingToolViewModel.Parameters parameters)
 		{
@@ -465,11 +465,11 @@
 		{
 			get
 			{
-				return this.chooseToolMoveCommand ??
-					(this.chooseToolMoveCommand = new RelayCommand(this.ChooseToolMoveCommandExecute));
+				return this._chooseToolMoveCommand ??
+					(this._chooseToolMoveCommand = new RelayCommand(this.ChooseToolMoveCommandExecute));
 			}
 		}
-		private RelayCommand chooseToolMoveCommand;
+		private RelayCommand _chooseToolMoveCommand;
 
 		private void ChooseToolMoveCommandExecute()
 		{
@@ -487,11 +487,11 @@
 		{
 			get
 			{
-				return this.chooseToolSelectCommand ??
-					(this.chooseToolSelectCommand = new RelayCommand(this.ChooseToolSelectCommandExecute));
+				return this._chooseToolSelectCommand ??
+					(this._chooseToolSelectCommand = new RelayCommand(this.ChooseToolSelectCommandExecute));
 			}
 		}
-		private RelayCommand chooseToolSelectCommand;
+		private RelayCommand _chooseToolSelectCommand;
 
 		private void ChooseToolSelectCommandExecute()
 		{
@@ -509,11 +509,11 @@
 		{
 			get
 			{
-				return this.optionsCommand ??
-					(this.optionsCommand = new RelayCommand(this.OptionsCommandExecute, () => false));
+				return this._optionsCommand ??
+					(this._optionsCommand = new RelayCommand(this.OptionsCommandExecute, () => false));
 			}
 		}
-		private RelayCommand optionsCommand;
+		private RelayCommand _optionsCommand;
 
 		private void OptionsCommandExecute()
 		{
@@ -530,11 +530,11 @@
 		{
 			get
 			{
-				return this.aboutCommand ??
-					(this.aboutCommand = new RelayCommand(this.AboutCommandExecute));
+				return this._aboutCommand ??
+					(this._aboutCommand = new RelayCommand(this.AboutCommandExecute));
 			}
 		}
-		private RelayCommand aboutCommand;
+		private RelayCommand _aboutCommand;
 
 		private void AboutCommandExecute()
 		{
@@ -552,11 +552,11 @@
 		{
 			get
 			{
-				return this.garbageCollectCommand ??
-					(this.garbageCollectCommand = new RelayCommand(this.GarbageCollectCommandExecute));
+				return this._garbageCollectCommand ??
+					(this._garbageCollectCommand = new RelayCommand(this.GarbageCollectCommandExecute));
 			}
 		}
-		private RelayCommand garbageCollectCommand;
+		private RelayCommand _garbageCollectCommand;
 
 		private void GarbageCollectCommandExecute()
 		{
@@ -594,48 +594,48 @@
 		#region SourceOriginProvider
 		private IProvideSourceOrigin SourceOriginProvider
 		{
-			get { return this.sourceOriginProvider; }
+			get { return this._sourceOriginProvider; }
 			set
 			{
 				if (value == null)
 					throw new ArgumentNullException(nameof(value));
 
-				if (this.sourceOriginProvider != value)
+				if (this._sourceOriginProvider != value)
 				{
 					// Get the current provider's SourceOrigin
 					Point? previousSourceOrigin = null;
-					if (this.sourceOriginProvider != null)
-						previousSourceOrigin = this.sourceOriginProvider.SourceOrigin;
+					if (this._sourceOriginProvider != null)
+						previousSourceOrigin = this._sourceOriginProvider.SourceOrigin;
 
 					// Unsubscribe from property change events on the old value
-					if (this.sourceOriginProviderObserver != null)
+					if (this._sourceOriginProviderObserver != null)
 					{
-						this.sourceOriginProviderObserver.Unsubscribe();
-						this.sourceOriginProviderObserver = null;
+						this._sourceOriginProviderObserver.Unsubscribe();
+						this._sourceOriginProviderObserver = null;
 					}
 
 					// Save the new value
-					this.sourceOriginProvider = value;
+					this._sourceOriginProvider = value;
 
 					// Subscribe to property change events on the new value
-					if (this.sourceOriginProvider != null)
+					if (this._sourceOriginProvider != null)
 					{
-						this.sourceOriginProviderObserver = this.sourceOriginProvider.Subscribe(s => s.SourceOrigin, s =>
+						this._sourceOriginProviderObserver = this._sourceOriginProvider.Subscribe(nameof(_sourceOriginProvider.SourceOrigin), s =>
 						{
 							this.RefreshBitmaps();
 							this.UpdateSourceMousePosition();
-							this.RaisePropertyChanged(() => this.SourceOrigin);
+							this.PropertyChanged.Raise(this, nameof(this.SourceOrigin));
 						});
 					}
 
 					// Respond to a change in SourceOrigin, if any
-					if (previousSourceOrigin != this.sourceOriginProvider.SourceOrigin && this.sourceOriginProviderObserver != null)
-						this.sourceOriginProviderObserver.Refresh();
+					if (previousSourceOrigin != this._sourceOriginProvider.SourceOrigin && this._sourceOriginProviderObserver != null)
+						this._sourceOriginProviderObserver.Refresh();
 				}
 			}
 		}
-		private IProvideSourceOrigin sourceOriginProvider;
-		private IPropertyObserverItem sourceOriginProviderObserver;
+		private IProvideSourceOrigin _sourceOriginProvider;
+		private IPropertyObserverItem _sourceOriginProviderObserver;
 		#endregion SourceOriginProvider
 
 		#endregion Private Properties
@@ -649,10 +649,10 @@
 			this.UpdateSourceMousePosition();
 
 			// Indicate changed bitmaps
-			this.RaisePropertyChanged(nameof(ZoomedBitmap), nameof(SourceBitmap));
+			this.PropertyChanged.Raise(this, nameof(ZoomedBitmap), nameof(SourceBitmap));
 
 			// Reset the refresh timer if something else caused a refresh
-			if (!this.isInTimerRefresh)
+			if (!this._isInTimerRefresh)
 				this.ResetRefreshTimer();
 		}
 
@@ -662,26 +662,26 @@
 
 			if (this.ViewSettings.Model.IsAutoRefreshing)
 			{
-				if (this.refreshTimer == null)
+				if (this._refreshTimer == null)
 				{
-					this.refreshTimer = new DispatcherTimer(this.ViewSettings.AutoRefreshInterval,
-						DispatcherPriority.Render, this.refreshTimer_Tick, Dispatcher.CurrentDispatcher);
+					this._refreshTimer = new DispatcherTimer(this.ViewSettings.AutoRefreshInterval,
+						DispatcherPriority.Render, this.RefreshTimer_Tick, Dispatcher.CurrentDispatcher);
 				}
 				else
 				{
-					if (this.refreshTimer.Interval != this.ViewSettings.AutoRefreshInterval)
-						this.refreshTimer.Interval = this.ViewSettings.AutoRefreshInterval;
+					if (this._refreshTimer.Interval != this.ViewSettings.AutoRefreshInterval)
+						this._refreshTimer.Interval = this.ViewSettings.AutoRefreshInterval;
 				}
 
-				this.refreshTimer.Start();
+				this._refreshTimer.Start();
 			}
 			else
 			{
-				if (this.refreshTimer != null)
+				if (this._refreshTimer != null)
 				{
-					this.refreshTimer.Stop();
-					this.refreshTimer.Tick -= this.refreshTimer_Tick;
-					this.refreshTimer = null;
+					this._refreshTimer.Stop();
+					this._refreshTimer.Tick -= this.RefreshTimer_Tick;
+					this._refreshTimer = null;
 				}
 			}
 		}
@@ -716,16 +716,16 @@
 
 		#region Event Handlers
 
-		private void refreshTimer_Tick(object sender, EventArgs e)
+		private void RefreshTimer_Tick(object sender, EventArgs e)
 		{
-			this.isInTimerRefresh = true;
+			this._isInTimerRefresh = true;
 			try
 			{
 				this.RefreshBitmaps();
 			}
 			finally
 			{
-				this.isInTimerRefresh = false;
+				this._isInTimerRefresh = false;
 			}
 		}
 

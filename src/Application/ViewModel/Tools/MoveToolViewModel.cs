@@ -3,17 +3,17 @@
 	using System.Windows;
 	using System.Windows.Controls.Primitives;
 	using System.Windows.Input;
-	using PixelInspector.ComponentModel.Mvvm;
+	using Tasler.ComponentModel;
 
 	public class MoveToolViewModel
-		: ParentedObservableObject<MainViewModel>
+		: ChildViewModel<MainViewModel>
 		, IToolMode
 		, IProvideSourceOrigin
 	{
 		#region Instance Fields
-		private Point previousSourceOrigin;
-		private double lastHorizontalChange;
-		private double lastVerticalChange;
+		private Point _previousSourceOrigin;
+		private double _lastHorizontalChange;
+		private double _lastVerticalChange;
 		#endregion Instance Fields
 
 		#region Constructors
@@ -27,21 +27,21 @@
 
 		public Point SourceOrigin
 		{
-			get { return this.sourceOrigin; }
-			private set { this.SetProperty(ref this.sourceOrigin, value, "SourceOrigin"); }
+			get { return this._sourceOrigin; }
+			private set { this.PropertyChanged.SetProperty(this, value, ref this._sourceOrigin); }
 		}
-		private Point sourceOrigin;
+		private Point _sourceOrigin;
 
 		public Point SourceOriginActual
 		{
-			get { return this.sourceOriginActual; }
+			get { return this._sourceOriginActual; }
 			set
 			{
-				if (this.SetProperty(ref this.sourceOriginActual, value, "SourceOriginActual"))
+				if (this.PropertyChanged.SetProperty(this, value, ref this._sourceOriginActual))
 					this.SourceOrigin = new Point((int)value.X, (int)value.Y);
 			}
 		}
-		private Point sourceOriginActual;
+		private Point _sourceOriginActual;
 
 		#endregion Properties
 
@@ -52,15 +52,15 @@
 		{
 			get
 			{
-				return this.dragStartedCommand ??
-					(this.dragStartedCommand = new RelayCommand<DragStartedEventArgs>(this.DragStarted));
+				return this._dragStartedCommand ??
+					(this._dragStartedCommand = new RelayCommand<DragStartedEventArgs>(this.DragStarted));
 			}
 		}
-		private RelayCommand<DragStartedEventArgs> dragStartedCommand;
+		private RelayCommand<DragStartedEventArgs> _dragStartedCommand;
 
 		private void DragStarted(DragStartedEventArgs e)
 		{
-			this.lastHorizontalChange = this.lastVerticalChange = 0;
+			this._lastHorizontalChange = this._lastVerticalChange = 0;
 			e.Handled = true;
 		}
 		#endregion DragStartedCommand
@@ -70,18 +70,18 @@
 		{
 			get
 			{
-				return this.dragDeltaCommand ??
-					(this.dragDeltaCommand = new RelayCommand<DragDeltaEventArgs>(this.DragDelta));
+				return this._dragDeltaCommand ??
+					(this._dragDeltaCommand = new RelayCommand<DragDeltaEventArgs>(this.DragDelta));
 			}
 		}
-		private RelayCommand<DragDeltaEventArgs> dragDeltaCommand;
+		private RelayCommand<DragDeltaEventArgs> _dragDeltaCommand;
 
 		private void DragDelta(DragDeltaEventArgs e)
 		{
-			var horizontalChange = e.HorizontalChange - this.lastHorizontalChange;
-			var verticalChange = e.VerticalChange - this.lastVerticalChange;
-			this.lastHorizontalChange = e.HorizontalChange;
-			this.lastVerticalChange = e.VerticalChange;
+			var horizontalChange = e.HorizontalChange - this._lastHorizontalChange;
+			var verticalChange = e.VerticalChange - this._lastVerticalChange;
+			this._lastHorizontalChange = e.HorizontalChange;
+			this._lastVerticalChange = e.VerticalChange;
 
 			var sourceOrigin = this.SourceOriginActual;
 			var zoomFactor = this.Parent.ViewSettings.Model.ZoomFactor;
@@ -100,11 +100,11 @@
 		{
 			get
 			{
-				return this.dragCompletedCommand ??
-					(this.dragCompletedCommand = new RelayCommand<DragCompletedEventArgs>(this.DragCompleted));
+				return this._dragCompletedCommand ??
+					(this._dragCompletedCommand = new RelayCommand<DragCompletedEventArgs>(this.DragCompleted));
 			}
 		}
-		private RelayCommand<DragCompletedEventArgs> dragCompletedCommand;
+		private RelayCommand<DragCompletedEventArgs> _dragCompletedCommand;
 
 		private void DragCompleted(DragCompletedEventArgs e)
 		{
@@ -122,7 +122,7 @@
 		/// </summary>
 		public void EnterMode()
 		{
-			this.previousSourceOrigin = this.SourceOriginActual = this.Parent.ViewSettings.Model.SourceOrigin;
+			this._previousSourceOrigin = this.SourceOriginActual = this.Parent.ViewSettings.Model.SourceOrigin;
 		}
 
 		/// <summary>
@@ -134,7 +134,7 @@
 		{
 			if (isReverting)
 			{
-				this.SourceOriginActual = this.previousSourceOrigin;
+				this.SourceOriginActual = this._previousSourceOrigin;
 
 				// TODO: Restore previous bitmap images
 			}

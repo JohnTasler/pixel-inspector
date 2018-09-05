@@ -3,9 +3,9 @@
 	using System.ComponentModel;
 	using System.Windows;
 	using System.Xml.Serialization;
-	using PixelInspector.ComponentModel.Mvvm;
+	using Tasler.ComponentModel;
 
-	public class ViewSettingsModel : ObservableObject
+	public class ViewSettingsModel : ViewModel
 	{
 		#region Constants
 		private const double defaultAutoRefreshIntervalMilliseconds = 200;
@@ -23,66 +23,66 @@
 		[XmlAttribute]
 		public double AutoRefreshMilliseconds
 		{
-			get { return this.autoRefreshMilliseconds; }
-			set { this.SetProperty(ref this.autoRefreshMilliseconds, value, nameof(this.AutoRefreshMilliseconds)); }
+			get { return _autoRefreshMilliseconds; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _autoRefreshMilliseconds, nameof(this.AutoRefreshMilliseconds)); }
 		}
-		private double autoRefreshMilliseconds = defaultAutoRefreshIntervalMilliseconds;
+		private double _autoRefreshMilliseconds = defaultAutoRefreshIntervalMilliseconds;
 
 		[XmlAttribute]
 		public ColorValueDisplayFormat ColorValueDisplayFormat
 		{
-			get { return this.colorValueDisplayFormat; }
-			set { this.SetProperty(ref this.colorValueDisplayFormat, value, nameof(this.ColorValueDisplayFormat)); }
+			get { return _colorValueDisplayFormat; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _colorValueDisplayFormat, nameof(this.ColorValueDisplayFormat)); }
 		}
-		private ColorValueDisplayFormat colorValueDisplayFormat = ColorValueDisplayFormat.Hex;
+		private ColorValueDisplayFormat _colorValueDisplayFormat = ColorValueDisplayFormat.Hex;
 
 		[XmlAttribute]
 		public bool IsAlwaysOnTop
 		{
-			get { return this.isAlwaysOnTop; }
-			set { this.SetProperty(ref this.isAlwaysOnTop, value, nameof(this.IsAlwaysOnTop)); }
+			get { return _isAlwaysOnTop; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _isAlwaysOnTop, nameof(this.IsAlwaysOnTop)); }
 		}
-		private bool isAlwaysOnTop;
+		private bool _isAlwaysOnTop;
 
 		[XmlAttribute]
 		public bool IsAutoRefreshing
 		{
-			get { return this.isAutoRefreshing; }
-			set { this.SetProperty(ref this.isAutoRefreshing, value, nameof(this.IsAutoRefreshing)); }
+			get { return _isAutoRefreshing; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _isAutoRefreshing, nameof(this.IsAutoRefreshing)); }
 		}
-		private bool isAutoRefreshing = true;
+		private bool _isAutoRefreshing = true;
 
 		[XmlAttribute]
 		public bool IsGridVisibleWhenZoomed
 		{
-			get { return this.isGridVisibleWhenZoomed; }
-			set { this.SetProperty(ref this.isGridVisibleWhenZoomed, value, nameof(this.IsGridVisibleWhenZoomed)); }
+			get { return _isGridVisibleWhenZoomed; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _isGridVisibleWhenZoomed, nameof(this.IsGridVisibleWhenZoomed)); }
 		}
-		private bool isGridVisibleWhenZoomed = true;
+		private bool _isGridVisibleWhenZoomed = true;
 
 		[XmlAttribute]
 		public bool IsMenuAlwaysVisible
 		{
-			get { return this.isMenuAlwaysVisible; }
-			set { this.SetProperty(ref this.isMenuAlwaysVisible, value, nameof(this.IsMenuAlwaysVisible)); }
+			get { return _isMenuAlwaysVisible; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _isMenuAlwaysVisible, nameof(this.IsMenuAlwaysVisible)); }
 		}
-		private bool isMenuAlwaysVisible = true;
+		private bool _isMenuAlwaysVisible = true;
 
 		[XmlAttribute]
 		public bool IsStatusBarVisible
 		{
-			get { return this.isStatusBarVisible; }
-			set { this.SetProperty(ref this.isStatusBarVisible, value, nameof(this.IsStatusBarVisible)); }
+			get { return _isStatusBarVisible; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _isStatusBarVisible, nameof(this.IsStatusBarVisible)); }
 		}
-		private bool isStatusBarVisible = true;
+		private bool _isStatusBarVisible = true;
 
 		[XmlIgnore]
 		public Size RenderSize
 		{
-			get { return this.renderSize; }
-			set { this.SetProperty(ref this.renderSize, value, nameof(this.SourceSize), nameof(this.RenderSize)); }
+			get { return _renderSize; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _renderSize, nameof(this.SourceSize), nameof(this.RenderSize)); }
 		}
-		private Size renderSize;
+		private Size _renderSize;
 
 		[XmlAttribute]
 		public double SourceX
@@ -101,17 +101,17 @@
 		[XmlIgnore]
 		public Point SourceOrigin
 		{
-			get { return this.sourceOrigin; }
-			set { this.SetProperty(ref this.sourceOrigin, value, nameof(this.SourceOrigin)); }
+			get { return _sourceOrigin; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _sourceOrigin, nameof(this.SourceOrigin)); }
 		}
-		private Point sourceOrigin = new Point(0, 0);
+		private Point _sourceOrigin = new Point(0, 0);
 
 		public Size SourceSize
 		{
 			get
 			{
-				var cx = (int)(this.renderSize.Width / this.ZoomFactor) + 1;
-				var cy = (int)(this.renderSize.Height / this.ZoomFactor) + 1;
+				var cx = (int)(_renderSize.Width / this.ZoomFactor) + 1;
+				var cy = (int)(_renderSize.Height / this.ZoomFactor) + 1;
 				return new Size(cx, cy);
 			}
 		}
@@ -119,38 +119,38 @@
 		[XmlElement]
 		public WindowPlacementModel WindowPlacement
 		{
-			get { return this.windowPlacement; }
+			get { return _windowPlacement; }
 			set
 			{
-				if (this.windowPlacement != value)
+				if (_windowPlacement != value)
 				{
-					if (this.windowPlacement != null)
-						this.windowPlacement.PropertyChanged -= this.WindowPlacement_PropertyChanged;
+					if (_windowPlacement != null)
+						((INotifyPropertyChanged)_windowPlacement).PropertyChanged -= this.WindowPlacement_PropertyChanged;
 
-					this.windowPlacement = value;
+					_windowPlacement = value;
 
-					if (this.windowPlacement != null)
-						this.windowPlacement.PropertyChanged += this.WindowPlacement_PropertyChanged;
+					if (_windowPlacement != null)
+						((INotifyPropertyChanged)_windowPlacement).PropertyChanged += this.WindowPlacement_PropertyChanged;
 
 					this.WindowPlacement_PropertyChanged(this, new PropertyChangedEventArgs(nameof(this.WindowPlacement)));
 				}
 			}
 		}
-		private WindowPlacementModel windowPlacement;
+		private WindowPlacementModel _windowPlacement;
 
 		[XmlAttribute]
 		public double ZoomFactor
 		{
-			get { return this.zoomFactor; }
-			set { this.SetProperty(ref this.zoomFactor, value, nameof(this.ZoomFactor)); }
+			get { return _zoomFactor; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _zoomFactor, nameof(this.ZoomFactor)); }
 		}
-		private double zoomFactor = defaultZoomFactor;
+		private double _zoomFactor = defaultZoomFactor;
 		#endregion Properties
 
 		#region Event Handlers
 		private void WindowPlacement_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			this.RaisePropertyChanged(nameof(this.WindowPlacement));
+			this.PropertyChanged.Raise(this, nameof(this.WindowPlacement));
 		}
 		#endregion Event Handlers
 	}
