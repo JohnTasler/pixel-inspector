@@ -39,7 +39,7 @@
 
 				if (oldSize != this.Size)
 				{
-					this._bitmapSource = null;
+					_bitmapSource = null;
 					this.InvalidateBitmapSource();
 					this.PropertyChanged.Raise(this, nameof(this.Size));
 				}
@@ -50,7 +50,7 @@
 		{
 			get
 			{
-				if (this._bitmapSource == null)
+				if (_bitmapSource == null)
 				{
 					//this.bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
 					//  this.Model.Bitmap.Handle, IntPtr.Zero, Int32Rect.Empty, null);
@@ -58,12 +58,12 @@
 					int cx, cy;
 					this.Model.GetSize(out cx, out cy);
 
-					this._bitmapSource = Imaging.CreateBitmapSourceFromMemorySection(
+					_bitmapSource = Imaging.CreateBitmapSourceFromMemorySection(
 						this.Model.Section.SafeMemoryMappedFileHandle.DangerousGetHandle(),
 						cx, cy, PixelFormats.Bgr24, BitmapModel.GetStride(cx), 0);
 				}
 
-				return this._bitmapSource;
+				return _bitmapSource;
 			}
 		}
 		private BitmapSource _bitmapSource;
@@ -102,8 +102,8 @@
 
 		internal void InvalidateBitmapSource()
 		{
-			if (this._bitmapSource != null)
-				((InteropBitmap)this._bitmapSource).Invalidate();
+			if (_bitmapSource != null)
+				((InteropBitmap)_bitmapSource).Invalidate();
 			GC.Collect();
 
 			//if (this.bitmapSource != null)

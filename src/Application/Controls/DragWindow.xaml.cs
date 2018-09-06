@@ -7,7 +7,7 @@
 	using System.Windows.Interop;
 	using System.Windows.Media;
 	using PixelInspector.Interop.Gdi;
-	using PixelInspector.Utility;
+	using Tasler.Windows;
 
 	/// <summary>
 	/// Interaction logic for DragWindow.xaml
@@ -15,20 +15,20 @@
 	public partial class DragWindow : Window
 	{
 		#region Instance Fields
-		private readonly FrameworkElement ownerElement;
-		private readonly bool isFromMouseClick;
-		private readonly Rect innerRect;
-		private HwndSource hwndSource;
-		private Thickness outerContentThickness;
+		private readonly FrameworkElement _ownerElement;
+		private readonly bool _isFromMouseClick;
+		private readonly Rect _innerRect;
+		private HwndSource _hwndSource;
+		private Thickness _outerContentThickness;
 		#endregion Instance Fields
 
 		#region Constructors
 		public DragWindow(FrameworkElement ownerElement, Rect innerRect, bool isFromMouseClick, Cursor cursor)
 		{
-			this.ownerElement = ownerElement;
+			_ownerElement = ownerElement;
 			this.DataContext = ownerElement.DataContext;
-			this.innerRect = innerRect;
-			this.isFromMouseClick = isFromMouseClick;
+			_innerRect = innerRect;
+			_isFromMouseClick = isFromMouseClick;
 			this.Cursor = cursor;
 
 			// Set common window properties // TODO: Move to default style???
@@ -50,18 +50,17 @@
 			//    throw new InvalidOperationException(SR.Get("DragMoveFail"));
 			//}
 
-			this.Owner = Window.GetWindow(this.ownerElement);
+			this.Owner = Window.GetWindow(_ownerElement);
 			if (this.Owner == null)
 				throw new InvalidOperationException("The specified ownerElement is not yet hosted within a Window.");
 
 			if (this.Owner.WindowState == WindowState.Normal)
 			{
 				// Hook the message proc of the ownerElement's window
-				var hwndSourceElement = HwndSource.FromVisual(this.Owner) as HwndSource;
-				if (hwndSourceElement != null)
+				if (HwndSource.FromVisual(this.Owner) is HwndSource hwndSourceElement)
 				{
 					hwndSourceElement.AddHook(this.MessageHook_ForOwner);
-					if (this.isFromMouseClick)
+					if (_isFromMouseClick)
 						SendMessage(hwndSourceElement.Handle, WM_LBUTTONUP, IntPtr.Zero, IntPtr.Zero);
 					Mouse.SetCursor(this.Cursor);
 				}
@@ -90,15 +89,15 @@
 		/// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
 		protected override void OnSourceInitialized(EventArgs e)
 		{
-			if (this.hwndSource != null)
-				this.hwndSource.RemoveHook(this.MessageHook);
+			if (_hwndSource != null)
+				_hwndSource.RemoveHook(this.MessageHook);
 
 			base.OnSourceInitialized(e);
 
-			this.hwndSource = HwndSource.FromVisual(this) as HwndSource;
-			if (this.hwndSource != null)
+			_hwndSource = HwndSource.FromVisual(this) as HwndSource;
+			if (_hwndSource != null)
 			{
-				this.hwndSource.AddHook(this.MessageHook);
+				_hwndSource.AddHook(this.MessageHook);
 				this.Dispatcher.BeginInvoke(new Action(this.EnterMoveMode));
 			}
 		}
@@ -122,7 +121,7 @@
 			}
 
 			// Set the property
-			this.InnerContentRect = rect.Deflate(this.outerContentThickness);
+			this.InnerContentRect = rect.Deflate(_outerContentThickness);
 
 			// Perform default processing
 			base.OnLocationChanged(e);
@@ -134,8 +133,7 @@
 		/// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
 		protected override void OnClosed(EventArgs e)
 		{
-			var hwndSourceElement = HwndSource.FromVisual(this.ownerElement) as HwndSource;
-			if (hwndSourceElement != null)
+			if (HwndSource.FromVisual(_ownerElement) is HwndSource hwndSourceElement)
 				hwndSourceElement.RemoveHook(this.MessageHook_ForOwner);
 
 			base.OnClosed(e);
@@ -145,8 +143,8 @@
 		#region Private Implementation
 		private void EnterMoveMode()
 		{
-			int sysCommand = this.isFromMouseClick ? SC_MOVE_CAPTION : SC_MOVE;
-			SendMessage(this.hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)sysCommand, IntPtr.Zero);
+			int sysCommand = _isFromMouseClick ? SC_MOVE_CAPTION : SC_MOVE;
+			SendMessage(_hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)sysCommand, IntPtr.Zero);
 		}
 
 		private void ExitMoveMode()
@@ -207,13 +205,13 @@
 			var bottomRight = this.PART_InnerContent.TranslatePoint(
 				new Point(this.PART_InnerContent.ActualWidth, this.PART_InnerContent.ActualHeight), this);
 
-			this.outerContentThickness = new Thickness(
+			_outerContentThickness = new Thickness(
 				topLeft.X, topLeft.Y, this.ActualWidth - bottomRight.X, this.ActualHeight - bottomRight.Y);
 
-			var outerRect = this.innerRect.Inflate(this.outerContentThickness);
+			var outerRect = _innerRect.Inflate(_outerContentThickness);
 
 			// Compute the window's position and size based on the specified rectangle
-			var screenPoint = this.ownerElement.PointToScreen(outerRect.TopLeft);
+			var screenPoint = _ownerElement.PointToScreen(outerRect.TopLeft);
 
 			// Account for DPI
 			if (GdiApi.DpiScaleX != 1.0 || GdiApi.DpiScaleY != 1.0)

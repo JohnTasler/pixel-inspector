@@ -2,23 +2,23 @@
 {
 	using System;
 	using System.Configuration;
+	using Tasler;
 
 	public static partial class ApplicationSettingsExtensions
 	{
-		private static readonly object autoSaveHelperKey = typeof(AutoSaveHelper);
+		private static readonly object _autoSaveHelperKey = typeof(AutoSaveHelper);
 
 		public static void SetAutoSaveDeferral(this ApplicationSettingsBase settings, TimeSpan deferralTimeSpan)
 		{
-			if (settings == null)
-				throw new ArgumentNullException("settings");
+			ValidateArgument.IsNotNull(settings, nameof(settings));
 			if (deferralTimeSpan < TimeSpan.Zero)
-				throw new ArgumentOutOfRangeException("deferralTimeSpan");
+				throw new ArgumentOutOfRangeException(nameof(deferralTimeSpan));
 
 			var helper = GetAutoSaveHelper(settings);
 			if (helper == null)
 			{
 				helper = new AutoSaveHelper(settings, deferralTimeSpan);
-				settings.Context[autoSaveHelperKey] = helper;
+				settings.Context[_autoSaveHelperKey] = helper;
 			}
 			else
 			{
@@ -42,7 +42,7 @@
 			if (helper != null)
 			{
 				using (helper)
-					settings.Context.Remove(autoSaveHelperKey);
+					settings.Context.Remove(_autoSaveHelperKey);
 			}
 			else
 			{
@@ -53,7 +53,7 @@
 
 		private static AutoSaveHelper GetAutoSaveHelper(ApplicationSettingsBase settings)
 		{
-			return settings.Context.ContainsKey(autoSaveHelperKey) ? settings.Context[autoSaveHelperKey] as AutoSaveHelper : null;
+			return settings.Context.ContainsKey(_autoSaveHelperKey) ? settings.Context[_autoSaveHelperKey] as AutoSaveHelper : null;
 		}
 	}
 }

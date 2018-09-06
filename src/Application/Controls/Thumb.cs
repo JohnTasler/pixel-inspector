@@ -9,8 +9,8 @@ namespace PixelInspector.Controls
 	public class Thumb : System.Windows.Controls.Primitives.Thumb
 	{
 		#region Instance Fields
-		private bool wasFocusable;
-		private IInputElement previouslyFocusedElement;
+		private bool _wasFocusable;
+		private IInputElement _previouslyFocusedElement;
 		#endregion Instance Fields
 
 		#region Constructors
@@ -27,8 +27,8 @@ namespace PixelInspector.Controls
 		/// </summary>
 		public Thumb()
 		{
-			this.DragStarted += this.this_DragStarted;
-			this.DragCompleted += this.this_DragCompleted;
+			this.DragStarted += this.Thumb_DragStarted;
+			this.DragCompleted += this.Thumb_DragCompleted;
 		}
 		#endregion Constructors
 
@@ -46,7 +46,7 @@ namespace PixelInspector.Controls
 				this.CancelDrag();
 				e.Handled = true;
 			}
-		
+
 			base.OnKeyDown(e);
 		}
 
@@ -73,24 +73,24 @@ namespace PixelInspector.Controls
 
 		#region Event Handlers
 
-		private void this_DragStarted(object sender, DragStartedEventArgs e)
+		private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
 		{
 			// Save the element with keyboard focus
-			this.previouslyFocusedElement = Keyboard.FocusedElement;
+			_previouslyFocusedElement = Keyboard.FocusedElement;
 
 			// Set the keyboard focus to the thumb
-			this.wasFocusable = this.Focusable;
+			_wasFocusable = this.Focusable;
 			this.Focusable = true;
 			this.Focus();
 		}
 
-		private void this_DragCompleted(object sender, DragCompletedEventArgs e)
+		private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
 		{
-			this.Focusable = this.wasFocusable;
+			this.Focusable = _wasFocusable;
 
 			// Restore keyboard focus to the previous element
-			if (this.previouslyFocusedElement != null)
-				this.previouslyFocusedElement.Focus();
+			if (_previouslyFocusedElement != null)
+				_previouslyFocusedElement.Focus();
 		}
 
 		#endregion Event Handlers

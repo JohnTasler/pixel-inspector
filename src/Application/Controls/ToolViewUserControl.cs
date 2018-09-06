@@ -20,12 +20,12 @@
 			this.IsTabStop = true;
 			this.Focusable = true;
 			this.FocusVisualStyle = null;
-			this.Loaded += this.this_Loaded;
+			this.Loaded += this.UserControl_Loaded;
 		}
 		#endregion Constructors
 
 		#region Event Handlers
-		private void this_Loaded(object sender, RoutedEventArgs e)
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
 		{
 			var focusScope = FocusManager.GetFocusScope(this);
 			FocusManager.SetFocusedElement(focusScope, this);

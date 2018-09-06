@@ -1,7 +1,7 @@
 ﻿namespace PixelInspector.ViewModel
 {
 	using System.Windows;
-	using PixelInspector.Utility;
+	using Tasler;
 	using Tasler.ComponentModel;
 
 	public class LocatingToolViewModel
@@ -34,8 +34,8 @@
 
 		public Point SourceOrigin
 		{
-			get { return this._sourceOrigin; }
-			set { this.PropertyChanged.SetProperty(this, value, ref this._sourceOrigin); }
+			get { return _sourceOrigin; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _sourceOrigin); }
 		}
 		private Point _sourceOrigin;
 
@@ -48,8 +48,8 @@
 		/// </summary>
 		public void EnterMode()
 		{
-			this._sourceOrigin = this.Parent.ViewSettings.Model.SourceOrigin;
-			this._previousToolState = this.Parent.ToolState;
+			_sourceOrigin = this.Parent.ViewSettings.Model.SourceOrigin;
+			_previousToolState = this.Parent.ToolState;
 		}
 
 		/// <summary>
@@ -59,7 +59,7 @@
 		/// otherwise, it should commit its changes.</param>
 		public void ExitMode(bool isReverting)
 		{
-			if (this._isExiting)
+			if (_isExiting)
 				return;
 
 			if (isReverting)
@@ -71,8 +71,8 @@
 				this.Parent.ViewSettings.Model.SourceOrigin = this.SourceOrigin;
 			}
 
-			using (new DisposeActionScope(() => this._isExiting = true, () => this._isExiting = false))
-				this.Parent.ToolState = this._previousToolState;
+			using (new DisposeScopeExit(() => _isExiting = true, () => _isExiting = false))
+				this.Parent.ToolState = _previousToolState;
 		}
 
 		#endregion IToolMode Members

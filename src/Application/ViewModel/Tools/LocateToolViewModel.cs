@@ -26,7 +26,7 @@
 		/// </summary>
 		public void EnterMode()
 		{
-			this._previousToolState = this.Parent.ToolState;
+			_previousToolState = this.Parent.ToolState;
 		}
 
 		/// <summary>
@@ -36,11 +36,11 @@
 		/// otherwise, it should commit its changes.</param>
 		public void ExitMode(bool isReverting)
 		{
-			if (this._isExiting)
+			if (_isExiting)
 				return;
 
-			using (new DisposeScopeExit(() => this._isExiting = true, () => this._isExiting = false))
-				this.Parent.ToolState = this._previousToolState;
+			using (new DisposeScopeExit(() => _isExiting = true, () => _isExiting = false))
+				this.Parent.ToolState = _previousToolState;
 		}
 
 		#endregion IToolMode Members

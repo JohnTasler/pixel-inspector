@@ -5,8 +5,8 @@
 	using System.Windows.Controls.Primitives;
 	using System.Windows.Input;
 	using PixelInspector.Interop.User;
-	using PixelInspector.Utility;
 	using Tasler.ComponentModel;
+	using Tasler.Windows;
 
 	public class SelectToolViewModel
 		: ChildViewModel<MainViewModel>
@@ -33,8 +33,8 @@
 		{
 			get
 			{
-				return this._dragStartedCommand ??
-					(this._dragStartedCommand = new RelayCommand<DragStartedEventArgs>(this.DragStarted));
+				return _dragStartedCommand ??
+					(_dragStartedCommand = new RelayCommand<DragStartedEventArgs>(this.DragStarted));
 			}
 		}
 		private RelayCommand<DragStartedEventArgs> _dragStartedCommand;
@@ -42,15 +42,15 @@
 		private void DragStarted(DragStartedEventArgs e)
 		{
 			// Get the point where the mouse was clicked
-			this._dragStart = this.Parent.ZoomedMousePosition;
+			_dragStart = this.Parent.ZoomedMousePosition;
 
 			// Get the drag rect
-			this._dragRect = new Rect(this._dragStart.X, this._dragStart.Y, 0, 0);
-			this._dragRect.Inflate(
+			_dragRect = new Rect(_dragStart.X, _dragStart.Y, 0, 0);
+			_dragRect.Inflate(
 				Math.Abs(UserApi.GetSystemMetrics(SM.CxDrag)),
 				Math.Abs(UserApi.GetSystemMetrics(SM.CyDrag)));
 
-			this._lastHorizontalChange = this._lastVerticalChange = 0;
+			_lastHorizontalChange = _lastVerticalChange = 0;
 			this.Parent.Selection.UpdateZoomedRectangleActualFromInput(null);
 			e.Handled = true;
 		}
@@ -61,8 +61,8 @@
 		{
 			get
 			{
-				return this._dragDeltaCommand ??
-					(this._dragDeltaCommand = new RelayCommand<DragDeltaEventArgs>(this.DragDelta));
+				return _dragDeltaCommand ??
+					(_dragDeltaCommand = new RelayCommand<DragDeltaEventArgs>(this.DragDelta));
 			}
 		}
 		private RelayCommand<DragDeltaEventArgs> _dragDeltaCommand;
@@ -70,19 +70,19 @@
 		private void DragDelta(DragDeltaEventArgs e)
 		{
 			// Calculate the change
-			var horizontalChange = e.HorizontalChange - this._lastHorizontalChange;
-			var verticalChange = e.VerticalChange - this._lastVerticalChange;
-			this._lastHorizontalChange = e.HorizontalChange;
-			this._lastVerticalChange = e.VerticalChange;
+			var horizontalChange = e.HorizontalChange - _lastHorizontalChange;
+			var verticalChange = e.VerticalChange - _lastVerticalChange;
+			_lastHorizontalChange = e.HorizontalChange;
+			_lastVerticalChange = e.VerticalChange;
 
 			// Check to see if the mosue has moved outside of the drag rect
-			if (!this._dragRect.IsEmpty && this._dragRect.Contains(this.Parent.ZoomedMousePosition))
-				this._dragRect = Rect.Empty;
+			if (!_dragRect.IsEmpty && _dragRect.Contains(this.Parent.ZoomedMousePosition))
+				_dragRect = Rect.Empty;
 
 			// Only process if the mouse has moved outside of the drag rect
-			if (this._dragRect.IsEmpty)
+			if (_dragRect.IsEmpty)
 			{
-				var rect = new ExtentRect(this._dragStart, this.Parent.ZoomedMousePosition);
+				var rect = new ExtentRect(_dragStart, this.Parent.ZoomedMousePosition);
 				this.Parent.Selection.UpdateZoomedRectangleActualFromInput(rect);
 			}
 
@@ -95,8 +95,8 @@
 		{
 			get
 			{
-				return this._dragCompletedCommand ??
-					(this._dragCompletedCommand = new RelayCommand<DragCompletedEventArgs>(this.DragCompleted));
+				return _dragCompletedCommand ??
+					(_dragCompletedCommand = new RelayCommand<DragCompletedEventArgs>(this.DragCompleted));
 			}
 		}
 		private RelayCommand<DragCompletedEventArgs> _dragCompletedCommand;

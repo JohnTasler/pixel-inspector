@@ -12,7 +12,7 @@
 	/// </summary>
 	public partial class App : Application
 	{
-		private MainViewModel mainViewModel;
+		private MainViewModel _mainViewModel;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="App"/> class.
@@ -25,11 +25,11 @@
 		{
 			this.InitializeComponent();
 
-			this.mainViewModel = new MainViewModel();
-			((INotifyPropertyChanged)this.mainViewModel).PropertyChanged += this.mainViewModel_PropertyChanged;
+			_mainViewModel = new MainViewModel();
+			((INotifyPropertyChanged)_mainViewModel).PropertyChanged += this.mainViewModel_PropertyChanged;
 
 			this.MainWindow = new MainView();
-			this.MainWindow.DataContext = mainViewModel;
+			this.MainWindow.DataContext = _mainViewModel;
 			this.MainWindow.Show();
 		}
 
@@ -51,7 +51,7 @@
 			switch (e.PropertyName)
 			{
 				case "ApplicationState":
-					if (this.mainViewModel.ApplicationState is ApplicationStateUnloading)
+					if (_mainViewModel.ApplicationState is ApplicationStateUnloading)
 						this.MainWindow.Close();
 					break;
 			}

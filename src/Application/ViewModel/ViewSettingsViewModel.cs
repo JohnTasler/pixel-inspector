@@ -16,11 +16,11 @@
 		public ViewSettingsViewModel(MainViewModel parent, ViewSettingsModel model)
 			: base(parent)
 		{
-			this._model = model;
+			_model = model;
 
 			// Subscribe to model property changes and reflect as our own
-			this._model.Subscribe(nameof(model.AutoRefreshMilliseconds), s => this.PropertyChanged.Raise(this, nameof(this.AutoRefreshInterval)));
-			this._model.Subscribe(nameof(model.SourceOrigin           ), s => this.PropertyChanged.Raise(this, nameof(this.SourceOrigin)));
+			_model.Subscribe(nameof(model.AutoRefreshMilliseconds), s => this.PropertyChanged.Raise(this, nameof(this.AutoRefreshInterval)));
+			_model.Subscribe(nameof(model.SourceOrigin           ), s => this.PropertyChanged.Raise(this, nameof(this.SourceOrigin)));
 		}
 		#endregion Constructors
 
@@ -28,8 +28,8 @@
 
 		public ViewSettingsModel Model
 		{
-			get { return this._model; }
-			set { this.PropertyChanged.SetProperty(this, value, ref this._model, nameof(Model)); }
+			get { return _model; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _model, nameof(Model)); }
 		}
 		private ViewSettingsModel _model;
 
@@ -171,8 +171,8 @@
 		{
 			get
 			{
-				return this._setColorValueDisplayFormatCommand ??
-					(this._setColorValueDisplayFormatCommand =
+				return _setColorValueDisplayFormatCommand ??
+					(_setColorValueDisplayFormatCommand =
 						new RelayCommand<ColorValueDisplayFormat?>(
 							this.SetColorValueDisplayFormatCommandExecute,
 							this.SetColorValueDisplayFormatCommandCanExecute));

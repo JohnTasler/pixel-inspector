@@ -27,17 +27,17 @@
 
 		public Point SourceOrigin
 		{
-			get { return this._sourceOrigin; }
-			private set { this.PropertyChanged.SetProperty(this, value, ref this._sourceOrigin); }
+			get { return _sourceOrigin; }
+			private set { this.PropertyChanged.SetProperty(this, value, ref _sourceOrigin); }
 		}
 		private Point _sourceOrigin;
 
 		public Point SourceOriginActual
 		{
-			get { return this._sourceOriginActual; }
+			get { return _sourceOriginActual; }
 			set
 			{
-				if (this.PropertyChanged.SetProperty(this, value, ref this._sourceOriginActual))
+				if (this.PropertyChanged.SetProperty(this, value, ref _sourceOriginActual))
 					this.SourceOrigin = new Point((int)value.X, (int)value.Y);
 			}
 		}
@@ -52,15 +52,15 @@
 		{
 			get
 			{
-				return this._dragStartedCommand ??
-					(this._dragStartedCommand = new RelayCommand<DragStartedEventArgs>(this.DragStarted));
+				return _dragStartedCommand ??
+					(_dragStartedCommand = new RelayCommand<DragStartedEventArgs>(this.DragStarted));
 			}
 		}
 		private RelayCommand<DragStartedEventArgs> _dragStartedCommand;
 
 		private void DragStarted(DragStartedEventArgs e)
 		{
-			this._lastHorizontalChange = this._lastVerticalChange = 0;
+			_lastHorizontalChange = _lastVerticalChange = 0;
 			e.Handled = true;
 		}
 		#endregion DragStartedCommand
@@ -70,18 +70,18 @@
 		{
 			get
 			{
-				return this._dragDeltaCommand ??
-					(this._dragDeltaCommand = new RelayCommand<DragDeltaEventArgs>(this.DragDelta));
+				return _dragDeltaCommand ??
+					(_dragDeltaCommand = new RelayCommand<DragDeltaEventArgs>(this.DragDelta));
 			}
 		}
 		private RelayCommand<DragDeltaEventArgs> _dragDeltaCommand;
 
 		private void DragDelta(DragDeltaEventArgs e)
 		{
-			var horizontalChange = e.HorizontalChange - this._lastHorizontalChange;
-			var verticalChange = e.VerticalChange - this._lastVerticalChange;
-			this._lastHorizontalChange = e.HorizontalChange;
-			this._lastVerticalChange = e.VerticalChange;
+			var horizontalChange = e.HorizontalChange - _lastHorizontalChange;
+			var verticalChange = e.VerticalChange - _lastVerticalChange;
+			_lastHorizontalChange = e.HorizontalChange;
+			_lastVerticalChange = e.VerticalChange;
 
 			var sourceOrigin = this.SourceOriginActual;
 			var zoomFactor = this.Parent.ViewSettings.Model.ZoomFactor;
@@ -100,8 +100,8 @@
 		{
 			get
 			{
-				return this._dragCompletedCommand ??
-					(this._dragCompletedCommand = new RelayCommand<DragCompletedEventArgs>(this.DragCompleted));
+				return _dragCompletedCommand ??
+					(_dragCompletedCommand = new RelayCommand<DragCompletedEventArgs>(this.DragCompleted));
 			}
 		}
 		private RelayCommand<DragCompletedEventArgs> _dragCompletedCommand;
@@ -122,7 +122,7 @@
 		/// </summary>
 		public void EnterMode()
 		{
-			this._previousSourceOrigin = this.SourceOriginActual = this.Parent.ViewSettings.Model.SourceOrigin;
+			_previousSourceOrigin = this.SourceOriginActual = this.Parent.ViewSettings.Model.SourceOrigin;
 		}
 
 		/// <summary>
@@ -134,7 +134,7 @@
 		{
 			if (isReverting)
 			{
-				this.SourceOriginActual = this._previousSourceOrigin;
+				this.SourceOriginActual = _previousSourceOrigin;
 
 				// TODO: Restore previous bitmap images
 			}

@@ -15,7 +15,7 @@
 				return parameter == null;
 
 			var valueType = value.GetType();
-			if (parameter != null && parameter.GetType() != valueType)
+			if (parameter != null && parameter?.GetType() != valueType)
 			{
 				var converter = TypeDescriptor.GetConverter(value);
 				parameter = converter.ConvertTo(null, culture, parameter, valueType);

@@ -3,8 +3,8 @@
 	using System;
 	using System.Windows;
 	using System.Windows.Input;
-	using PixelInspector.Utility;
 	using Tasler.ComponentModel;
+	using Tasler.Windows;
 
 	public class SelectionViewModel : ChildViewModel<MainViewModel>
 	{
@@ -26,10 +26,10 @@
 		#region SourceRectangle
 		public Rect? SourceRectangle
 		{
-			get { return this._sourceRectangle; }
+			get { return _sourceRectangle; }
 			private set
 			{
-				if (this.PropertyChanged.SetProperty(this, value, ref this._sourceRectangle))
+				if (this.PropertyChanged.SetProperty(this, value, ref _sourceRectangle))
 					this.HasSelection = value.HasValue;
 			}
 		}
@@ -39,10 +39,10 @@
 		#region ZoomedRectangle
 		public Rect? ZoomedRectangle
 		{
-			get { return this._zoomedRectangle; }
+			get { return _zoomedRectangle; }
 			private set
 			{
-				if (this.PropertyChanged.SetProperty(this, value, ref this._zoomedRectangle))
+				if (this.PropertyChanged.SetProperty(this, value, ref _zoomedRectangle))
 					this.UpdateSourceRectangle();
 			}
 		}
@@ -52,8 +52,8 @@
 		#region ZoomedRectangleActual
 		public Rect? ZoomedRectangleActual
 		{
-			get { return this._zoomedRectangleActual; }
-			private set { this.PropertyChanged.SetProperty(this, value, ref this._zoomedRectangleActual); }
+			get { return _zoomedRectangleActual; }
+			private set { this.PropertyChanged.SetProperty(this, value, ref _zoomedRectangleActual); }
 		}
 		private Rect? _zoomedRectangleActual;
 		#endregion ZoomedRectangleActual
@@ -61,8 +61,8 @@
 		#region HasSelection
 		public bool HasSelection
 		{
-			get { return this._hasSelection; }
-			private set { this.PropertyChanged.SetProperty(this, value, ref this._hasSelection); }
+			get { return _hasSelection; }
+			private set { this.PropertyChanged.SetProperty(this, value, ref _hasSelection); }
 		}
 		private bool _hasSelection;
 		#endregion HasSelection
@@ -78,7 +78,7 @@
 		/// </summary>
 		public ICommand ClearSelectionCommand
 		{
-			get { return this._clearSelectionCommand ?? (this._clearSelectionCommand = new RelayCommand(this.ClearSelectionCommandExecute)); }
+			get { return _clearSelectionCommand ?? (_clearSelectionCommand = new RelayCommand(this.ClearSelectionCommandExecute)); }
 		}
 		private RelayCommand _clearSelectionCommand;
 

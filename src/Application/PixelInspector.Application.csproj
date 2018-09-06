@@ -92,12 +92,6 @@
     <Compile Include="Model\WindowPlacementModel.cs" />
     <Compile Include="Model\ViewSettingsModel.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Utility\ArrayExtensions.cs" />
-    <Compile Include="Utility\DeferredAction.cs" />
-    <Compile Include="Utility\DisposeActionScope.cs" />
-    <Compile Include="Utility\ExtentRect.cs" />
-    <Compile Include="Utility\RectExtensions.cs" />
-    <Compile Include="Utility\StringBuilderExtensions.cs" />
     <Compile Include="ViewModel\ApplicationStates.cs" />
     <Compile Include="ViewModel\BitmapViewModel.cs" />
     <Compile Include="ViewModel\SelectionViewModel.cs" />
@@ -108,8 +102,6 @@
     <Compile Include="ViewModel\Tools\MoveToolViewModel.cs" />
     <Compile Include="ViewModel\Tools\SelectToolViewModel.cs" />
     <Compile Include="ViewModel\Tools\LocateToolViewModel.cs" />
-    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Converters\ColorWithAlphaConverter.cs" />
     <Compile Include="Converters\IsEqualConverter.cs" />
     <Compile Include="View\MainViewZoomSlider.xaml.cs">
       <DependentUpon>MainViewZoomSlider.xaml</DependentUpon>

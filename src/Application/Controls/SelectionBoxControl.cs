@@ -2,7 +2,7 @@
 {
 	using System.Windows;
 	using System.Windows.Controls;
-	using PixelInspector.Utility;
+	using Tasler.Windows;
 
 	/// <summary>
 	/// </summary>
@@ -10,13 +10,13 @@
 	public class SelectionBoxControl : Control
 	{
 		#region Constants
-		public const string PART_InnerContent = "PART_InnerContent";
+		public const string PART_InnerContent = nameof(PART_InnerContent);
 		#endregion Constants
-	
+
 		#region Instance Fields
-		private bool hasProcessedInitialArrange;
-		private Thickness outerContentThickness;
-		private FrameworkElement partInnerContent;
+		private bool _hasProcessedInitialArrange;
+		private Thickness _outerContentThickness;
+		private FrameworkElement _partInnerContent;
 		#endregion Instance Fields
 
 		#region Constructors
@@ -34,7 +34,7 @@
 		/// Identifies the <see cref="Rectangle"/> dependency proeprty.
 		/// </summary>
 		public static readonly DependencyProperty RectangleProperty =
-			DependencyProperty.Register("Rectangle", typeof(Rect?), typeof(SelectionBoxControl),
+			DependencyProperty.Register(nameof(Rectangle), typeof(Rect?), typeof(SelectionBoxControl),
 				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, RectanglePropertyChanged));
 
 		/// <summary>
@@ -55,13 +55,13 @@
 
 		private void RectanglePropertyChanged(Rect? newValue)
 		{
-			if (newValue.HasValue && this.hasProcessedInitialArrange && this.VisualChildrenCount > 0)
+			if (newValue.HasValue && _hasProcessedInitialArrange && this.VisualChildrenCount > 0)
 			{
 				var firstElement = this.GetVisualChild(0) as FrameworkElement;
 				if (firstElement != null)
 				{
 					// Adjust the rectangle by the original offsets of PART_InnerContent
-					var rect = newValue.Value.Inflate(this.outerContentThickness);
+					var rect = newValue.Value.Inflate(_outerContentThickness);
 
 					// Position and size the first element
 					firstElement.HorizontalAlignment = HorizontalAlignment.Left;
@@ -83,7 +83,7 @@
 			base.OnApplyTemplate();
 
 			// Find the required template part
-			this.partInnerContent = this.Template.FindName(PART_InnerContent, this) as FrameworkElement;
+			_partInnerContent = this.Template.FindName(PART_InnerContent, this) as FrameworkElement;
 		}
 
 		protected override Size ArrangeOverride(Size arrangeBounds)
@@ -92,10 +92,10 @@
 			var size = base.ArrangeOverride(arrangeBounds);
 
 			// Compute the inner content offsets
-			if (!this.hasProcessedInitialArrange && !size.IsEmpty)
+			if (!_hasProcessedInitialArrange && !size.IsEmpty)
 			{
 				this.ComputeInnerContentOffsets(size);
-				this.hasProcessedInitialArrange = true;
+				_hasProcessedInitialArrange = true;
 			}
 
 			// Return the result from the default processing
@@ -110,15 +110,15 @@
 			var bottomRight = topLeft;
 
 			// Compute the offsets of the inner content
-			if (this.partInnerContent != null)
+			if (_partInnerContent != null)
 			{
-				topLeft = this.partInnerContent.TranslatePoint(topLeft, this);
-				bottomRight = this.partInnerContent.TranslatePoint(
-					new Point(this.partInnerContent.ActualWidth, this.partInnerContent.ActualHeight), this);
+				topLeft = _partInnerContent.TranslatePoint(topLeft, this);
+				bottomRight = _partInnerContent.TranslatePoint(
+					new Point(_partInnerContent.ActualWidth, _partInnerContent.ActualHeight), this);
 			}
 
 			// Save the offsets
-			this.outerContentThickness = new Thickness(
+			_outerContentThickness = new Thickness(
 				topLeft.X, topLeft.Y, arrangeBounds.Width - bottomRight.X, arrangeBounds.Height - bottomRight.Y);
 		}
 		#endregion Private Implementation

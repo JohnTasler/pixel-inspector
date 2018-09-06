@@ -8,8 +8,8 @@
 	public class ViewSettingsModel : ViewModel
 	{
 		#region Constants
-		private const double defaultAutoRefreshIntervalMilliseconds = 200;
-		private const double defaultZoomFactor = 6;
+		private const double DefaultAutoRefreshIntervalMilliseconds = 200;
+		private const double DefaultZoomFactor = 6;
 		#endregion Constants
 
 		#region Constructors
@@ -26,7 +26,7 @@
 			get { return _autoRefreshMilliseconds; }
 			set { this.PropertyChanged.SetProperty(this, value, ref _autoRefreshMilliseconds, nameof(this.AutoRefreshMilliseconds)); }
 		}
-		private double _autoRefreshMilliseconds = defaultAutoRefreshIntervalMilliseconds;
+		private double _autoRefreshMilliseconds = DefaultAutoRefreshIntervalMilliseconds;
 
 		[XmlAttribute]
 		public ColorValueDisplayFormat ColorValueDisplayFormat
@@ -144,7 +144,7 @@
 			get { return _zoomFactor; }
 			set { this.PropertyChanged.SetProperty(this, value, ref _zoomFactor, nameof(this.ZoomFactor)); }
 		}
-		private double _zoomFactor = defaultZoomFactor;
+		private double _zoomFactor = DefaultZoomFactor;
 		#endregion Properties
 
 		#region Event Handlers

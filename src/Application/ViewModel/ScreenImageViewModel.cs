@@ -35,20 +35,20 @@
 		#region Properties
 		public bool IsRefreshNeeded
 		{
-			get { return this._isRefreshNeeded; }
-			set { this.PropertyChanged.SetProperty(this, value, ref this._isRefreshNeeded); }
+			get { return _isRefreshNeeded; }
+			set { this.PropertyChanged.SetProperty(this, value, ref _isRefreshNeeded); }
 		}
 		private bool _isRefreshNeeded;
 
 		public BitmapViewModel SourceBitmap
 		{
-			get { return this._sourceBitmap; }
+			get { return _sourceBitmap; }
 		}
 		private BitmapViewModel _sourceBitmap = new BitmapViewModel();
 
 		public BitmapViewModel ZoomedBitmap
 		{
-			get { return this._zoomedBitmap; }
+			get { return _zoomedBitmap; }
 		}
 		private BitmapViewModel _zoomedBitmap = new BitmapViewModel();
 		#endregion Properties
@@ -57,7 +57,7 @@
 		public void Refresh(Point sourceOrigin)
 		{
 			// Compute the origin and extents of the source rectangle
-			var sourceSize = this._viewSettings.Model.SourceSize;
+			var sourceSize = _viewSettings.Model.SourceSize;
 			sourceSize.Width = Math.Min(sourceSize.Width, SystemParameters.VirtualScreenWidth);
 			sourceSize.Height = Math.Min(sourceSize.Height, SystemParameters.VirtualScreenHeight);
 			var sourceRect = new Rect(sourceOrigin, sourceSize);
@@ -100,7 +100,7 @@
 			}
 
 			// Compute the origin and extents of the zoomed rectangle
-			var zoomFactor = this._viewSettings.Model.ZoomFactor;
+			var zoomFactor = _viewSettings.Model.ZoomFactor;
 			int cxDest = (int)(cxSrc * zoomFactor);
 			int cyDest = (int)(cySrc * zoomFactor);
 
@@ -135,8 +135,8 @@
 		private void DrawPixelGrid(SafeHdc hdc, int cxDest, int cyDest)
 		{
 			// Draw the pixel grid onto the zoomed bitmap
-			var zoomFactor = (int)this._viewSettings.Model.ZoomFactor;
-			if (this._viewSettings.Model.IsGridVisibleWhenZoomed && zoomFactor > 1)
+			var zoomFactor = (int)_viewSettings.Model.ZoomFactor;
+			if (_viewSettings.Model.IsGridVisibleWhenZoomed && zoomFactor > 1)
 			{
 				// Create the pen and select it into the HDC of the zoomed bitmap buffer
 				// TODO: Since this is a private DC, only create/select the pen when pen properties change
@@ -190,13 +190,13 @@
 		private void ResizeSourceBitmap()
 		{
 			// Resize the SourceBitmap
-			this._sourceBitmap.Size = this._viewSettings.Model.SourceSize;
+			_sourceBitmap.Size = _viewSettings.Model.SourceSize;
 		}
 
 		private void ResizeZoomedBitmap()
 		{
 			// Resize the ZoomedBitmap
-			this._zoomedBitmap.Size = this._viewSettings.Model.RenderSize;
+			_zoomedBitmap.Size = _viewSettings.Model.RenderSize;
 		}
 		#endregion Private Implementation
 
@@ -214,35 +214,35 @@
 			switch (e.PropertyName)
 			{
 				case nameof(this.Parent.ViewSettings):
-					if (this._viewSettings != null)
-						((INotifyPropertyChanged)this._viewSettings.Model).PropertyChanged -= this.viewSettings_PropertyChanged;
+					if (_viewSettings != null)
+						((INotifyPropertyChanged)_viewSettings.Model).PropertyChanged -= this.ViewSettings_PropertyChanged;
 
-					this._viewSettings = this.Parent.ViewSettings;
+					_viewSettings = this.Parent.ViewSettings;
 
-					if (this._viewSettings != null)
+					if (_viewSettings != null)
 					{
-						((INotifyPropertyChanged)this._viewSettings.Model).PropertyChanged += this.viewSettings_PropertyChanged;
-						this.viewSettings_PropertyChanged(this._viewSettings.Model, new PropertyChangedEventArgs(nameof(this._viewSettings.Model.RenderSize)));
+						((INotifyPropertyChanged)_viewSettings.Model).PropertyChanged += this.ViewSettings_PropertyChanged;
+						this.ViewSettings_PropertyChanged(_viewSettings.Model, new PropertyChangedEventArgs(nameof(_viewSettings.Model.RenderSize)));
 					}
 					break;
 			}
 		}
 
-		private void viewSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		private void ViewSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			switch (e.PropertyName)
 			{
-				case nameof(this._viewSettings.Model.IsGridVisibleWhenZoomed):
+				case nameof(_viewSettings.Model.IsGridVisibleWhenZoomed):
 					this.IsRefreshNeeded = true;
 					break;
 
-				case nameof(this._viewSettings.Model.RenderSize):
+				case nameof(_viewSettings.Model.RenderSize):
 					this.ResizeSourceBitmap();
 					this.ResizeZoomedBitmap();
 					this.IsRefreshNeeded = true;
 					break;
 
-				case nameof(this._viewSettings.Model.ZoomFactor):
+				case nameof(_viewSettings.Model.ZoomFactor):
 					this.ResizeSourceBitmap();
 					this.IsRefreshNeeded = true;
 					break;

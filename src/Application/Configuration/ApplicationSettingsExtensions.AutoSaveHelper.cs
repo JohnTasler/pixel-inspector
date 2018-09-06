@@ -3,7 +3,7 @@
 	using System;
 	using System.ComponentModel;
 	using System.Configuration;
-	using PixelInspector.Utility;
+	using Tasler.Windows.Threading;
 
 	public static partial class ApplicationSettingsExtensions
 	{
@@ -28,13 +28,13 @@
 			/// <param name="deferralTime">The deferral time.</param>
 			internal AutoSaveHelper(ApplicationSettingsBase settings, TimeSpan deferralTimeSpan)
 			{
-				// Save the specified settings and subscribe to some of its events 
+				// Save the specified settings and subscribe to some of its events
 				this.Settings = settings;
 				this.Settings.PropertyChanged += this.Settings_OnPropertyChanged;
 				this.Settings.SettingsLoaded += this.Settings_OnSettingsLoaded;
 
 				// Create a DeferredAction with the specified deferral time
-				this.DeferredAction = new DeferredAction(deferralTimeSpan, this.Settings.Save);
+				this.DeferredAction = new DispatcherTimerDeferredAction(deferralTimeSpan, this.Settings.Save);
 			}
 
 			/// <summary>
@@ -68,7 +68,7 @@
 
 				// Create a new DeferredAction if the specified deferral time has changed
 				if (this.DeferredAction.Interval != deferralTimeSpan)
-					this.DeferredAction = new DeferredAction(deferralTimeSpan, this.Settings.Save);
+					this.DeferredAction = new DispatcherTimerDeferredAction(deferralTimeSpan, this.Settings.Save);
 			}
 			#endregion
 
@@ -85,7 +85,7 @@
 			#endregion IDisposable Members
 
 			#region Private Properties
-			private DeferredAction DeferredAction { get; set; }
+			private DispatcherTimerDeferredAction DeferredAction { get; set; }
 			private ApplicationSettingsBase Settings { get; set; }
 			#endregion Private Properties
 
@@ -95,7 +95,7 @@
 				// Get the specified property value object
 				var propertyValue = this.Settings.PropertyValues[itemName];
 
-				// Set its value to the same thing, thus marking it as needing to be saved 
+				// Set its value to the same thing, thus marking it as needing to be saved
 				// NOTE: Simply setting the IsDirty on the property value is insufficient.
 				propertyValue.PropertyValue = propertyValue.PropertyValue;
 

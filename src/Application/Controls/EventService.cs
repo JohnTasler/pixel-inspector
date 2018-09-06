@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Tasler;
 
 namespace PixelInspector.Controls
 {
@@ -12,8 +13,7 @@ namespace PixelInspector.Controls
 		#region Event Bindings
 		public static IList GetEventBindings(FrameworkElement d)
 		{
-			if (d == null)
-				throw new ArgumentNullException("d");
+			ValidateArgument.IsNotNull(d, "d");
 
 			var list = d.GetValue(EventBindingsProperty) as IList;
 			if (list == null)
@@ -73,7 +73,7 @@ namespace PixelInspector.Controls
 
 		#region Command
 		public static readonly DependencyProperty CommandProperty =
-			DependencyProperty.Register("Command", typeof(ICommand), typeof(RoutedEventBinding));
+			DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(RoutedEventBinding));
 
 		public ICommand Command
 		{

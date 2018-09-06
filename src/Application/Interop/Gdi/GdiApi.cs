@@ -9,7 +9,7 @@
 	using System.Threading;
 	using Microsoft.Win32.SafeHandles;
 	using PixelInspector.Interop.User;
-	using PixelInspector.Utility;
+	using Tasler;
 
 	public static class GdiApi
 	{
@@ -200,7 +200,7 @@
 			var previous = Private.SetStretchBltMode(hdc, stretchMode);
 			if ((int)previous == 0)
 				throw new Win32Exception();
-			return new DisposeActionScope(() => Private.SetStretchBltMode(hdc, previous));
+			return new DisposeScopeExit(() => Private.SetStretchBltMode(hdc, previous));
 		}
 
 		public static IDisposable SetROP2(SafeHdc hdc, ROP2 mixMode)
@@ -208,7 +208,7 @@
 			var previous = Private.SetROP2(hdc, mixMode);
 			if ((int)previous == 0)
 				throw new Win32Exception();
-			return new DisposeActionScope(() => Private.SetROP2(hdc, previous));
+			return new DisposeScopeExit(() => Private.SetROP2(hdc, previous));
 		}
 
 		public static IDisposable SetBkColor(SafeHdc hdc, uint color)
@@ -216,7 +216,7 @@
 			var previous = Private.SetBkColor(hdc, color);
 			if (previous == 0xFFFFFFFF)
 				throw new Win32Exception();
-			return new DisposeActionScope(() => Private.SetBkColor(hdc, previous));
+			return new DisposeScopeExit(() => Private.SetBkColor(hdc, previous));
 		}
 
 		public static IDisposable SetBkMode(SafeHdc hdc, BackgroundMode bkMode)
@@ -224,7 +224,7 @@
 			var previous = Private.SetBkMode(hdc, bkMode);
 			if ((int)previous == 0)
 				throw new Win32Exception();
-			return new DisposeActionScope(() => Private.SetBkMode(hdc, previous));
+			return new DisposeScopeExit(() => Private.SetBkMode(hdc, previous));
 		}
 
 		public static void GdiFlush()
@@ -238,7 +238,7 @@
 			var previous = Private.SelectObject(hdc, obj);
 			if (previous.IsInvalid)
 				throw new Win32Exception();
-			return new DisposeActionScope(() => { using (Private.SelectObject(hdc, previous)) {} });
+			return new DisposeScopeExit(() => { using (Private.SelectObject(hdc, previous)) {} });
 		}
 
 		[SecurityCritical]

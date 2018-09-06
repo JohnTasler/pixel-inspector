@@ -9,20 +9,20 @@
 	public class BitmapModel : IDisposable
 	{
 		#region Constants
-		private const ushort bitsPerPixel = 24;
-		private const int bytesPerPixel = bitsPerPixel / 8;
+		private const ushort BitsPerPixel = 24;
+		private const int BytesPerPixel = BitsPerPixel / 8;
 		#endregion Constants
 
 		#region Instance Fields
-		private bool isDisposed;
-		private int? width;
-		private int? height;
-		private SafePrivateHdc hdc;
-		private SafeGdiObject hbm;
-		private SafeGdiObject hbmPrevious;
-		private MemoryMappedFile section;
-		private long sectionCapacity;
-		private IntPtr ppvBits;
+		private bool _isDisposed;
+		private int? _width;
+		private int? _height;
+		private SafePrivateHdc _hdc;
+		private SafeGdiObject _hbm;
+		private SafeGdiObject _hbmPrevious;
+		private MemoryMappedFile _section;
+		private long _sectionCapacity;
+		private IntPtr _ppvBits;
 		#endregion Instance Fields
 
 		#region Finalizer
@@ -38,25 +38,25 @@
 		{
 			get
 			{
-				if (this.isDisposed)
+				if (_isDisposed)
 				{
-					Debug.Assert(this.hdc == null);
-					Debug.Assert(this.hbmPrevious == null);
-					Debug.Assert(this.hbm == null);
-					Debug.Assert(this.section == null);
-					Debug.Assert(this.sectionCapacity == 0);
-					Debug.Assert(this.ppvBits == IntPtr.Zero);
+					Debug.Assert(_hdc == null);
+					Debug.Assert(_hbmPrevious == null);
+					Debug.Assert(_hbm == null);
+					Debug.Assert(_section == null);
+					Debug.Assert(_sectionCapacity == 0);
+					Debug.Assert(_ppvBits == IntPtr.Zero);
 				}
-				else if (this.hdc != null && !this.hdc.IsInvalid)
+				else if (_hdc != null && !_hdc.IsInvalid)
 				{
-					Debug.Assert(this.hbmPrevious != null && !this.hbmPrevious.IsInvalid);
-					Debug.Assert(this.hbm != null && !this.hbm.IsInvalid);
-					Debug.Assert(this.section != null);
-					Debug.Assert(this.sectionCapacity != 0);
-					Debug.Assert(this.ppvBits != IntPtr.Zero);
+					Debug.Assert(_hbmPrevious != null && !_hbmPrevious.IsInvalid);
+					Debug.Assert(_hbm != null && !_hbm.IsInvalid);
+					Debug.Assert(_section != null);
+					Debug.Assert(_sectionCapacity != 0);
+					Debug.Assert(_ppvBits != IntPtr.Zero);
 				}
 
-				return this.isDisposed;
+				return _isDisposed;
 			}
 		}
 
@@ -66,7 +66,7 @@
 			{
 				this.VerifyNotDisposed();
 				this.EnsureInitialized();
-				return this.hdc;
+				return _hdc;
 			}
 		}
 
@@ -76,7 +76,7 @@
 			{
 				this.VerifyNotDisposed();
 				this.EnsureInitialized();
-				return this.hbm;
+				return _hbm;
 			}
 		}
 
@@ -85,7 +85,7 @@
 			get
 			{
 				this.VerifyNotDisposed();
-				return this.section;
+				return _section;
 			}
 		}
 
@@ -94,21 +94,21 @@
 			get
 			{
 				this.VerifyNotDisposed();
-				return this.ppvBits;
+				return _ppvBits;
 			}
 		}
 
 		public int Stride
 		{
-			get { return GetStride(width.GetValueOrDefault()); }
+			get { return GetStride(_width.GetValueOrDefault()); }
 		}
 		#endregion Properties
 
 		#region Methods
 		public void GetSize(out int cx, out int cy)
 		{
-			cx = this.width.GetValueOrDefault(1);
-			cy = this.height.GetValueOrDefault(1);
+			cx = _width.GetValueOrDefault(1);
+			cy = _height.GetValueOrDefault(1);
 		}
 
 		public void SetSize(int cx, int cy)
@@ -116,7 +116,7 @@
 			this.VerifyNotDisposed();
 
 			// Do nothing if the size has not changed
-			if (this.width == cx && this.height == cy)
+			if (_width == cx && _height == cy)
 				return;
 
 			// Enforce the minimum size
@@ -124,55 +124,55 @@
 			cy = Math.Max(1, cy);
 
 			// Release the current bitmap
-			if (this.hbm != null && !this.hbm.IsInvalid)
+			if (_hbm != null && !_hbm.IsInvalid)
 			{
-				Debug.Assert(this.hdc != null && !this.hdc.IsInvalid);
-				Debug.Assert(this.hbmPrevious != null && !this.hbmPrevious.IsInvalid);
-				Debug.Assert(this.section != null);
-				Debug.Assert(this.sectionCapacity != 0);
+				Debug.Assert(_hdc != null && !_hdc.IsInvalid);
+				Debug.Assert(_hbmPrevious != null && !_hbmPrevious.IsInvalid);
+				Debug.Assert(_section != null);
+				Debug.Assert(_sectionCapacity != 0);
 
 				// Release the current bitmap
-				using (GdiApi.SelectObject(this.hdc, this.hbmPrevious))
-				using (this.hbm)
-				using (this.section)
+				using (GdiApi.SelectObject(_hdc, _hbmPrevious))
+				using (_hbm)
+				using (_section)
 				{
-					this.section = null;
-					GC.RemoveMemoryPressure(this.sectionCapacity);
-					this.sectionCapacity = 0;
-					this.hbm = null;
+					_section = null;
+					GC.RemoveMemoryPressure(_sectionCapacity);
+					_sectionCapacity = 0;
+					_hbm = null;
 				}
 			}
 
 			// Create the memory DC if needed
-			if (this.hdc == null || this.hdc.IsInvalid)
+			if (_hdc == null || _hdc.IsInvalid)
 			{
 				using (var hdcScreen = UserApi.GetDC(IntPtr.Zero))
-					this.hdc = GdiApi.CreateCompatibleDC(hdcScreen);
+					_hdc = GdiApi.CreateCompatibleDC(hdcScreen);
 			}
 
 			// Create a new bitmap section
-			this.sectionCapacity = GetStride(cx) * cy;
-			this.section = MemoryMappedFile.CreateNew(null, this.sectionCapacity);
-			this.hbm = GdiApi.CreateDIBSection(SafeHdc.Null, cx, -cy, bitsPerPixel, this.section, ref this.ppvBits);
-			GC.AddMemoryPressure(this.sectionCapacity);
+			_sectionCapacity = GetStride(cx) * cy;
+			_section = MemoryMappedFile.CreateNew(null, _sectionCapacity);
+			_hbm = GdiApi.CreateDIBSection(SafeHdc.Null, cx, -cy, BitsPerPixel, _section, ref _ppvBits);
+			GC.AddMemoryPressure(_sectionCapacity);
 
 			// Select the new bitmap into the memory DC
-			this.hbmPrevious = GdiApi.Private.SelectObject(this.hdc, this.hbm);
+			_hbmPrevious = GdiApi.Private.SelectObject(_hdc, _hbm);
 
 			// Save the new size
-			this.width = cx;
-			this.height = cy;
+			_width = cx;
+			_height = cy;
 		}
 
 		public int GetPixelColor(int x, int y)
 		{
 			this.VerifyNotDisposed();
-			return GdiApi.GetPixel(this.hdc, x, y);
+			return GdiApi.GetPixel(_hdc, x, y);
 		}
 
 		public static int GetStride(int cx)
 		{
-			return ((int)(cx * bytesPerPixel + 3) / 4) * 4;
+			return ((int)(cx * BytesPerPixel + 3) / 4) * 4;
 		}
 		#endregion Methods
 
@@ -182,22 +182,22 @@
 		{
 			if (!this.IsDisposed)
 			{
-				using (this.hdc)
-				using (this.hbm)
-				using (this.hbmPrevious)
-				using (this.section)
-				using (GdiApi.SelectObject(this.hdc, this.hbmPrevious))
+				using (_hdc)
+				using (_hbm)
+				using (_hbmPrevious)
+				using (_section)
+				using (GdiApi.SelectObject(_hdc, _hbmPrevious))
 				{
-					this.section = null;
-					this.sectionCapacity = 0;
-					this.hbmPrevious = null;
-					this.hbm = null;
-					this.hdc = null;
-					this.ppvBits = IntPtr.Zero;
+					_section = null;
+					_sectionCapacity = 0;
+					_hbmPrevious = null;
+					_hbm = null;
+					_hdc = null;
+					_ppvBits = IntPtr.Zero;
 				}
 
 				GC.SuppressFinalize(this);
-				this.isDisposed = true;
+				_isDisposed = true;
 			}
 		}
 
@@ -206,7 +206,7 @@
 		#region Private Implementation
 		private void EnsureInitialized()
 		{
-			if (this.width == null || this.height == null)
+			if (_width == null || _height == null)
 				this.SetSize(1, 1);
 		}
 
