@@ -16,7 +16,6 @@
       <taz:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
       <taz:BooleanToVisibilityConverter x:Key="BooleanToVisibleHiddenConverter" TrueValue="Visible" FalseValue="Hidden"/>
       <taz:BooleanToVisibilityConverter x:Key="BooleanToVisibleCollapsedConverter" TrueValue="Visible" FalseValue="Collapsed"/>
-      <app:IsEqualConverter x:Key="IsEqualConverter"/>
 
       <!-- This prevents an optimization that limits the nested resource dictionary depth -->
       <Style TargetType="{x:Type Rectangle}" />

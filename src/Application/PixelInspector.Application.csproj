@@ -102,7 +102,6 @@
     <Compile Include="ViewModel\Tools\MoveToolViewModel.cs" />
     <Compile Include="ViewModel\Tools\SelectToolViewModel.cs" />
     <Compile Include="ViewModel\Tools\LocateToolViewModel.cs" />
-    <Compile Include="Converters\IsEqualConverter.cs" />
     <Compile Include="View\MainViewZoomSlider.xaml.cs">
       <DependentUpon>MainViewZoomSlider.xaml</DependentUpon>
     </Compile>
