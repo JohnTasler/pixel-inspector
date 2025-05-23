@@ -11,25 +11,25 @@ namespace PixelInspector.Controls
     public static class EventService
     {
         #region Event Bindings
-        public static IList GetEventBindings(FrameworkElement d)
+        public static IList GetEventBindings(FrameworkElement element)
         {
-            ValidateArgument.IsNotNull(d, "d");
+            ValidateArgument.IsNotNull(element, nameof(element));
 
-            var list = d.GetValue(EventBindingsProperty) as IList;
+            var list = element.GetValue(EventBindingsProperty) as IList;
             if (list == null)
             {
                 list = new FreezableCollection<RoutedEventBinding>();
                 var notifyCollectionChanged = list as INotifyCollectionChanged;
-                notifyCollectionChanged.CollectionChanged += (sender, e) => EventBindings_CollectionChanged(d, e);
-                SetEventBindings(d, list);
+                notifyCollectionChanged.CollectionChanged += (sender, e) => EventBindings_CollectionChanged(element, e);
+                SetEventBindings(element, list);
             }
 
             return list;
         }
 
-        private static void SetEventBindings(FrameworkElement d, IList value)
+        private static void SetEventBindings(FrameworkElement element, IList value)
         {
-            d.SetValue(EventBindingsProperty, value);
+            element.SetValue(EventBindingsProperty, value);
         }
 
         private static readonly DependencyProperty EventBindingsProperty =
