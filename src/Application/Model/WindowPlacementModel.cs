@@ -1,111 +1,105 @@
-﻿namespace PixelInspector.Model
+using System.Xml.Serialization;
+using CommunityToolkit.Diagnostics;
+using CommunityToolkit.Mvvm.ComponentModel;
+using PixelInspector.Interop.User;
+
+namespace PixelInspector.Model;
+
+public class WindowPlacementModel : ObservableObject
 {
-    using System;
-    using System.Xml.Serialization;
-    using PixelInspector.Interop.User;
-    using Tasler.ComponentModel;
+	#region Instance Fields
+	private WINDOWPLACEMENT _windowPlacement;
+	#endregion Instance Fields
 
-    public class WindowPlacementModel : ViewModel
-    {
-        #region Instance Fields
-        private WINDOWPLACEMENT _windowPlacement;
-        #endregion Instance Fields
+	#region Constructors
+	public WindowPlacementModel()
+	{
+		_windowPlacement = new WINDOWPLACEMENT();
+	}
 
-        #region Constructors
-        public WindowPlacementModel()
-        {
-            _windowPlacement = new WINDOWPLACEMENT();
-        }
+	public WindowPlacementModel(IntPtr hwnd)
+	{
+		Guard.IsNotDefault(hwnd);
+		_windowPlacement = UserApi.GetWindowPlacement(hwnd);
+	}
+	#endregion Constructors
 
-        public WindowPlacementModel(IntPtr hwnd)
-        {
-            if (hwnd == IntPtr.Zero)
-                throw new ArgumentException("Must specify a non-zero window handle.", nameof(hwnd));
+	#region Properties
 
-            _windowPlacement = UserApi.GetWindowPlacement(hwnd);
-        }
-        #endregion Constructors
+	[XmlAttribute]
+	public bool IsMaximized
+	{
+		get => _windowPlacement.showCmd == SW.ShowMaximized;
+		set => this.SetProperty(ref _windowPlacement.showCmd, value ? SW.ShowMaximized : SW.ShowNormal);
+	}
 
-        #region Properties
+	[XmlAttribute]
+	public int MaximizedX
+	{
+		get => _windowPlacement.ptMaxPosition.x;
+		set => this.SetProperty(ref _windowPlacement.ptMaxPosition.x, value);
+	}
 
-        [XmlAttribute]
-        public bool IsMaximized
-        {
-            get { return _windowPlacement.showCmd == SW.ShowMaximized; }
-            set { this.PropertyChanged.SetProperty(this, value ? SW.ShowMaximized : SW.ShowNormal, ref _windowPlacement.showCmd); }
-        }
+	[XmlAttribute]
+	public int MaximizedY
+	{
+		get => _windowPlacement.ptMaxPosition.y;
+		set => this.SetProperty(ref _windowPlacement.ptMaxPosition.y, value);
+	}
 
-        [XmlAttribute]
-        public int MaximizedX
-        {
-            get { return _windowPlacement.ptMaxPosition.x; }
-            set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.ptMaxPosition.x); }
-        }
+	[XmlAttribute]
+	public int Left
+	{
+		get => _windowPlacement.rcNormalPosition.left;
+		set => this.SetProperty(ref _windowPlacement.rcNormalPosition.left, value);
+	}
 
-        [XmlAttribute]
-        public int MaximizedY
-        {
-            get { return _windowPlacement.ptMaxPosition.y; }
-            set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.ptMaxPosition.y); }
-        }
+	[XmlAttribute]
+	public int Top
+	{
+		get => _windowPlacement.rcNormalPosition.top;
+		set => this.SetProperty(ref _windowPlacement.rcNormalPosition.top, value);
+	}
 
-        [XmlAttribute]
-        public int Left
-        {
-            get { return _windowPlacement.rcNormalPosition.left; }
-            set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.rcNormalPosition.left); }
-        }
+	[XmlAttribute]
+	public int Right
+	{
+		get => _windowPlacement.rcNormalPosition.right;
+		set => this.SetProperty(ref _windowPlacement.rcNormalPosition.right, value);
+	}
 
-        [XmlAttribute]
-        public int Top
-        {
-            get { return _windowPlacement.rcNormalPosition.top; }
-            set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.rcNormalPosition.top); }
-        }
+	[XmlAttribute]
+	public int Bottom
+	{
+		get => _windowPlacement.rcNormalPosition.bottom;
+		set => this.SetProperty(ref _windowPlacement.rcNormalPosition.bottom, value);
+	}
 
-        [XmlAttribute]
-        public int Right
-        {
-            get { return _windowPlacement.rcNormalPosition.right; }
-            set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.rcNormalPosition.right); }
-        }
+	#endregion Properties
 
-        [XmlAttribute]
-        public int Bottom
-        {
-            get { return _windowPlacement.rcNormalPosition.bottom; }
-            set { this.PropertyChanged.SetProperty(this, value, ref _windowPlacement.rcNormalPosition.bottom); }
-        }
+	#region Methods
 
-        #endregion Properties
+	public void Get(IntPtr hwnd)
+	{
+		Guard.IsNotDefault(hwnd);
 
-        #region Methods
+		var wp = new WINDOWPLACEMENT();
+		UserApi.GetWindowPlacement(hwnd, wp);
 
-        public void Get(IntPtr hwnd)
-        {
-            if (hwnd == IntPtr.Zero)
-                throw new ArgumentException("Must specify a non-zero window handle.", nameof(hwnd));
+		this.IsMaximized = wp.showCmd == SW.ShowMaximized;
+		this.MaximizedX = wp.ptMaxPosition.x;
+		this.MaximizedY = wp.ptMaxPosition.y;
+		this.Left = wp.rcNormalPosition.left;
+		this.Top = wp.rcNormalPosition.top;
+		this.Right = wp.rcNormalPosition.right;
+		this.Bottom = wp.rcNormalPosition.bottom;
+	}
 
-            var wp = new WINDOWPLACEMENT();
-            UserApi.GetWindowPlacement(hwnd, wp);
+	public void Set(IntPtr hwnd)
+	{
+		Guard.IsNotDefault(hwnd);
+		UserApi.SetWindowPlacement(hwnd, _windowPlacement);
+	}
 
-            this.IsMaximized = wp.showCmd == SW.ShowMaximized;
-            this.MaximizedX = wp.ptMaxPosition.x;
-            this.MaximizedY = wp.ptMaxPosition.y;
-            this.Left = wp.rcNormalPosition.left;
-            this.Top = wp.rcNormalPosition.top;
-            this.Right = wp.rcNormalPosition.right;
-            this.Bottom = wp.rcNormalPosition.bottom;
-        }
-
-        public void Set(IntPtr hwnd)
-        {
-            if (hwnd == IntPtr.Zero)
-                throw new ArgumentException("Must specify a non-zero window handle.", nameof(hwnd));
-
-            UserApi.SetWindowPlacement(hwnd, _windowPlacement);
-        }
-
-        #endregion Methods
-    }
+	#endregion Methods
 }

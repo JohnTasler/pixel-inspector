@@ -1,19 +1,17 @@
-﻿namespace PixelInspector.Interop.User
+using PixelInspector.Interop.Gdi;
+
+namespace PixelInspector.Interop.User;
+
+public class SafeWindowHdc : SafeHdc
 {
-    using System;
-    using PixelInspector.Interop.Gdi;
+	#region Properties
+	public IntPtr WindowHandle { get; set; }
+	#endregion Properties
 
-    public class SafeWindowHdc : SafeHdc
-    {
-        #region Properties
-        public IntPtr WindowHandle { get; set; }
-        #endregion Properties
-
-        #region Overrides
-        protected override bool ReleaseHandle()
-        {
-            return UserApi.ReleaseDC(this.WindowHandle, base.handle);
-        }
-        #endregion Overrides
-    }
+	#region Overrides
+	protected override bool ReleaseHandle()
+	{
+		return UserApi.ReleaseDC(this.WindowHandle, base.handle);
+	}
+	#endregion Overrides
 }

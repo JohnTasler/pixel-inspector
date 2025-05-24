@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -131,8 +131,7 @@
         <MenuItem
           Header="_Decimal" InputGestureText="255,255,255"
           Command="{Binding SetColorValueDisplayFormatCommand}"
-          CommandParameter="{Binding Source={x:Static m:ColorValueDisplayFormat.Decimal},Mode=OneWay,
-            Converter={x:Static taz:NullableValueConverter.Instance}}"
+          CommandParameter="{Binding Source={x:Static m:ColorValueDisplayFormat.Decimal},Mode=OneWay}"
           IsChecked="{Binding Model.ColorValueDisplayFormat,Mode=OneWay,
             Converter={x:Static taz:IsEqualConverter.Instance},
             ConverterParameter={x:Static m:ColorValueDisplayFormat.Decimal}}"
@@ -140,8 +139,7 @@
         <MenuItem
           Header="He_x" InputGestureText="FFFFFF"
           Command="{Binding SetColorValueDisplayFormatCommand}"
-          CommandParameter="{Binding Source={x:Static m:ColorValueDisplayFormat.Hex},Mode=OneWay,
-            Converter={x:Static taz:NullableValueConverter.Instance}}"
+          CommandParameter="{Binding Source={x:Static m:ColorValueDisplayFormat.Hex},Mode=OneWay}"
           IsChecked="{Binding Model.ColorValueDisplayFormat,Mode=OneWay,
             Converter={x:Static taz:IsEqualConverter.Instance},
             ConverterParameter={x:Static m:ColorValueDisplayFormat.Hex}}"
@@ -149,8 +147,7 @@
         <MenuItem
           Header="_Hex With Hash" InputGestureText="#FFFFFF"
           Command="{Binding SetColorValueDisplayFormatCommand}"
-          CommandParameter="{Binding Source={x:Static m:ColorValueDisplayFormat.HexWithHash},Mode=OneWay,
-            Converter={x:Static taz:NullableValueConverter.Instance}}"
+          CommandParameter="{Binding Source={x:Static m:ColorValueDisplayFormat.HexWithHash},Mode=OneWay}"
           IsChecked="{Binding Model.ColorValueDisplayFormat,Mode=OneWay,
             Converter={x:Static taz:IsEqualConverter.Instance},
             ConverterParameter={x:Static m:ColorValueDisplayFormat.HexWithHash}}"
@@ -164,11 +161,11 @@
       <MenuItem Header="_Select" InputGestureText="S" IsCheckable="True" IsChecked="{Binding IsToolStateSelect,Mode=OneWay}" Command="{Binding ChooseToolSelectCommand}"/>
 
       <Separator/>
-      <MenuItem Header="_Options..." InputGestureText="" Command="{Binding OptionsCommand}"/>
+      <MenuItem Header="_Options..." InputGestureText="" Command="{Binding ShowOptionsCommand}"/>
     </MenuItem>
 
     <MenuItem Header="_Help">
-      <MenuItem Header="_About Pixel Inspector" Command="{Binding AboutCommand}"/>
+      <MenuItem Header="_About Pixel Inspector" Command="{Binding ShowAboutBoxCommand}"/>
     </MenuItem>
 
   </Menu>

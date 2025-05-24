@@ -1,35 +1,33 @@
-﻿namespace PixelInspector.Interop.Gdi
+using System.Runtime.InteropServices;
+
+namespace PixelInspector.Interop.Gdi;
+
+public abstract class SafeHdc : SafeHandle
 {
-    using System;
-    using System.Runtime.InteropServices;
+	public static readonly SafeHdc Null = new NullHdc();
 
-    public abstract class SafeHdc : SafeHandle
-    {
-        public static readonly SafeHdc Null = new NullHdc();
+	#region Constructors
+	protected SafeHdc()
+		: base(IntPtr.Zero, true)
+	{
+	}
+	#endregion Constructors
 
-        #region Constructors
-        protected SafeHdc()
-            : base(IntPtr.Zero, true)
-        {
-        }
-        #endregion Constructors
+	#region Overrides
+	public override bool IsInvalid
+	{
+		get { return base.handle == IntPtr.Zero; }
+	}
 
-        #region Overrides
-        public override bool IsInvalid
-        {
-            get { return base.handle == IntPtr.Zero; }
-        }
+	#endregion Overrides
 
-        #endregion Overrides
-
-        #region Nested Types
-        private class NullHdc : SafeHdc
-        {
-            protected override bool ReleaseHandle()
-            {
-                return true;
-            }
-        }
-        #endregion Nested Types
-    }
+	#region Nested Types
+	private class NullHdc : SafeHdc
+	{
+		protected override bool ReleaseHandle()
+		{
+			return true;
+		}
+	}
+	#endregion Nested Types
 }

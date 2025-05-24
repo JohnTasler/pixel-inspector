@@ -1,59 +1,62 @@
-﻿namespace PixelInspector.Configuration
+using System.Configuration;
+using CommunityToolkit.Diagnostics;
+
+namespace PixelInspector.Configuration;
+
+public static partial class ApplicationSettingsExtensions
 {
-    using System;
-    using System.Configuration;
-    using Tasler;
+	private static readonly object _autoSaveHelperKey = typeof(AutoSaveHelper);
 
-    public static partial class ApplicationSettingsExtensions
-    {
-        private static readonly object _autoSaveHelperKey = typeof(AutoSaveHelper);
+	public static void SetAutoSaveDeferral(this ApplicationSettingsBase settings, TimeSpan deferralTimeSpan)
+	{
+		Guard.IsNotNull(settings);
+		Guard.IsGreaterThanOrEqualTo(deferralTimeSpan, TimeSpan.Zero);
 
-        public static void SetAutoSaveDeferral(this ApplicationSettingsBase settings, TimeSpan deferralTimeSpan)
-        {
-            ValidateArgument.IsNotNull(settings, nameof(settings));
-            if (deferralTimeSpan < TimeSpan.Zero)
-                throw new ArgumentOutOfRangeException(nameof(deferralTimeSpan));
+		var helper = GetAutoSaveHelper(settings);
+		if (helper is null)
+		{
+			helper = new AutoSaveHelper(settings, deferralTimeSpan);
+			settings.Context[_autoSaveHelperKey] = helper;
+		}
+		else
+		{
+			helper.Expire(deferralTimeSpan);
+		}
+	}
 
-            var helper = GetAutoSaveHelper(settings);
-            if (helper == null)
-            {
-                helper = new AutoSaveHelper(settings, deferralTimeSpan);
-                settings.Context[_autoSaveHelperKey] = helper;
-            }
-            else
-            {
-                helper.Expire(deferralTimeSpan);
-            }
-        }
+	public static void ExpireAutoSaveDeferral(this ApplicationSettingsBase settings)
+	{
+		var helper = GetAutoSaveHelper(settings);
+		if (helper is not null)
+		{
+			helper.Expire();
+		}
+		else
+		{
+			throw new InvalidOperationException(
+				"ApplicationsSettingsExtensions.ExpireAutoSaveDeferral called without first calling SetAutoSaveDeferral.");
+		}
+	}
 
-        public static void ExpireAutoSaveDeferral(this ApplicationSettingsBase settings)
-        {
-            var helper = GetAutoSaveHelper(settings);
-            if (helper != null)
-                helper.Expire();
-            else
-                throw new InvalidOperationException(
-                    "ApplicationsSettingsExtensions.ExpireAutoSaveDeferral called without first calling SetAutoSaveDeferral.");
-        }
+	public static void ClearAutoSaveDeferral(this ApplicationSettingsBase settings)
+	{
+		var helper = GetAutoSaveHelper(settings);
+		if (helper is not null)
+		{
+			using (helper)
+			{
+				settings.Context.Remove(_autoSaveHelperKey);
+			}
+		}
+		else
+		{
+			throw new InvalidOperationException(
+				"ApplicationsSettingsExtensions.ClearAutoSaveDeferral called without first calling SetAutoSaveDeferral.");
+		}
+	}
 
-        public static void ClearAutoSaveDeferral(this ApplicationSettingsBase settings)
-        {
-            var helper = GetAutoSaveHelper(settings);
-            if (helper != null)
-            {
-                using (helper)
-                    settings.Context.Remove(_autoSaveHelperKey);
-            }
-            else
-            {
-                throw new InvalidOperationException(
-                    "ApplicationsSettingsExtensions.ClearAutoSaveDeferral called without first calling SetAutoSaveDeferral.");
-            }
-        }
-
-        private static AutoSaveHelper GetAutoSaveHelper(ApplicationSettingsBase settings)
-        {
-            return settings.Context.ContainsKey(_autoSaveHelperKey) ? settings.Context[_autoSaveHelperKey] as AutoSaveHelper : null;
-        }
-    }
+	private static AutoSaveHelper GetAutoSaveHelper(ApplicationSettingsBase settings)
+	{
+		return settings.Context.ContainsKey(_autoSaveHelperKey) ? settings.Context[_autoSaveHelperKey] as AutoSaveHelper : null;
+	}
 }

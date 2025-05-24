@@ -1,133 +1,104 @@
-﻿namespace PixelInspector.ViewModel
+using System.Windows;
+using System.Windows.Controls.Primitives;
+using CommunityToolkit.Mvvm.Input;
+using PixelInspector.Interop.User;
+using Tasler.Windows;
+using Tasler.Windows.ComponentModel;
+
+namespace PixelInspector.ViewModel;
+
+public partial class SelectToolViewModel
+	: ChildViewModelBase<MainViewModel>
+	, IToolMode
 {
-    using System;
-    using System.Windows;
-    using System.Windows.Controls.Primitives;
-    using System.Windows.Input;
-    using PixelInspector.Interop.User;
-    using Tasler.ComponentModel;
-    using Tasler.Windows;
+	#region Instance Fields
+	private Point _dragStart;
+	private Rect _dragRect = Rect.Empty;
+	private double _lastHorizontalChange;
+	private double _lastVerticalChange;
+	#endregion Instance Fields
 
-    public class SelectToolViewModel
-        : ChildViewModel<MainViewModel>
-        , IToolMode
-    {
-        #region Instance Fields
-        private Point _dragStart;
-        private Rect _dragRect = Rect.Empty;
-        private double _lastHorizontalChange;
-        private double _lastVerticalChange;
-        #endregion Instance Fields
+	#region Constructors
+	public SelectToolViewModel(MainViewModel parent)
+		: base(parent)
+	{
+	}
+	#endregion Constructors
 
-        #region Constructors
-        public SelectToolViewModel(MainViewModel parent)
-            : base(parent)
-        {
-        }
-        #endregion Constructors
+	#region Commands
 
-        #region Commands
+	#region DragStartedCommand
+	[RelayCommand]
+	private void DragStarted(DragStartedEventArgs e)
+	{
+		// Get the point where the mouse was clicked
+		_dragStart = this.Parent!.ZoomedMousePosition;
 
-        #region DragStartedCommand
-        public ICommand DragStartedCommand
-        {
-            get
-            {
-                return _dragStartedCommand ??
-                    (_dragStartedCommand = new RelayCommand<DragStartedEventArgs>(this.DragStarted));
-            }
-        }
-        private RelayCommand<DragStartedEventArgs> _dragStartedCommand;
+		// Get the drag rect
+		_dragRect = new Rect(_dragStart.X, _dragStart.Y, 0, 0);
+		_dragRect.Inflate(
+				Math.Abs(UserApi.GetSystemMetrics(SM.CxDrag)),
+				Math.Abs(UserApi.GetSystemMetrics(SM.CyDrag)));
 
-        private void DragStarted(DragStartedEventArgs e)
-        {
-            // Get the point where the mouse was clicked
-            _dragStart = this.Parent.ZoomedMousePosition;
+		_lastHorizontalChange = _lastVerticalChange = 0;
+		this.Parent.Selection.UpdateZoomedRectangleActualFromInput(null);
+		e.Handled = true;
+	}
+	#endregion DragStartedCommand
 
-            // Get the drag rect
-            _dragRect = new Rect(_dragStart.X, _dragStart.Y, 0, 0);
-            _dragRect.Inflate(
-                Math.Abs(UserApi.GetSystemMetrics(SM.CxDrag)),
-                Math.Abs(UserApi.GetSystemMetrics(SM.CyDrag)));
+	#region DragDeltaCommand
+	[RelayCommand]
+	private void DragDelta(DragDeltaEventArgs e)
+	{
+		// Calculate the change
+		double horizontalChange = e.HorizontalChange - _lastHorizontalChange;
+		double verticalChange = e.VerticalChange - _lastVerticalChange;
+		_lastHorizontalChange = e.HorizontalChange;
+		_lastVerticalChange = e.VerticalChange;
 
-            _lastHorizontalChange = _lastVerticalChange = 0;
-            this.Parent.Selection.UpdateZoomedRectangleActualFromInput(null);
-            e.Handled = true;
-        }
-        #endregion DragStartedCommand
+		// Check to see if the mosue has moved outside of the drag rect
+		if (!_dragRect.IsEmpty && _dragRect.Contains(this.Parent!.ZoomedMousePosition))
+			_dragRect = Rect.Empty;
 
-        #region DragDeltaCommand
-        public ICommand DragDeltaCommand
-        {
-            get
-            {
-                return _dragDeltaCommand ??
-                    (_dragDeltaCommand = new RelayCommand<DragDeltaEventArgs>(this.DragDelta));
-            }
-        }
-        private RelayCommand<DragDeltaEventArgs> _dragDeltaCommand;
+		// Only process if the mouse has moved outside of the drag rect
+		if (_dragRect.IsEmpty)
+		{
+			var rect = new ExtentRect(_dragStart, this.Parent!.ZoomedMousePosition);
+			this.Parent.Selection.UpdateZoomedRectangleActualFromInput(rect);
+		}
 
-        private void DragDelta(DragDeltaEventArgs e)
-        {
-            // Calculate the change
-            var horizontalChange = e.HorizontalChange - _lastHorizontalChange;
-            var verticalChange = e.VerticalChange - _lastVerticalChange;
-            _lastHorizontalChange = e.HorizontalChange;
-            _lastVerticalChange = e.VerticalChange;
+		e.Handled = true;
+	}
+	#endregion DragDeltaCommand
 
-            // Check to see if the mosue has moved outside of the drag rect
-            if (!_dragRect.IsEmpty && _dragRect.Contains(this.Parent.ZoomedMousePosition))
-                _dragRect = Rect.Empty;
+	#region DragCompletedCommand
+	[RelayCommand]
+	private void DragCompleted(DragCompletedEventArgs e)
+	{
+		this.ExitMode(e.Canceled);
+		e.Handled = true;
+	}
+	#endregion DragCompletedCommand
 
-            // Only process if the mouse has moved outside of the drag rect
-            if (_dragRect.IsEmpty)
-            {
-                var rect = new ExtentRect(_dragStart, this.Parent.ZoomedMousePosition);
-                this.Parent.Selection.UpdateZoomedRectangleActualFromInput(rect);
-            }
+	#endregion Commands
 
-            e.Handled = true;
-        }
-        #endregion DragDeltaCommand
+	#region IToolMode Members
 
-        #region DragCompletedCommand
-        public ICommand DragCompletedCommand
-        {
-            get
-            {
-                return _dragCompletedCommand ??
-                    (_dragCompletedCommand = new RelayCommand<DragCompletedEventArgs>(this.DragCompleted));
-            }
-        }
-        private RelayCommand<DragCompletedEventArgs> _dragCompletedCommand;
+	/// <summary>
+	/// Called before the mode is entered.
+	/// </summary>
+	public void EnterMode()
+	{
+	}
 
-        private void DragCompleted(DragCompletedEventArgs e)
-        {
-            this.ExitMode(e.Canceled);
-            e.Handled = true;
-        }
-        #endregion DragCompletedCommand
+	/// <summary>
+	/// Called to exit the mode.
+	/// </summary>
+	/// <param name="isReverting">If set to <c>true</c> the tool should revert any changes it made;
+	/// otherwise, it should commit its changes.</param>
+	public void ExitMode(bool isReverting)
+	{
+	}
 
-        #endregion Commands
-
-        #region IToolMode Members
-
-        /// <summary>
-        /// Called before the mode is entered.
-        /// </summary>
-        public void EnterMode()
-        {
-        }
-
-        /// <summary>
-        /// Called to exit the mode.
-        /// </summary>
-        /// <param name="isReverting">If set to <c>true</c> the tool should revert any changes it made;
-        /// otherwise, it should commit its changes.</param>
-        public void ExitMode(bool isReverting)
-        {
-        }
-
-        #endregion IToolMode Members
-    }
+	#endregion IToolMode Members
 }
