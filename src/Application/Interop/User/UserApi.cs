@@ -15,7 +15,7 @@ public static class UserApi
 	#region Safe Methods
 
 	[DllImport(ApiLib, CharSet = CharSet.Auto, ExactSpelling = true)]
-	public static extern IntPtr SetCursor(IntPtr hcursor);
+	public static extern nint SetCursor(nint hcursor);
 
 	[DllImport(ApiLib, CharSet = CharSet.Auto, ExactSpelling = true)]
 	public static extern bool ClipCursor(RECT rect);
@@ -41,7 +41,7 @@ public static class UserApi
 			throw new Win32Exception();
 	}
 
-	public static SafeWindowHdc GetDC(IntPtr hwnd)
+	public static SafeWindowHdc GetDC(nint hwnd)
 	{
 		var hdc = Private.GetDC(hwnd);
 		if (hdc.IsInvalid)
@@ -56,27 +56,27 @@ public static class UserApi
 	[ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
 	[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 	[return: MarshalAs(UnmanagedType.Bool)]
-	public static extern bool ReleaseDC(IntPtr hwnd, IntPtr hDC);
+	public static extern bool ReleaseDC(nint hwnd, nint hDC);
 
 	[SuppressUnmanagedCodeSecurity]
 	[SecurityCritical]
 	[DllImport(ApiLib, CharSet = CharSet.Auto)]
-	public static extern IntPtr SendMessage(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam);
+	public static extern nint SendMessage(nint hwnd, int msg, nint wParam, nint lParam);
 
-	public static WINDOWPLACEMENT GetWindowPlacement(IntPtr hwnd)
+	public static WINDOWPLACEMENT GetWindowPlacement(nint hwnd)
 	{
 		WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
 		GetWindowPlacement(hwnd, placement);
 		return placement;
 	}
 
-	public static void GetWindowPlacement(IntPtr hwnd, WINDOWPLACEMENT placement)
+	public static void GetWindowPlacement(nint hwnd, WINDOWPLACEMENT placement)
 	{
 		if (!Private.GetWindowPlacement(hwnd, placement))
 			throw new Win32Exception();
 	}
 
-	public static void SetWindowPlacement(IntPtr hwnd, WINDOWPLACEMENT placement)
+	public static void SetWindowPlacement(nint hwnd, WINDOWPLACEMENT placement)
 	{
 		if (!Private.SetWindowPlacement(hwnd, placement))
 			throw new Win32Exception();
@@ -90,7 +90,7 @@ public static class UserApi
 		[SecurityCritical]
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-		public static extern SafeWindowHdc GetDC(IntPtr hwnd);
+		public static extern SafeWindowHdc GetDC(nint hwnd);
 
 		[SecurityCritical]
 		[SuppressUnmanagedCodeSecurity]
@@ -102,12 +102,12 @@ public static class UserApi
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool GetWindowPlacement(IntPtr hwnd, WINDOWPLACEMENT placement);
+		public static extern bool GetWindowPlacement(nint hwnd, WINDOWPLACEMENT placement);
 
 		[SecurityCritical]
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-		public static extern bool SetWindowPlacement(IntPtr hWnd, WINDOWPLACEMENT placement);
+		public static extern bool SetWindowPlacement(nint hWnd, WINDOWPLACEMENT placement);
 	}
 	#endregion Nested Types
 }

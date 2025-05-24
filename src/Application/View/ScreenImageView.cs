@@ -3,19 +3,28 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using PixelInspector.ViewModel;
+using	Tasler.ComponentModel;
+using	Tasler.Windows;
 
 namespace PixelInspector.View;
 
-public class ScreenImageView : Panel
+public class ScreenImageView : Panel, INotifyPropertyChanged
 {
 	#region Instance Fields
-	private bool isRendering;
+	private bool _isRendering;
+	private ViewSettingsViewModel _viewSettings;
 	#endregion Instance Fields
 
 	#region Constructors
 	public ScreenImageView()
 	{
-		this.DataContextChanged += this.RenderPanel_DataContextChanged;
+	}
+
+	public ScreenImageView(ScreenImageViewModel viewModel, ViewSettingsViewModel viewSettings)
+	{
+		_viewSettings = viewSettings;
+		this.HookDataContextAsViewModel(() => this.PropertyChanged?.Raise(this, nameof(this.ViewModel)));
+		this.DataContext = viewModel;
 	}
 	#endregion Constructors
 
@@ -34,17 +43,17 @@ public class ScreenImageView : Panel
 		if (this.ViewModel is null)
 			return;
 
-		this.isRendering = true;
-		this.ViewModel.Parent.ViewSettings.Model.RenderSize = this.RenderSize;
-		this.isRendering = false;
+		this._isRendering = true;
+		_viewSettings.Model.RenderSize = this.RenderSize;
+		this._isRendering = false;
 
 		// TODO: Account for DPI, etc.
 		// TODO: Figure out how to prevent multiple redraws of same size (if that is actually happening)
 		var renderSize = //this.RenderSize;
-			this.ViewModel.Parent.ViewSettings.Model.RenderSize; // = renderSize;
+			_viewSettings.Model.RenderSize; // = renderSize;
 
 		// Determine which bitmap to used based on the zoom factor
-		var zoomFactor = this.ViewModel.Parent.ViewSettings.Model.ZoomFactor;
+		var zoomFactor = _viewSettings.Model.ZoomFactor;
 		var isZoomedIn = zoomFactor > 1;
 		var bitmapViewModel = isZoomedIn ? this.ViewModel.ZoomedBitmap : this.ViewModel.SourceBitmap;
 		if (bitmapViewModel is not null)
@@ -65,34 +74,21 @@ public class ScreenImageView : Panel
 	}
 	#endregion Overrides
 
-	#region Private Implementation
-	private ScreenImageViewModel ViewModel { get; set; }
-	#endregion Private Implementation
+	#region Events
+	public event PropertyChangedEventHandler? PropertyChanged;
+	#endregion Events
+
+	#region Properties
+	public ScreenImageViewModel ViewModel => (ScreenImageViewModel)this.DataContext;
+	#endregion Properties
 
 	#region Event Handlers
-	private void RenderPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-	{
-		var oldViewModel = e.OldValue as ScreenImageViewModel;
-		if (oldViewModel is not null)
-		{
-			((INotifyPropertyChanged)oldViewModel).PropertyChanged -= this.ViewModel_PropertyChanged;
-		}
-
-		this.ViewModel = e.NewValue as ScreenImageViewModel;
-		if (this.ViewModel is not null)
-		{
-			((INotifyPropertyChanged)this.ViewModel).PropertyChanged += this.ViewModel_PropertyChanged;
-		}
-
-		this.InvalidateVisual();
-	}
-
-	private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		switch (e.PropertyName)
 		{
 			case nameof(ScreenImageViewModel.ZoomedBitmap):
-				if (!this.isRendering)
+				if (!this._isRendering)
 					this.InvalidateVisual();
 				break;
 		}

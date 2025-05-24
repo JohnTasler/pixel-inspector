@@ -1,5 +1,6 @@
 using System.Windows;
 using PixelInspector.ViewModel;
+using Tasler.Windows;
 
 namespace PixelInspector.View;
 
@@ -12,21 +13,22 @@ public partial class LocatingToolView : ToolViewUserControl
 	/// <summary>
 	/// Initializes a new instance of the <see cref="LocatingToolView"/> class.
 	/// </summary>
-	public LocatingToolView()
+	public LocatingToolView(LocatingToolViewModel viewModel)
 	{
 		this.InitializeComponent();
-		this.DataContextChanged += this.this_DataContextChanged;
-		this.Loaded += this.this_Loaded;
+		this.HookDataContextAsViewModel(this.RaiseDataContextPropertyChanged);
+		this.DataContext = viewModel;
+		this.Loaded += this.View_Loaded;
 	}
 	#endregion Constructors
 
-	#region Private Implementation
-	private LocatingToolViewModel ViewModel => (this.DataContext as LocatingToolViewModel)!;
+	public LocatingToolViewModel ViewModel => (this.DataContext as LocatingToolViewModel)!;
 
+	#region Private Implementation
 	private void EnterDragWindow(Point offset, bool isFromMouseClick)
 	{
 		// Get the view settings
-		var viewSettings = this.ViewModel.Parent!.ViewSettings;
+		var viewSettings = this.ViewModel.Parent.ViewSettings;
 
 		// Compute the rectangle
 		var rect = new Rect(viewSettings.Model.SourceSize);
@@ -42,16 +44,18 @@ public partial class LocatingToolView : ToolViewUserControl
 		this.Visibility = Visibility.Hidden;
 		window.Show();
 	}
-	#endregion Private Implementation
 
-	#region Event Handlers
-	private void this_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+	private void RaiseDataContextPropertyChanged()
 	{
+		this.RaisePropertyChanged(nameof(this.ViewModel));
+
 		if (this.ViewModel is not null && this.IsLoaded)
 			this.EnterDragWindow(this.ViewModel.Offset, this.ViewModel.IsFromMouseClick);
 	}
+	#endregion Private Implementation
 
-	private void this_Loaded(object sender, RoutedEventArgs e)
+	#region Event Handlers
+	private void View_Loaded(object sender, RoutedEventArgs e)
 	{
 		if (this.ViewModel is not null)
 			this.EnterDragWindow(this.ViewModel.Offset, this.ViewModel.IsFromMouseClick);

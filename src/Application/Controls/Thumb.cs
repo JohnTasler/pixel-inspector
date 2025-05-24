@@ -1,16 +1,17 @@
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using ThumbBase = System.Windows.Controls.Primitives.Thumb;
 
 namespace PixelInspector.Controls;
 
 /// <summary>
 /// </summary>
-public class Thumb : System.Windows.Controls.Primitives.Thumb
+public class Thumb : ThumbBase
 {
 	#region Instance Fields
 	private bool _wasFocusable;
-	private IInputElement _previouslyFocusedElement;
+	private IInputElement? _previouslyFocusedElement;
 	#endregion Instance Fields
 
 	#region Constructors

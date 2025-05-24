@@ -1,4 +1,5 @@
 using PixelInspector.ViewModel;
+using Tasler.Windows;
 
 namespace PixelInspector.View;
 
@@ -11,9 +12,13 @@ public partial class MoveToolView : ToolViewUserControl
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MoveToolView"/> class.
 	/// </summary>
-	public MoveToolView()
+	public MoveToolView(MoveToolViewModel viewModel)
 	{
 		this.InitializeComponent();
+		this.HookDataContextAsViewModel(() => this.RaisePropertyChanged(nameof(this.ViewModel)));
+		this.DataContext = viewModel;
 	}
 	#endregion Constructors
+
+	public MoveToolViewModel ViewModel => (MoveToolViewModel)this.DataContext;
 }

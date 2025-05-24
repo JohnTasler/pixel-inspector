@@ -60,7 +60,7 @@ public partial class MoveToolViewModel
 		_lastVerticalChange = e.VerticalChange;
 
 		var sourceOrigin = this.SourceOriginActual;
-		var zoomFactor = this.Parent!.ViewSettings.Model.ZoomFactor;
+		var zoomFactor = this.Parent.ViewSettings.Model.ZoomFactor;
 		var xOffset = -horizontalChange / zoomFactor;
 		var yOffset = -verticalChange / zoomFactor;
 
@@ -89,7 +89,7 @@ public partial class MoveToolViewModel
 	/// </summary>
 	public void EnterMode()
 	{
-		_previousSourceOrigin = this.SourceOriginActual = this.Parent!.ViewSettings.Model.SourceOrigin;
+		_previousSourceOrigin = this.SourceOriginActual = this.Parent.ViewSettings.Model.SourceOrigin;
 	}
 
 	/// <summary>
@@ -107,7 +107,7 @@ public partial class MoveToolViewModel
 		}
 		else
 		{
-			this.Parent!.ViewSettings.Model.SourceOrigin = this.SourceOrigin;
+			this.Parent.ViewSettings.Model.SourceOrigin = this.SourceOrigin;
 			this.EnterMode();
 		}
 	}

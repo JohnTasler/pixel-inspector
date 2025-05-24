@@ -5,11 +5,13 @@ namespace PixelInspector;
 
 public class VisualStyleDictionaryExtension : ThemeDictionaryExtension
 {
-	private const string componentToken = ";component/";
+	private const string c_componentToken = ";component/";
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="VisualStyleDictionaryExtension"/> class.
 	/// </summary>
+	/// <param name="assemblyName">Name of the assembly.</param>
+	/// <param name="subFolder">The sub folder to insert before the <c>Themes</c> subfolder.</param>
 	public VisualStyleDictionaryExtension()
 	{
 	}
@@ -25,7 +27,7 @@ public class VisualStyleDictionaryExtension : ThemeDictionaryExtension
 		this.SubFolder = subFolder;
 	}
 
-	public string SubFolder { get; set; }
+	public string? SubFolder { get; set; }
 
 	/// <summary>
 	/// Returns an object that should be set on the property where this extension is applied.
@@ -43,7 +45,7 @@ public class VisualStyleDictionaryExtension : ThemeDictionaryExtension
 	{
 		// Use the name of the entry assembly, if not specified
 		if (string.IsNullOrWhiteSpace(base.AssemblyName))
-			base.AssemblyName = Assembly.GetEntryAssembly().GetName().Name;
+			base.AssemblyName = Assembly.GetEntryAssembly()?.GetName().Name;
 
 		// Get the Uri formatted by the base class
 		var value = (Uri)base.ProvideValue(serviceProvider);
@@ -54,7 +56,7 @@ public class VisualStyleDictionaryExtension : ThemeDictionaryExtension
 			var subFolder = this.SubFolder.Trim('/', '\\');
 			if (subFolder.Length > 0)
 			{
-				var newUriString = value.OriginalString.Replace(componentToken, componentToken + subFolder + "/");
+				var newUriString = value.OriginalString.Replace(c_componentToken, c_componentToken + subFolder + "/");
 				value = new Uri(newUriString, UriKind.RelativeOrAbsolute);
 			}
 		}

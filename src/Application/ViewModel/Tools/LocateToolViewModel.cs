@@ -26,7 +26,7 @@ public class LocateToolViewModel
 	/// </summary>
 	public void EnterMode()
 	{
-		_previousToolState = this.Parent!.ToolState;
+		_previousToolState = this.Parent.ToolState;
 	}
 
 	/// <summary>
@@ -40,7 +40,7 @@ public class LocateToolViewModel
 			return;
 
 		using var scope = new DisposeScopeExit(() => _isExiting = true, () => _isExiting = false);
-		this.Parent!.ToolState = _previousToolState;
+		this.Parent.ToolState = _previousToolState;
 	}
 
 	#endregion IToolMode Members

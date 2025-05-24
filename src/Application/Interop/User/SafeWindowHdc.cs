@@ -5,7 +5,7 @@ namespace PixelInspector.Interop.User;
 public class SafeWindowHdc : SafeHdc
 {
 	#region Properties
-	public IntPtr WindowHandle { get; set; }
+	public nint WindowHandle { get; set; }
 	#endregion Properties
 
 	#region Overrides

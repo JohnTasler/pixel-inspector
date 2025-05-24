@@ -17,7 +17,7 @@ public partial class DragWindow : Window
 	private readonly FrameworkElement _ownerElement;
 	private readonly bool _isFromMouseClick;
 	private readonly Rect _innerRect;
-	private HwndSource _hwndSource;
+	private HwndSource? _hwndSource;
 	private Thickness _outerContentThickness;
 	#endregion Instance Fields
 
@@ -51,7 +51,7 @@ public partial class DragWindow : Window
 
 		this.Owner = Window.GetWindow(_ownerElement);
 		if (this.Owner is null)
-			throw new InvalidOperationException("The specified ownerElement is not yet hosted within a Window.");
+			throw new InvalidOperationException(Properties.Resources.OwnerElementNotYetHosted);
 
 		if (this.Owner.WindowState == WindowState.Normal)
 		{
@@ -60,7 +60,7 @@ public partial class DragWindow : Window
 			{
 				hwndSourceElement.AddHook(this.MessageHook_ForOwner);
 				if (_isFromMouseClick)
-					SendMessage(hwndSourceElement.Handle, WM_LBUTTONUP, IntPtr.Zero, IntPtr.Zero);
+					SendMessage(hwndSourceElement.Handle, WM_LBUTTONUP, nint.Zero, nint.Zero);
 				Mouse.SetCursor(this.Cursor);
 			}
 			else
@@ -71,7 +71,7 @@ public partial class DragWindow : Window
 
 		this.InitializeComponent();
 
-		this.Loaded += this.this_Loaded;
+		this.Loaded += this.DragWindow_Loaded;
 	}
 	#endregion Constructors
 
@@ -142,8 +142,11 @@ public partial class DragWindow : Window
 	#region Private Implementation
 	private void EnterMoveMode()
 	{
+		if (_hwndSource is null)
+			return;
+
 		int sysCommand = _isFromMouseClick ? SC_MOVE_CAPTION : SC_MOVE;
-		SendMessage(_hwndSource.Handle, WM_SYSCOMMAND, (IntPtr)sysCommand, IntPtr.Zero);
+		SendMessage(_hwndSource.Handle, WM_SYSCOMMAND, (nint)sysCommand, nint.Zero);
 	}
 
 	private void ExitMoveMode()
@@ -152,19 +155,19 @@ public partial class DragWindow : Window
 		base.Dispatcher.BeginInvoke(new Action(() => this.Close()));
 	}
 
-	private IntPtr MessageHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+	private nint MessageHook(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
 	{
 		switch (msg)
 		{
 			case WM_NCHITTEST:
 				Mouse.SetCursor(this.Cursor);
 				handled = true;
-				return (IntPtr)1;
+				return (nint)1;
 
 			case WM_MOUSEMOVE:
 				this.ExitMoveMode();
 				handled = true;
-				return IntPtr.Zero;
+				return nint.Zero;
 
 			case WM_EXITSIZEMOVE:
 				this.ExitMoveMode();
@@ -172,40 +175,40 @@ public partial class DragWindow : Window
 
 			case WM_MOUSEACTIVATE:
 				handled = true;
-				return (IntPtr)3;
+				return (nint)3;
 		}
 
-		return IntPtr.Zero;
+		return nint.Zero;
 	}
 
-	private IntPtr MessageHook_ForOwner(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+	private nint MessageHook_ForOwner(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
 	{
 		switch (msg)
 		{
 			case WM_NCHITTEST:
 				Mouse.SetCursor(this.Cursor);
 				handled = true;
-				return (IntPtr)1;
+				return (nint)1;
 
 			case WM_NCACTIVATE:
 				handled = true;
-				return IntPtr.Zero;
+				return nint.Zero;
 		}
 
-		return IntPtr.Zero;
+		return nint.Zero;
 	}
 	#endregion Private Implementation
 
 	#region Event Handlers
-	private void this_Loaded(object sender, RoutedEventArgs e)
+	private void DragWindow_Loaded(object sender, RoutedEventArgs e)
 	{
 		// Compute the offsets of the inner content
 		var topLeft = this.PART_InnerContent.TranslatePoint(new Point(0, 0), this);
 		var bottomRight = this.PART_InnerContent.TranslatePoint(
-							new Point(this.PART_InnerContent.ActualWidth, this.PART_InnerContent.ActualHeight), this);
+			new Point(this.PART_InnerContent.ActualWidth, this.PART_InnerContent.ActualHeight), this);
 
 		_outerContentThickness = new Thickness(
-				topLeft.X, topLeft.Y, this.ActualWidth - bottomRight.X, this.ActualHeight - bottomRight.Y);
+			topLeft.X, topLeft.Y, this.ActualWidth - bottomRight.X, this.ActualHeight - bottomRight.Y);
 
 		var outerRect = _innerRect.Inflate(_outerContentThickness);
 
@@ -232,10 +235,10 @@ public partial class DragWindow : Window
 	#region Platform Invoke
 
 	[DllImport("user32.dll", CharSet = CharSet.Auto)]
-	private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+	private static extern nint SendMessage(nint hWnd, int msg, nint wParam, nint lParam);
 
 	[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-	public static extern IntPtr SetCursor(IntPtr hcursor);
+	public static extern nint SetCursor(nint hcursor);
 
 	private const int WM_MOUSELEAVE = 0x02A3;
 	private const int WM_EXITSIZEMOVE = 0x0232;

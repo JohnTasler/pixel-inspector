@@ -5,15 +5,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using PixelInspector.Model;
-using Tasler.ComponentModel;
 
 namespace PixelInspector.ViewModel;
 
 public class BitmapViewModel : ObservableObject
 {
-	public BitmapViewModel()
+	public BitmapViewModel(BitmapModel model)
 	{
-		this.Model = new BitmapModel();
+		this.Model = model;
 	}
 
 	internal BitmapModel Model { get; private set; }
@@ -51,7 +50,7 @@ public class BitmapViewModel : ObservableObject
 			if (_bitmapSource is null)
 			{
 				//this.bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
-				//  this.Model.Bitmap.Handle, IntPtr.Zero, Int32Rect.Empty, null);
+				//  this.Model.Bitmap.Handle, nint.Zero, Int32Rect.Empty, null);
 
 				this.Model.GetSize(out int cx, out int cy);
 
@@ -88,7 +87,7 @@ public class BitmapViewModel : ObservableObject
 		}
 	}
 
-	private static IEnumerable<Color> GetPixelsInRows(byte[] bytes, IntPtr pRow, int cx)
+	private static IEnumerable<Color> GetPixelsInRows(byte[] bytes, nint pRow, int cx)
 	{
 		for (var x = 0; x < cx; ++x)
 		{

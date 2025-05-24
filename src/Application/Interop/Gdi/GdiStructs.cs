@@ -7,7 +7,7 @@ public class LOGBRUSH
 {
 	public BrushStyle Style;
 	public uint       Color;
-	public IntPtr     Hatch;
+	public nint     Hatch;
 }
 
 [StructLayout(LayoutKind.Sequential)]

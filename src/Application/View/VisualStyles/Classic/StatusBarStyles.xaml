@@ -41,11 +41,11 @@
 	</Style>
 
 	<Style TargetType="StatusBarItem" BasedOn="{StaticResource {x:Type StatusBarItem}}">
-		<Setter Property="MinWidth" Value="{Binding DesiredSize.Width, RelativeSource={x:Static RelativeSource.Self}}"/>
+		<Setter Property="MinWidth" Value="{Binding (DesiredSize.Width), RelativeSource={x:Static RelativeSource.Self}}"/>
 		<Setter Property="VerticalContentAlignment" Value="Stretch"/>
 		<Setter Property="Padding" Value="3,0"/>
-		<Setter Property="Tag" Value="{Binding Path=FullName, RelativeSource={x:Static RelativeSource.Self}, Converter={x:Static taz:TypeValueConverter.Instance}}" />
-		<Setter Property="Content" Value="{Binding Path=FullName, RelativeSource={x:Static RelativeSource.Self}, Converter={x:Static taz:TypeValueConverter.Instance}}" />
+		<Setter Property="Tag" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Converter={x:Static taz:TypeValueConverter.Instance}}" />
+		<Setter Property="Content" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Converter={x:Static taz:TypeValueConverter.Instance}}" />
 
 		<Setter Property="Template">
 			<Setter.Value>

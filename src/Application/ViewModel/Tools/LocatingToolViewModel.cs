@@ -45,8 +45,8 @@ public partial class LocatingToolViewModel
 	/// </summary>
 	public void EnterMode()
 	{
-		SourceOrigin = this.Parent!.ViewSettings.Model.SourceOrigin;
-		_previousToolState = this.Parent!.ToolState;
+		SourceOrigin = this.Parent.ViewSettings.Model.SourceOrigin;
+		_previousToolState = this.Parent.ToolState;
 	}
 
 	/// <summary>
@@ -65,12 +65,12 @@ public partial class LocatingToolViewModel
 		}
 		else
 		{
-			this.Parent!.ViewSettings.Model.SourceOrigin = this.SourceOrigin;
+			this.Parent.ViewSettings.Model.SourceOrigin = this.SourceOrigin;
 		}
 
 		using var scope = new DisposeScopeExit(() => _isExiting = true, () => _isExiting = false);
 
-		this.Parent!.ToolState = _previousToolState;
+		this.Parent.ToolState = _previousToolState;
 	}
 
 	#endregion IToolMode Members

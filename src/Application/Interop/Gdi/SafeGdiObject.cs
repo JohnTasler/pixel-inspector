@@ -11,13 +11,13 @@ public class SafeGdiObject : SafeHandle
 	}
 
 	protected SafeGdiObject(bool ownsHandle)
-		: base(IntPtr.Zero, ownsHandle)
+		: base(nint.Zero, ownsHandle)
 	{
 	}
 	#endregion Constructors
 
 	#region Properties
-	public IntPtr Handle
+	public nint Handle
 	{
 		get { return base.handle; }
 	}
@@ -26,7 +26,7 @@ public class SafeGdiObject : SafeHandle
 	#region Overrides
 	public override bool IsInvalid
 	{
-		get { return base.handle == IntPtr.Zero; }
+		get { return base.handle == nint.Zero; }
 	}
 
 	protected override bool ReleaseHandle()

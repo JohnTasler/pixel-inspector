@@ -1,6 +1,9 @@
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using PixelInspector.ViewModel;
+using Tasler.ComponentModel;
+using Tasler.Windows;
 
 namespace PixelInspector.View;
 
@@ -12,19 +15,21 @@ public partial class LocateToolView : ToolViewUserControl
 	/// <summary>
 	/// Initializes a new instance of the <see cref="LocateToolView"/> class.
 	/// </summary>
-	public LocateToolView()
+	public LocateToolView(LocateToolViewModel viewModel)
 	{
 		this.InitializeComponent();
+		this.HookDataContextAsViewModel(() => this.RaisePropertyChanged(nameof(this.ViewModel)));
+		this.DataContext = viewModel;
 	}
 
-	private LocateToolViewModel ViewModel => (LocateToolViewModel)this.DataContext;
+	public LocateToolViewModel ViewModel => (LocateToolViewModel)this.DataContext;
 
 	protected override void OnKeyDown(KeyEventArgs e)
 	{
 		switch (e.Key)
 		{
 			case Key.Enter:
-				this.ViewModel.Parent!.ChooseToolLocatingCommand.Execute(
+				this.ViewModel.Parent.ChooseToolLocatingCommand.Execute(
 						new LocatingToolViewModel.Parameters
 						{
 							Offset = new Point(this.ActualWidth / 2, this.ActualHeight / 2),

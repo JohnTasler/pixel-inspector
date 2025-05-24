@@ -33,7 +33,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tasler-dotnet", "tasler-dot
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{65E78DD8-2027-4E20-A2F1-3FF3D1743088}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PixelInspector", "src\Application\PixelInspector.Application.csproj", "{83DC7F04-3BE5-48FC-ABD8-56A74F1106C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PixelInspector.Application", "src\Application\PixelInspector.Application.csproj", "{83DC7F04-3BE5-48FC-ABD8-56A74F1106C4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "-", "-", "{168AA58E-4FCE-4CC1-97B3-AA19C42D1BBD}"
+	ProjectSection(SolutionItems) = preProject
+		..\tasler-dotnet\.editorconfig = ..\tasler-dotnet\.editorconfig
+		..\tasler-dotnet\.gitattributes = ..\tasler-dotnet\.gitattributes
+		..\tasler-dotnet\.gitignore = ..\tasler-dotnet\.gitignore
+		..\tasler-dotnet\Directory.Build.props = ..\tasler-dotnet\Directory.Build.props
+		..\tasler-dotnet\LICENSE = ..\tasler-dotnet\LICENSE
+		..\tasler-dotnet\nuget.config = ..\tasler-dotnet\nuget.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -132,6 +142,7 @@ Global
 		{91D821FA-1B55-428B-C101-EC0F7CADCEDB} = {65E78DD8-2027-4E20-A2F1-3FF3D1743088}
 		{2863D1B0-4C06-4806-A7C4-0A0D96A5569C} = {65E78DD8-2027-4E20-A2F1-3FF3D1743088}
 		{65E78DD8-2027-4E20-A2F1-3FF3D1743088} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{168AA58E-4FCE-4CC1-97B3-AA19C42D1BBD} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {38E81722-64FA-42CE-8F6E-94BD4B9B1ED4}

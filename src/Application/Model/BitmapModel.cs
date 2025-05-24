@@ -16,12 +16,12 @@ public class BitmapModel : IDisposable
 	private bool _isDisposed;
 	private int? _width;
 	private int? _height;
-	private SafePrivateHdc _hdc;
-	private SafeGdiObject _hbm;
-	private SafeGdiObject _hbmPrevious;
-	private MemoryMappedFile _section;
+	private SafePrivateHdc? _hdc;
+	private SafeGdiObject? _hbm;
+	private SafeGdiObject? _hbmPrevious;
+	private MemoryMappedFile? _section;
 	private long _sectionCapacity;
-	private IntPtr _ppvBits;
+	private nint _ppvBits;
 	#endregion Instance Fields
 
 	#region Finalizer
@@ -44,7 +44,7 @@ public class BitmapModel : IDisposable
 				Debug.Assert(_hbm is null);
 				Debug.Assert(_section is null);
 				Debug.Assert(_sectionCapacity == 0);
-				Debug.Assert(_ppvBits == IntPtr.Zero);
+				Debug.Assert(_ppvBits == nint.Zero);
 			}
 			else if (_hdc is not null && !_hdc.IsInvalid)
 			{
@@ -52,14 +52,14 @@ public class BitmapModel : IDisposable
 				Debug.Assert(_hbm is not null && !_hbm.IsInvalid);
 				Debug.Assert(_section is not null);
 				Debug.Assert(_sectionCapacity != 0);
-				Debug.Assert(_ppvBits != IntPtr.Zero);
+				Debug.Assert(_ppvBits != nint.Zero);
 			}
 
 			return _isDisposed;
 		}
 	}
 
-	public SafePrivateHdc DC
+	public SafePrivateHdc? DC
 	{
 		get
 		{
@@ -69,7 +69,7 @@ public class BitmapModel : IDisposable
 		}
 	}
 
-	public SafeGdiObject Bitmap
+	public SafeGdiObject? Bitmap
 	{
 		get
 		{
@@ -79,7 +79,7 @@ public class BitmapModel : IDisposable
 		}
 	}
 
-	public MemoryMappedFile Section
+	public MemoryMappedFile? Section
 	{
 		get
 		{
@@ -88,7 +88,7 @@ public class BitmapModel : IDisposable
 		}
 	}
 
-	public IntPtr Bits
+	public nint Bits
 	{
 		get
 		{
@@ -97,10 +97,8 @@ public class BitmapModel : IDisposable
 		}
 	}
 
-	public int Stride
-	{
-		get { return GetStride(_width.GetValueOrDefault()); }
-	}
+	public int Stride => GetStride(_width.GetValueOrDefault());
+
 	#endregion Properties
 
 	#region Methods
@@ -145,7 +143,7 @@ public class BitmapModel : IDisposable
 		// Create the memory DC if needed
 		if (_hdc is null || _hdc.IsInvalid)
 		{
-			using (var hdcScreen = UserApi.GetDC(IntPtr.Zero))
+			using (var hdcScreen = UserApi.GetDC(nint.Zero))
 				_hdc = GdiApi.CreateCompatibleDC(hdcScreen);
 		}
 
@@ -179,7 +177,7 @@ public class BitmapModel : IDisposable
 
 	public void Dispose()
 	{
-		if (!this.IsDisposed)
+		if (!this.IsDisposed && _hdc is not null && _hbmPrevious is not null)
 		{
 			using (_hdc)
 			using (_hbm)
@@ -192,7 +190,7 @@ public class BitmapModel : IDisposable
 				_hbmPrevious = null;
 				_hbm = null;
 				_hdc = null;
-				_ppvBits = IntPtr.Zero;
+				_ppvBits = nint.Zero;
 			}
 
 			GC.SuppressFinalize(this);

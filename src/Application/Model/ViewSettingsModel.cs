@@ -13,8 +13,9 @@ public partial class ViewSettingsModel : ObservableObject
 	#endregion Constants
 
 	#region Constructors
-	public ViewSettingsModel()
+	public ViewSettingsModel(WindowPlacementModel windowPlacement)
 	{
+		_windowPlacement = windowPlacement;
 	}
 	#endregion Constructors
 
@@ -82,7 +83,7 @@ public partial class ViewSettingsModel : ObservableObject
 
 	[ObservableProperty]
 	[property: XmlElement]
-	private WindowPlacementModel _windowPlacement = new();
+	private WindowPlacementModel _windowPlacement;
 
 	partial void OnWindowPlacementChanging(WindowPlacementModel value)
 	{

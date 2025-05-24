@@ -27,7 +27,7 @@ public static class GdiApi
 			if (double.IsNaN(dpiScaleX))
 			{
 				int logPixels;
-				using (var hdcScreen = UserApi.GetDC(IntPtr.Zero))
+				using (var hdcScreen = UserApi.GetDC(nint.Zero))
 					logPixels = Private.GetDeviceCaps(hdcScreen, DeviceCapability.LOGPIXELSX);
 				var scale = 96.0 / logPixels;
 				Interlocked.Exchange(ref dpiScaleX, scale);
@@ -48,7 +48,7 @@ public static class GdiApi
 			if (double.IsNaN(dpiScaleY))
 			{
 				int logPixels;
-				using (var hdcScreen = UserApi.GetDC(IntPtr.Zero))
+				using (var hdcScreen = UserApi.GetDC(nint.Zero))
 					logPixels = Private.GetDeviceCaps(hdcScreen, DeviceCapability.LOGPIXELSX);
 				var scale = 96.0 / logPixels;
 				Interlocked.Exchange(ref dpiScaleY, scale);
@@ -79,15 +79,15 @@ public static class GdiApi
 		return hbm;
 	}
 
-	public static SafeGdiObjectOwned CreateDIBSection(SafeHdc hdc, BITMAPINFOHEADER pbmi, ref IntPtr ppvBits)
+	public static SafeGdiObjectOwned CreateDIBSection(SafeHdc hdc, BITMAPINFOHEADER pbmi, ref nint ppvBits)
 	{
-		var hbm = Private.CreateDIBSection(hdc, pbmi, 0, ref ppvBits, IntPtr.Zero, 0);
+		var hbm = Private.CreateDIBSection(hdc, pbmi, 0, ref ppvBits, nint.Zero, 0);
 		if (hbm.IsInvalid)
 			throw new Win32Exception();
 		return hbm;
 	}
 
-	public static SafeGdiObjectOwned CreateDIBSection(SafeHdc hdc, BITMAPINFOHEADER pbmi, MemoryMappedFile section, ref IntPtr ppvBits)
+	public static SafeGdiObjectOwned CreateDIBSection(SafeHdc hdc, BITMAPINFOHEADER pbmi, MemoryMappedFile section, ref nint ppvBits)
 	{
 		var hbm = Private.CreateDIBSection(hdc, pbmi, 0, ref ppvBits, section.SafeMemoryMappedFileHandle, 0);
 		if (hbm.IsInvalid)
@@ -95,7 +95,7 @@ public static class GdiApi
 		return hbm;
 	}
 
-	public static SafeGdiObjectOwned CreateDIBSection(SafeHdc hdc, int width, int height, ushort bpp, ref IntPtr ppvBits)
+	public static SafeGdiObjectOwned CreateDIBSection(SafeHdc hdc, int width, int height, ushort bpp, ref nint ppvBits)
 	{
 		BITMAPINFOHEADER bmi = new BITMAPINFOHEADER();
 		bmi.size = BITMAPINFOHEADER.MarhalSizeOf;
@@ -108,7 +108,7 @@ public static class GdiApi
 		return hbm;
 	}
 
-	public static SafeGdiObjectOwned CreateDIBSection(SafeHdc hdc, int width, int height, ushort bpp, MemoryMappedFile section, ref IntPtr ppvBits)
+	public static SafeGdiObjectOwned CreateDIBSection(SafeHdc hdc, int width, int height, ushort bpp, MemoryMappedFile section, ref nint ppvBits)
 	{
 		BITMAPINFOHEADER bmi = new BITMAPINFOHEADER();
 		bmi.size = BITMAPINFOHEADER.MarhalSizeOf;
@@ -149,7 +149,7 @@ public static class GdiApi
 
 	public static void MoveTo(SafeHdc hdc, int x, int y)
 	{
-		if (!Private.MoveToEx(hdc, x, y, IntPtr.Zero))
+		if (!Private.MoveToEx(hdc, x, y, nint.Zero))
 			throw new Win32Exception();
 	}
 
@@ -248,13 +248,13 @@ public static class GdiApi
 	[SuppressUnmanagedCodeSecurity]
 	[ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
 	[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-	public static extern bool DeleteDC(IntPtr hDC);
+	public static extern bool DeleteDC(nint hDC);
 
 	[SecurityCritical]
 	[SuppressUnmanagedCodeSecurity]
 	[ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
 	[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-	public static extern bool DeleteObject(IntPtr hObject);
+	public static extern bool DeleteObject(nint hObject);
 
 	[SecurityCritical]
 	[SuppressUnmanagedCodeSecurity]
@@ -279,13 +279,13 @@ public static class GdiApi
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 		public static extern SafeGdiObjectOwned CreateDIBSection(SafeHdc hdc, BITMAPINFOHEADER pbmi,
-				int iUsage, ref IntPtr ppvBits, IntPtr hSection, int dwOffset);
+				int iUsage, ref nint ppvBits, nint hSection, int dwOffset);
 
 		[SecurityCritical]
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 		public static extern SafeGdiObjectOwned CreateDIBSection(SafeHdc hdc, BITMAPINFOHEADER pbmi,
-				int iUsage, ref IntPtr ppvBits, SafeMemoryMappedFileHandle hSection, int dwOffset);
+				int iUsage, ref nint ppvBits, SafeMemoryMappedFileHandle hSection, int dwOffset);
 
 		[SecurityCritical]
 		[SuppressUnmanagedCodeSecurity]
@@ -306,7 +306,7 @@ public static class GdiApi
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool MoveToEx(SafeHdc hdc, int x, int y, IntPtr lpPoint);
+		public static extern bool MoveToEx(SafeHdc hdc, int x, int y, nint lpPoint);
 
 		[SecurityCritical]
 		[SuppressUnmanagedCodeSecurity]

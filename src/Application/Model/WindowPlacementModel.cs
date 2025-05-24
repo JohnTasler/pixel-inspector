@@ -17,7 +17,7 @@ public class WindowPlacementModel : ObservableObject
 		_windowPlacement = new WINDOWPLACEMENT();
 	}
 
-	public WindowPlacementModel(IntPtr hwnd)
+	public WindowPlacementModel(nint hwnd)
 	{
 		Guard.IsNotDefault(hwnd);
 		_windowPlacement = UserApi.GetWindowPlacement(hwnd);
@@ -79,7 +79,7 @@ public class WindowPlacementModel : ObservableObject
 
 	#region Methods
 
-	public void Get(IntPtr hwnd)
+	public void Get(nint hwnd)
 	{
 		Guard.IsNotDefault(hwnd);
 
@@ -95,7 +95,7 @@ public class WindowPlacementModel : ObservableObject
 		this.Bottom = wp.rcNormalPosition.bottom;
 	}
 
-	public void Set(IntPtr hwnd)
+	public void Set(nint hwnd)
 	{
 		Guard.IsNotDefault(hwnd);
 		UserApi.SetWindowPlacement(hwnd, _windowPlacement);

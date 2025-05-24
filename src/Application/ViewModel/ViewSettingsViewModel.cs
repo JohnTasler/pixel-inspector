@@ -5,15 +5,13 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PixelInspector.Model;
 using Tasler.ComponentModel;
-using Tasler.Windows.ComponentModel;
 
 namespace PixelInspector.ViewModel;
 
-public partial class ViewSettingsViewModel : ChildViewModelBase<MainViewModel>, IProvideSourceOrigin
+public partial class ViewSettingsViewModel : ObservableObject, IProvideSourceOrigin
 {
 	#region Constructors
-	public ViewSettingsViewModel(MainViewModel parent, ViewSettingsModel model)
-		: base(parent)
+	public ViewSettingsViewModel(ViewSettingsModel model)
 	{
 		_model = model;
 

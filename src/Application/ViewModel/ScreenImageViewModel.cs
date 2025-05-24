@@ -11,7 +11,7 @@ using Tasler.Windows.ComponentModel;
 
 namespace PixelInspector.ViewModel;
 
-public partial class ScreenImageViewModel : ChildViewModelBase<MainViewModel>
+public partial class ScreenImageViewModel : ObservableObject
 {
 	#region Static Fields
 #if DEBUG
@@ -24,10 +24,13 @@ public partial class ScreenImageViewModel : ChildViewModelBase<MainViewModel>
 	#endregion Instance Fields
 
 	#region Constructors
-	public ScreenImageViewModel(MainViewModel parent)
-		: base(parent)
+	public ScreenImageViewModel(ViewSettingsViewModel viewSettings, BitmapViewModel sourceBitmap, BitmapViewModel zoomedBitmap)
 	{
-		this.Parent_PropertyChanged(parent, new PropertyChangedEventArgs(nameof(parent.ViewSettings)));
+		_viewSettings = viewSettings;
+		_sourceBitmap = sourceBitmap;
+		_zoomedBitmap = zoomedBitmap;
+
+		viewSettings.PropertyChanged += this.ViewSettings_PropertyChanged;
 
 		ComponentDispatcher.ThreadFilterMessage += this.ComponentDispatcher_ThreadPreprocessMessage;
 	}
@@ -39,10 +42,10 @@ public partial class ScreenImageViewModel : ChildViewModelBase<MainViewModel>
 	private bool _isRefreshNeeded;
 
 	public BitmapViewModel SourceBitmap =>  _sourceBitmap;
-	private BitmapViewModel _sourceBitmap = new();
+	private BitmapViewModel _sourceBitmap;
 
 	public BitmapViewModel ZoomedBitmap => _zoomedBitmap;
-	private BitmapViewModel _zoomedBitmap = new();
+	private BitmapViewModel _zoomedBitmap;
 	#endregion Properties
 
 	#region Methods
@@ -66,7 +69,7 @@ public partial class ScreenImageViewModel : ChildViewModelBase<MainViewModel>
 
 		// Copy from the screen to our source bitmap buffer
 		var hdcSource = this.SourceBitmap.Model.DC;
-		using (var hdcScreen = UserApi.GetDC(IntPtr.Zero))
+		using (var hdcScreen = UserApi.GetDC(nint.Zero))
 		{
 			UserApi.FillRect(hdcSource, GdiApi.GetStockObject(StockObject.GrayBrush), 0, 0, cxSrc, cySrc);
 
@@ -198,25 +201,6 @@ public partial class ScreenImageViewModel : ChildViewModelBase<MainViewModel>
 		if (msg.message == (int)WM.DisplayChange)
 		{
 			Debug.WriteLine("ScreenImageViewModel: WM_DISPLAYCHANGE wParam={0:X16} lParam={1:X16}", msg.wParam, msg.lParam);
-		}
-	}
-
-	private void Parent_PropertyChanged(object sender, PropertyChangedEventArgs e)
-	{
-		switch (e.PropertyName)
-		{
-			case nameof(MainViewModel.ViewSettings):
-				if (_viewSettings is not null)
-					((INotifyPropertyChanged)_viewSettings.Model).PropertyChanged -= this.ViewSettings_PropertyChanged;
-
-				_viewSettings = this.Parent!.ViewSettings;
-
-				if (_viewSettings is not null)
-				{
-					((INotifyPropertyChanged)_viewSettings.Model).PropertyChanged += this.ViewSettings_PropertyChanged;
-					this.ViewSettings_PropertyChanged(_viewSettings.Model, new PropertyChangedEventArgs(nameof(_viewSettings.Model.RenderSize)));
-				}
-				break;
 		}
 	}
 

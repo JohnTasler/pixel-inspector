@@ -1,3 +1,5 @@
+using PixelInspector.ViewModel;
+using Tasler.Windows;
 
 namespace PixelInspector.View;
 
@@ -10,9 +12,13 @@ public partial class SelectionView : ToolViewUserControl
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SelectionView"/> class.
 	/// </summary>
-	public SelectionView()
+	public SelectionView(SelectionViewModel viewModel)
 	{
 		this.InitializeComponent();
+		this.HookDataContextAsViewModel(() => this.RaisePropertyChanged(nameof(this.ViewModel)));
+		this.DataContext = viewModel;
 	}
 	#endregion Constructors
+
+	public SelectionViewModel ViewModel => (SelectionViewModel)this.DataContext;
 }

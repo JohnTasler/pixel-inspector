@@ -32,7 +32,7 @@ public partial class SelectToolViewModel
 	private void DragStarted(DragStartedEventArgs e)
 	{
 		// Get the point where the mouse was clicked
-		_dragStart = this.Parent!.ZoomedMousePosition;
+		_dragStart = this.Parent.ZoomedMousePosition;
 
 		// Get the drag rect
 		_dragRect = new Rect(_dragStart.X, _dragStart.Y, 0, 0);
@@ -57,13 +57,13 @@ public partial class SelectToolViewModel
 		_lastVerticalChange = e.VerticalChange;
 
 		// Check to see if the mosue has moved outside of the drag rect
-		if (!_dragRect.IsEmpty && _dragRect.Contains(this.Parent!.ZoomedMousePosition))
+		if (!_dragRect.IsEmpty && _dragRect.Contains(this.Parent.ZoomedMousePosition))
 			_dragRect = Rect.Empty;
 
 		// Only process if the mouse has moved outside of the drag rect
 		if (_dragRect.IsEmpty)
 		{
-			var rect = new ExtentRect(_dragStart, this.Parent!.ZoomedMousePosition);
+			var rect = new ExtentRect(_dragStart, this.Parent.ZoomedMousePosition);
 			this.Parent.Selection.UpdateZoomedRectangleActualFromInput(rect);
 		}
 

@@ -28,15 +28,14 @@ public partial class MainViewModel : ObservableObject
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MainViewModel"/> class.
 	/// </summary>
-	public MainViewModel()
+	public MainViewModel(ViewSettingsModel viewSettings, ViewSettingsViewModel viewSettingsViewModel, ScreenImageViewModel screenImageViewModel)
 	{
 		// Initial state
 		this.ApplicationState = new ApplicationStateLoading();
 
 		// Get the latest view settings model from persistence
-		if (PixelInspector.Properties.Settings.Default.LatestViewSettings is null)
-			PixelInspector.Properties.Settings.Default.LatestViewSettings = new ViewSettingsModel();
-		this.ViewSettings = new ViewSettingsViewModel(this, PixelInspector.Properties.Settings.Default.LatestViewSettings);
+		PixelInspector.Properties.Settings.Default.LatestViewSettings = viewSettings;
+		this.ViewSettings = viewSettingsViewModel;
 
 		// Create a scaling transform if the system is using a non-standard DPI
 		var dpiScaleX = GdiApi.DpiScaleX;
@@ -51,7 +50,7 @@ public partial class MainViewModel : ObservableObject
 		}
 
 		// Create the ScreenImageViewModel
-		this.ScreenImage = new ScreenImageViewModel(this);
+		this.ScreenImage = screenImageViewModel;
 		this.ScreenImage.Subscribe(nameof(this.ScreenImage.IsRefreshNeeded),
 				s =>
 				{

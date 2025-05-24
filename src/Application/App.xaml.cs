@@ -1,48 +1,86 @@
 using System.ComponentModel;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using PixelInspector.Configuration;
+using PixelInspector.Model;
 using PixelInspector.View;
 using PixelInspector.ViewModel;
+using Tasler.ComponentModel;
+using Tasler.Windows;
 
 namespace PixelInspector;
 
 /// <summary>
 /// Interaction logic for App.xaml
 /// </summary>
-public partial class App : Application
+public partial class App
+	: HostedApplication
+	, IConfigureHostBuilder
+	, IPopulateViewModelMapper
 {
-	private MainViewModel _mainViewModel;
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="App"/> class.
-	/// </summary>
-	/// <exception cref="T:System.InvalidOperationException">
-	/// More than one instance of the <see cref="T:System.Windows.Application"/> class is created
-	/// per <see cref="T:System.AppDomain"/>.
-	/// </exception>
-	private App()
+	public App(IHost host)
+		: base(host)
 	{
-		this.InitializeComponent();
+	}
 
-		_mainViewModel = new MainViewModel();
-		_mainViewModel.PropertyChanged += this.MainViewModel_PropertyChanged;
+	public static void ConfigureHostBuilder(IHostApplicationBuilder builder)
+	{
+		// Add additional services and such
+		builder.Services
+			.AddActivatedSingleton<IInteractionService, InteractionService>()
 
-		this.MainWindow = new MainView();
-		this.MainWindow.DataContext = _mainViewModel;
-		this.MainWindow.Show();
+			.AddActivatedSingleton<BitmapModel, BitmapModel>()
+			.AddActivatedSingleton<ViewSettingsModel, ViewSettingsModel>()
+			.AddTransient<WindowPlacementModel, WindowPlacementModel>()
+
+			.AddTransient<BitmapViewModel, BitmapViewModel>()
+			.AddSingleton<ScreenImageViewModel, ScreenImageViewModel>()
+			.AddSingleton<SelectionViewModel, SelectionViewModel>()
+			.AddSingleton<ViewSettingsViewModel, ViewSettingsViewModel>()
+			.AddSingleton<LocateToolViewModel, LocateToolViewModel>()
+			.AddSingleton<LocatingToolViewModel, LocatingToolViewModel>()
+			.AddSingleton<MoveToolViewModel, MoveToolViewModel>()
+			.AddSingleton<SelectToolViewModel, SelectToolViewModel>()
+
+			.AddSingleton<ScreenImageView, ScreenImageView>()
+			.AddTransient<SelectionView, SelectionView>()
+			.AddTransient<LocateToolView, LocateToolView>()
+			.AddTransient<LocatingToolView, LocatingToolView>()
+			.AddTransient<MoveToolView, MoveToolView>()
+			.AddTransient<SelectToolView, SelectToolView>()
+			;
+	}
+
+	public static void Populate(IViewModelMapper mapper)
+	{
+		mapper
+			.AddMapping<LocateToolViewModel, LocateToolView>()
+			.AddMapping<LocatingToolViewModel, LocatingToolView>()
+			.AddMapping<MoveToolViewModel, MoveToolView>()
+			.AddMapping<ScreenImageViewModel, ScreenImageView>()
+			.AddMapping<SelectionViewModel, SelectionView>()
+			.AddMapping<SelectToolViewModel, SelectToolView>();
 	}
 
 	/// <summary>
-	/// Application Entry Point.
+	/// Application Entry Point
 	/// </summary>
 	[STAThread]
-	private static int Main()
+	public static int Main(string[] args)
 	{
 		PixelInspector.Properties.Settings.Default.SetAutoSaveDeferral(TimeSpan.FromSeconds(5));
-		var app = new App();
-		var result = app.Run();
+		int result = HostedApplication.MainCore<App, MainView, MainViewModel>(args);
 		PixelInspector.Properties.Settings.Default.ClearAutoSaveDeferral();
 		return result;
+	}
+
+	protected override void OnStartup(StartupEventArgs e)
+	{
+		base.OnStartup(e);
+
+		if (this.MainWindow.DataContext is INotifyPropertyChanged notifyPropertyChanged)
+			notifyPropertyChanged.PropertyChanged += this.MainViewModel_PropertyChanged;
 	}
 
 	private void MainViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -50,7 +88,7 @@ public partial class App : Application
 		switch (e.PropertyName)
 		{
 			case nameof(MainViewModel.ApplicationState):
-				if (_mainViewModel.ApplicationState is ApplicationStateUnloading)
+				if (sender is MainViewModel mainViewModel && mainViewModel.ApplicationState is ApplicationStateUnloading)
 					this.MainWindow.Close();
 				break;
 		}

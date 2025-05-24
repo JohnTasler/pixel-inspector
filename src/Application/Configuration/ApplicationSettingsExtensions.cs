@@ -34,7 +34,7 @@ public static partial class ApplicationSettingsExtensions
 		else
 		{
 			throw new InvalidOperationException(
-				"ApplicationsSettingsExtensions.ExpireAutoSaveDeferral called without first calling SetAutoSaveDeferral.");
+				Properties.Resources.ClearAutoSaveDeferralCalledBeforeSetAutoSaveDeferral);
 		}
 	}
 
@@ -51,12 +51,14 @@ public static partial class ApplicationSettingsExtensions
 		else
 		{
 			throw new InvalidOperationException(
-				"ApplicationsSettingsExtensions.ClearAutoSaveDeferral called without first calling SetAutoSaveDeferral.");
+				Properties.Resources.ClearAutoSaveDeferralCalledBeforeSetAutoSaveDeferral);
 		}
 	}
 
-	private static AutoSaveHelper GetAutoSaveHelper(ApplicationSettingsBase settings)
+	private static AutoSaveHelper? GetAutoSaveHelper(ApplicationSettingsBase settings)
 	{
-		return settings.Context.ContainsKey(_autoSaveHelperKey) ? settings.Context[_autoSaveHelperKey] as AutoSaveHelper : null;
+		return settings.Context.ContainsKey(_autoSaveHelperKey)
+			? settings.Context[_autoSaveHelperKey] as AutoSaveHelper
+			: null;
 	}
 }

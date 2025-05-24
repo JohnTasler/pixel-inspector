@@ -5,6 +5,7 @@ using System.Windows.Interop;
 using PixelInspector.Interop.User;
 using PixelInspector.ViewModel;
 using Tasler.ComponentModel;
+using Tasler.Windows;
 
 namespace PixelInspector.View;
 
@@ -17,15 +18,14 @@ public partial class MainView : Window, INotifyPropertyChanged
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MainView"/> class.
 	/// </summary>
-	public MainView()
+	public MainView(MainViewModel viewModel)
 	{
 		this.InitializeComponent();
 		this.Loaded += this.MainView_Loaded;
-		this.DataContextChanged += this.MainView_DataContextChanged;
+		this.HookDataContextAsViewModel(() => this.PropertyChanged?.Raise(this, nameof(this.ViewModel)));
+		this.DataContext = viewModel;
 	}
 	#endregion Constructors
-
-	public event PropertyChangedEventHandler? PropertyChanged;
 
 	#region Overrides
 	protected override void OnSourceInitialized(EventArgs e)
@@ -35,6 +35,10 @@ public partial class MainView : Window, INotifyPropertyChanged
 		base.OnSourceInitialized(e);
 	}
 	#endregion Overrides
+
+	#region Events
+	public event PropertyChangedEventHandler? PropertyChanged;
+	#endregion Events
 
 	#region Private Implementation
 	private bool HasSetWindowPlacement { get; set; }
@@ -62,7 +66,7 @@ public partial class MainView : Window, INotifyPropertyChanged
 		this.InvalidateVisual();
 	}
 
-	private IntPtr HwndSource_Hook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+	private nint HwndSource_Hook(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
 	{
 		var message = (WM)msg;
 		switch (message)
@@ -80,8 +84,7 @@ public partial class MainView : Window, INotifyPropertyChanged
 			case WM.ShowWindow:
 				if (!this.HasSetWindowPlacement && this.ViewModel is not null)
 				{
-					if (this.ViewModel.ViewSettings.Model.WindowPlacement is not null)
-						this.ViewModel.ViewSettings.Model.WindowPlacement.Set(hwnd);
+					this.ViewModel.ViewSettings.Model.WindowPlacement?.Set(hwnd);
 					this.HasSetWindowPlacement = true;
 				}
 				break;
@@ -91,7 +94,7 @@ public partial class MainView : Window, INotifyPropertyChanged
 				break;
 		}
 
-		return IntPtr.Zero;
+		return nint.Zero;
 	}
 
 	private void MainContent_PreviewMouseMove(object? sender, MouseEventArgs e)

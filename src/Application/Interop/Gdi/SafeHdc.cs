@@ -8,7 +8,7 @@ public abstract class SafeHdc : SafeHandle
 
 	#region Constructors
 	protected SafeHdc()
-		: base(IntPtr.Zero, true)
+		: base(nint.Zero, true)
 	{
 	}
 	#endregion Constructors
@@ -16,7 +16,7 @@ public abstract class SafeHdc : SafeHandle
 	#region Overrides
 	public override bool IsInvalid
 	{
-		get { return base.handle == IntPtr.Zero; }
+		get { return base.handle == nint.Zero; }
 	}
 
 	#endregion Overrides

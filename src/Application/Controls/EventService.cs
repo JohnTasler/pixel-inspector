@@ -62,7 +62,7 @@ public class RoutedEventBinding : Freezable
 	#region Properties
 
 	#region Event
-	public RoutedEvent RoutedEvent { get; set; }
+	public RoutedEvent? RoutedEvent { get; set; }
 	#endregion Event
 
 	#endregion Properties
@@ -71,12 +71,12 @@ public class RoutedEventBinding : Freezable
 
 	#region Command
 	public static readonly DependencyProperty CommandProperty =
-					DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(RoutedEventBinding));
+		DependencyProperty.Register(nameof(Command), typeof(ICommand), typeof(RoutedEventBinding));
 
 	public ICommand Command
 	{
-		get { return (ICommand)this.GetValue(CommandProperty); }
-		set { this.SetValue(CommandProperty, value); }
+		get => (ICommand)this.GetValue(CommandProperty);
+		set => this.SetValue(CommandProperty, value);
 	}
 	#endregion Command
 

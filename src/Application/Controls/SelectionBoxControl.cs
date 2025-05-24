@@ -16,7 +16,7 @@ public class SelectionBoxControl : Control
 	#region Instance Fields
 	private bool _hasProcessedInitialArrange;
 	private Thickness _outerContentThickness;
-	private FrameworkElement _partInnerContent;
+	private FrameworkElement? _partInnerContent;
 	#endregion Instance Fields
 
 	#region Constructors

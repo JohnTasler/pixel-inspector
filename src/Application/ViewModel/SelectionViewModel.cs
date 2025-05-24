@@ -116,7 +116,7 @@ public partial class SelectionViewModel : ChildViewModelBase<MainViewModel>
 		{
 			// Adjust the rectangle coordinates to the nearest zoom factor
 			var newRect = rect.Value;
-			var zoomFactor = this.Parent!.ViewSettings.Model.ZoomFactor;
+			var zoomFactor = this.Parent.ViewSettings.Model.ZoomFactor;
 
 			if (newRect.Width >= 0)
 			{
@@ -141,7 +141,7 @@ public partial class SelectionViewModel : ChildViewModelBase<MainViewModel>
 			}
 
 			// Adjust the TopLeft outward by a pixel if the space is needed for the grid lines
-			if (this.Parent!.ViewSettings.Model.ZoomFactor > 1.0)
+			if (this.Parent.ViewSettings.Model.ZoomFactor > 1.0)
 			{
 				var inflateLeft = newRect.Left > 0 ? 1 : 0;
 				var inflateTop = newRect.Top > 0 ? 1 : 0;
