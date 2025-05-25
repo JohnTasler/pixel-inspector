@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -26,7 +25,6 @@ public class ToolViewUserControl : UserControl, INotifyPropertyChanged
 		this.Loaded += this.UserControl_Loaded;
 	}
 	#endregion Constructors
-
 
 	#region Events
 	public event PropertyChangedEventHandler? PropertyChanged;

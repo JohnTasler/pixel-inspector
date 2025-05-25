@@ -66,21 +66,21 @@
 				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
 
-			<vw:ScreenImageView DataContext="{Binding ScreenImage}" />
+			<taz:HostedView Type="{x:Type vw:ScreenImageView}" DataContext="{Binding ScreenImage}" />
 
 			<ContentPresenter Content="{Binding ToolState}">
 				<ContentPresenter.Resources>
 					<DataTemplate DataType="{x:Type vm:MoveToolViewModel}">
-						<Border Child="{taz:ElementLocator vw:MoveToolView}" />
+						<taz:HostedView Type="{x:Type vw:MoveToolView}" />
 					</DataTemplate>
 					<DataTemplate DataType="{x:Type vm:SelectToolViewModel}">
-						<Border Child="{taz:ElementLocator vw:SelectToolView}" />
+						<taz:HostedView Type="{x:Type vw:SelectToolView}" />
 					</DataTemplate>
 					<DataTemplate DataType="{x:Type vm:LocateToolViewModel}">
-						<Border Child="{taz:ElementLocator {x:Type vw:LocatToolView}}" />
+						<taz:HostedView Type="{x:Type vw:LocateToolView}" />
 					</DataTemplate>
 					<DataTemplate DataType="{x:Type vm:LocatingToolViewModel}">
-						<Border Child="{taz:ElementLocator {x:Type vw:LocatingToolView}}" />
+						<taz:HostedView Type="{x:Type vw:LocatingToolView}" />
 					</DataTemplate>
 				</ContentPresenter.Resources>
 			</ContentPresenter>

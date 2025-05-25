@@ -9,10 +9,11 @@ public partial class SelectToolView : ToolViewUserControl
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SelectToolView"/> class.
 	/// </summary>
-	public SelectToolView()
+	public SelectToolView(SelectToolViewModel viewModel)
 	{
 		this.InitializeComponent();
 		this.HookDataContextAsViewModel(() => this.RaisePropertyChanged(nameof(this.ViewModel)));
+		this.DataContext = viewModel;
 	}
 	#endregion Constructors
 

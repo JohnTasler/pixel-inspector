@@ -16,10 +16,6 @@ public class ScreenImageView : Panel, INotifyPropertyChanged
 	#endregion Instance Fields
 
 	#region Constructors
-	public ScreenImageView()
-	{
-	}
-
 	public ScreenImageView(ScreenImageViewModel viewModel, ViewSettingsViewModel viewSettings)
 	{
 		_viewSettings = viewSettings;
@@ -94,5 +90,4 @@ public class ScreenImageView : Panel, INotifyPropertyChanged
 		}
 	}
 	#endregion Event Handlers
-
 }

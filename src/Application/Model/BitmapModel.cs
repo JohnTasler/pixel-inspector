@@ -164,7 +164,7 @@ public class BitmapModel : IDisposable
 	public int GetPixelColor(int x, int y)
 	{
 		this.VerifyNotDisposed();
-		return GdiApi.GetPixel(_hdc, x, y);
+		return GdiApi.GetPixel(_hdc!, x, y);
 	}
 
 	public static int GetStride(int cx)

@@ -42,7 +42,7 @@ public partial class MainView : Window, INotifyPropertyChanged
 
 	#region Private Implementation
 	private bool HasSetWindowPlacement { get; set; }
-	private MainViewModel ViewModel => (MainViewModel)this.DataContext;
+	public MainViewModel ViewModel => (MainViewModel)this.DataContext;
 	private HwndSource? HwndSource { get; set; }
 	#endregion Private Implementation
 
@@ -50,20 +50,6 @@ public partial class MainView : Window, INotifyPropertyChanged
 	private void MainView_Loaded(object? sender, RoutedEventArgs e)
 	{
 		Keyboard.Focus(this.mainContent);
-	}
-
-	private void MainView_DataContextChanged(object? sender, DependencyPropertyChangedEventArgs e)
-	{
-		if (e.OldValue is INotifyPropertyChanged oldViewModel)
-			oldViewModel.PropertyChanged -= this.ViewModel_PropertyChanged;
-
-		if (e.NewValue is MainViewModel viewModel)
-		{
-			viewModel.PropertyChanged += this.ViewModel_PropertyChanged;
-			this.PropertyChanged?.Raise(this, nameof(this.ViewModel));
-		}
-
-		this.InvalidateVisual();
 	}
 
 	private nint HwndSource_Hook(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
@@ -134,11 +120,11 @@ public partial class MainView : Window, INotifyPropertyChanged
 			e.Handled = true;
 
 			this.ViewModel.ChooseToolLocatingCommand.Execute(
-					new LocatingToolViewModel.Parameters
-					{
-						Offset = e.GetPosition((IInputElement)e.Source),
-						IsFromMouseClick = true
-					}
+				new LocatingToolViewModel.Parameters
+				{
+					Offset = e.GetPosition((IInputElement)e.Source),
+					IsFromMouseClick = true
+				}
 			);
 		}
 	}

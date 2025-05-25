@@ -69,7 +69,7 @@ public partial class App
 	[STAThread]
 	public static int Main(string[] args)
 	{
-		PixelInspector.Properties.Settings.Default.SetAutoSaveDeferral(TimeSpan.FromSeconds(5));
+		PixelInspector.Properties.Settings.Default.SetAutoSaveDeferral(TimeSpan.FromSeconds(2));
 		int result = HostedApplication.MainCore<App, MainView, MainViewModel>(args);
 		PixelInspector.Properties.Settings.Default.ClearAutoSaveDeferral();
 		return result;

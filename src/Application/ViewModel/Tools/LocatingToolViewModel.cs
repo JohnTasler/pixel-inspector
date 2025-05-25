@@ -16,7 +16,12 @@ public partial class LocatingToolViewModel
 	#endregion Instance Fields
 
 	#region Constructors
-	public LocatingToolViewModel(MainViewModel parent, LocatingToolViewModel.Parameters parameters)
+	public LocatingToolViewModel(MainViewModel parent)
+		: this(parent, null)
+	{
+	}
+
+	public LocatingToolViewModel(MainViewModel parent, LocatingToolViewModel.Parameters? parameters)
 		: base(parent)
 	{
 		if (parameters is not null)

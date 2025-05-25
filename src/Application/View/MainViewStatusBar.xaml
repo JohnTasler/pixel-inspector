@@ -14,10 +14,6 @@
 	Visibility="{Binding ViewSettings.Model.IsStatusBarVisible,Converter={StaticResource BooleanToVisibilityConverter}}"
 	>
 	<StatusBar>
-
-		<StatusBarItem>
-		</StatusBarItem>
-
 		<StatusBarItem>
 			<StackPanel Orientation="Horizontal">
 				<Image
