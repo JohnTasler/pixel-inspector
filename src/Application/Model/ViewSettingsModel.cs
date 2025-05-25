@@ -10,12 +10,12 @@ public partial class ViewSettingsModel : ObservableObject
 	#region Constants
 	private const double c_defaultAutoRefreshIntervalMilliseconds = 200;
 	private const double c_defaultZoomFactor = 6;
+	private const ColorValueDisplayFormat c_defaultColorValueDisplayFormat = ColorValueDisplayFormat.Hex;
 	#endregion Constants
 
 	#region Constructors
-	public ViewSettingsModel(WindowPlacementModel windowPlacement)
+	public ViewSettingsModel()
 	{
-		_windowPlacement = windowPlacement;
 	}
 	#endregion Constructors
 
@@ -27,7 +27,7 @@ public partial class ViewSettingsModel : ObservableObject
 
 	[ObservableProperty]
 	[property: XmlAttribute]
-	private ColorValueDisplayFormat _colorValueDisplayFormat = ColorValueDisplayFormat.Hex;
+	private ColorValueDisplayFormat _colorValueDisplayFormat = c_defaultColorValueDisplayFormat;
 
 	[ObservableProperty]
 	[property: XmlAttribute]
@@ -83,7 +83,7 @@ public partial class ViewSettingsModel : ObservableObject
 
 	[ObservableProperty]
 	[property: XmlElement]
-	private WindowPlacementModel _windowPlacement;
+	private WindowPlacementModel _windowPlacement = new();
 
 	partial void OnWindowPlacementChanging(WindowPlacementModel value)
 	{
