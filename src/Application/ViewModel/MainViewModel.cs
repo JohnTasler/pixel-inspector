@@ -7,11 +7,13 @@ using System.Windows.Threading;
 using CommunityToolkit.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using PixelInspector.Interop.Gdi;
 using PixelInspector.Model;
 using Tasler;
 using Tasler.ComponentModel;
 using Tasler.Text;
+using Tasler.Windows;
 
 namespace PixelInspector.ViewModel;
 
@@ -22,19 +24,20 @@ public partial class MainViewModel : ObservableObject
 	private DispatcherTimer? _refreshTimer;
 	private BitmapModel? _sourceBitmapBuffer;
 	private BitmapModel? _zoomedBitmapBuffer;
+	private IPropertyObserverItem _screenImageObserver;
 	#endregion Instance Fields
 
 	#region Constructors
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MainViewModel"/> class.
 	/// </summary>
-	public MainViewModel(ViewSettingsModel viewSettings, ViewSettingsViewModel viewSettingsViewModel, ScreenImageViewModel screenImageViewModel)
+	public MainViewModel(ViewSettingsViewModel viewSettingsViewModel, ScreenImageViewModel screenImageViewModel)
 	{
 		// Initial state
 		this.ApplicationState = new ApplicationStateLoading();
 
 		// Get the latest view settings model from persistence
-		PixelInspector.Properties.Settings.Default.LatestViewSettings = viewSettings;
+		// PixelInspector.Properties.Settings.Default.LatestViewSettings = viewSettings;
 		this.ViewSettings = viewSettingsViewModel;
 
 		// Create a scaling transform if the system is using a non-standard DPI
@@ -51,12 +54,12 @@ public partial class MainViewModel : ObservableObject
 
 		// Create the ScreenImageViewModel
 		this.ScreenImage = screenImageViewModel;
-		this.ScreenImage.Subscribe(nameof(this.ScreenImage.IsRefreshNeeded),
-				s =>
-				{
-					if (s.IsRefreshNeeded)
-						this.RefreshBitmaps();
-				});
+		_screenImageObserver = this.ScreenImage.Subscribe(nameof(this.ScreenImage.IsRefreshNeeded),
+			s =>
+			{
+				if (s.IsRefreshNeeded)
+					this.RefreshBitmaps();
+			});
 
 		// Create the SelectionViewModel
 		this.Selection = new SelectionViewModel(this);
@@ -145,7 +148,7 @@ public partial class MainViewModel : ObservableObject
 	}
 
 	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(IsToolStateLocate), nameof(IsToolStateMove), nameof(IsToolStateSelect))]
+	[NotifyPropertyChangedFor(nameof(IsToolStateLocating), nameof(IsToolStateLocate), nameof(IsToolStateMove), nameof(IsToolStateSelect))]
 	private object? _toolState;
 
 	public bool IsToolStateLocate => this.ToolState is LocateToolViewModel;
@@ -334,7 +337,10 @@ public partial class MainViewModel : ObservableObject
 	#region ChooseToolLocatingCommand
 	[RelayCommand]
 	private void ChooseToolLocating(LocatingToolViewModel.Parameters parameters)
-		=> this.ToolState = new LocatingToolViewModel(this, parameters);
+	{
+		this.ToolState = HostedApplication.Current.Host.Services.GetService<LocatingToolViewModel>()?
+			.Initialize(parameters);
+	}
 	#endregion ChooseToolLocatingCommand
 
 	#region ChooseToolMoveCommand
@@ -487,8 +493,8 @@ public partial class MainViewModel : ObservableObject
 
 		// Update the SourceMousePositionColor property
 		this.SourceMousePositionColor = this.IsMouseInZoomedBounds
-				? this.ScreenImage.SourceBitmap.GetPixelColor(x, y)
-				: Colors.Transparent;
+			? this.ScreenImage.SourceBitmap.GetPixelColor(x, y)
+			: Colors.Transparent;
 
 		// Update the IsMouseOverSelection property
 		this.UpdateIsMouseOverSelection();

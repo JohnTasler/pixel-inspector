@@ -53,7 +53,6 @@ public static class UserApi
 
 	[SecurityCritical]
 	[SuppressUnmanagedCodeSecurity]
-	[ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
 	[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 	[return: MarshalAs(UnmanagedType.Bool)]
 	public static extern bool ReleaseDC(nint hwnd, nint hDC);

@@ -17,20 +17,17 @@ public partial class LocatingToolViewModel
 
 	#region Constructors
 	public LocatingToolViewModel(MainViewModel parent)
-		: this(parent, null)
-	{
-	}
-
-	public LocatingToolViewModel(MainViewModel parent, LocatingToolViewModel.Parameters? parameters)
 		: base(parent)
 	{
-		if (parameters is not null)
-		{
-			this.Offset = parameters.Offset;
-			this.IsFromMouseClick = parameters.IsFromMouseClick;
-		}
 	}
 	#endregion Constructors
+
+	public LocatingToolViewModel Initialize(LocatingToolViewModel.Parameters parameters)
+	{
+		this.Offset = parameters.Offset;
+		this.IsFromMouseClick = parameters.IsFromMouseClick;
+		return this;
+	}
 
 	#region Properties
 

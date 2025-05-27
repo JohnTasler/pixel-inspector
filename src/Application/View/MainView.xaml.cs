@@ -2,9 +2,11 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using Microsoft.Extensions.DependencyInjection;
 using PixelInspector.Interop.User;
 using PixelInspector.ViewModel;
 using Tasler.ComponentModel;
+using Tasler.ComponentModel.Hosting;
 using Tasler.Windows;
 
 namespace PixelInspector.View;
@@ -62,7 +64,7 @@ public partial class MainView : Window, INotifyPropertyChanged
 				if (this.ViewModel is not null)
 				{
 					if (this.ViewModel.ViewSettings.Model.WindowPlacement is null)
-						this.ViewModel.ViewSettings.Model.WindowPlacement = new Model.WindowPlacementModel();
+						this.ViewModel.ViewSettings.Model.WindowPlacement = new ();
 					this.ViewModel.ViewSettings.Model.WindowPlacement.Get(hwnd);
 				}
 				break;

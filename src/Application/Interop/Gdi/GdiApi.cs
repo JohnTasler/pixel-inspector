@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.IO.MemoryMappedFiles;
-using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Security;
 using Microsoft.Win32.SafeHandles;
@@ -246,13 +245,11 @@ public static class GdiApi
 
 	[SecurityCritical]
 	[SuppressUnmanagedCodeSecurity]
-	[ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
 	[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 	public static extern bool DeleteDC(nint hDC);
 
 	[SecurityCritical]
 	[SuppressUnmanagedCodeSecurity]
-	[ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
 	[DllImport(ApiLib, CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 	public static extern bool DeleteObject(nint hObject);
 

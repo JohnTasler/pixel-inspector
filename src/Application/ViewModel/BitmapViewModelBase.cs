@@ -8,11 +8,11 @@ using PixelInspector.Model;
 
 namespace PixelInspector.ViewModel;
 
-public class BitmapViewModel : ObservableObject
+public abstract class BitmapViewModelBase : ObservableObject
 {
-	public BitmapViewModel(BitmapModel model)
+	protected BitmapViewModelBase(BitmapModel model)
 	{
-		this.Model = model;
+		 this.Model = model;
 	}
 
 	internal BitmapModel Model { get; private set; }
@@ -54,12 +54,15 @@ public class BitmapViewModel : ObservableObject
 
 				this.Model.GetSize(out int cx, out int cy);
 
-				_bitmapSource = Imaging.CreateBitmapSourceFromMemorySection(
+				if (this.Model.Section is not null)
+				{
+					_bitmapSource = Imaging.CreateBitmapSourceFromMemorySection(
 						this.Model.Section.SafeMemoryMappedFileHandle.DangerousGetHandle(),
 						cx, cy, PixelFormats.Bgr24, BitmapModel.GetStride(cx), 0);
+				}
 			}
 
-			return _bitmapSource;
+			return _bitmapSource!;
 		}
 	}
 	private BitmapSource? _bitmapSource;

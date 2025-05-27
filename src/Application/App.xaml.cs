@@ -1,9 +1,11 @@
 using System.ComponentModel;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using PixelInspector.Configuration;
+using Microsoft.Extensions.Hosting;
 using PixelInspector.Model;
+using PixelInspector.Properties;
 using PixelInspector.View;
 using PixelInspector.ViewModel;
 using Tasler.ComponentModel;
@@ -30,11 +32,12 @@ public partial class App
 		builder.Services
 			.AddActivatedSingleton<IInteractionService, InteractionService>()
 
-			.AddActivatedSingleton<BitmapModel, BitmapModel>()
-			.AddActivatedSingleton<ViewSettingsModel, ViewSettingsModel>()
-			.AddTransient<WindowPlacementModel, WindowPlacementModel>()
+			.AddActivatedKeyedSingleton<BitmapModel, BitmapModel>("Source")
+			.AddActivatedKeyedSingleton<BitmapModel, BitmapModel>("Zoomed")
+			.AddActivatedSingleton<ViewSettingsModel, ViewSettingsModel>(p => Settings.Default.LatestViewSettings)
 
-			.AddTransient<BitmapViewModel, BitmapViewModel>()
+			.AddKeyedSingleton<BitmapViewModelBase, BitmapViewModelSource>("Source")
+			.AddKeyedSingleton<BitmapViewModelBase, BitmapViewModelZoomed>("Zoomed")
 			.AddSingleton<ScreenImageViewModel, ScreenImageViewModel>()
 			.AddSingleton<SelectionViewModel, SelectionViewModel>()
 			.AddSingleton<ViewSettingsViewModel, ViewSettingsViewModel>()

@@ -2,7 +2,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Interop;
+using CommunityToolkit.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
 using PixelInspector.Interop;
 using PixelInspector.Interop.Gdi;
 using PixelInspector.Interop.User;
@@ -20,17 +22,22 @@ public partial class ScreenImageViewModel : ObservableObject
 	#endregion Static Fields
 
 	#region Instance Fields
-	private ViewSettingsViewModel? _viewSettings;
+	private ViewSettingsViewModel _viewSettings;
+	private BitmapViewModelBase _sourceBitmap;
+	private BitmapViewModelBase _zoomedBitmap;
 	#endregion Instance Fields
 
 	#region Constructors
-	public ScreenImageViewModel(ViewSettingsViewModel viewSettings, BitmapViewModel sourceBitmap, BitmapViewModel zoomedBitmap)
+	public ScreenImageViewModel(
+		ViewSettingsViewModel viewSettings,
+		[FromKeyedServices("Source")] BitmapViewModelBase sourceBitmap,
+		[FromKeyedServices("Zoomed")] BitmapViewModelBase zoomedBitmap)
 	{
 		_viewSettings = viewSettings;
 		_sourceBitmap = sourceBitmap;
 		_zoomedBitmap = zoomedBitmap;
 
-		viewSettings.PropertyChanged += this.ViewSettings_PropertyChanged;
+		viewSettings.Model.PropertyChanged += this.ViewSettings_PropertyChanged;
 
 		ComponentDispatcher.ThreadFilterMessage += this.ComponentDispatcher_ThreadPreprocessMessage;
 	}
@@ -41,18 +48,16 @@ public partial class ScreenImageViewModel : ObservableObject
 	[ObservableProperty]
 	private bool _isRefreshNeeded;
 
-	public BitmapViewModel SourceBitmap =>  _sourceBitmap;
-	private BitmapViewModel _sourceBitmap;
+	public BitmapViewModelBase SourceBitmap =>  _sourceBitmap;
 
-	public BitmapViewModel ZoomedBitmap => _zoomedBitmap;
-	private BitmapViewModel _zoomedBitmap;
+	public BitmapViewModelBase ZoomedBitmap => _zoomedBitmap;
+
 	#endregion Properties
 
 	#region Methods
 	public void Refresh(Point sourceOrigin)
 	{
-		if (_viewSettings is null)
-			return;
+		Guard.IsNotNull(_viewSettings);
 
 		// Compute the origin and extents of the source rectangle
 		var sourceSize = _viewSettings.Model.SourceSize;
@@ -68,7 +73,7 @@ public partial class ScreenImageViewModel : ObservableObject
 		GdiApi.GdiFlush();
 
 		// Copy from the screen to our source bitmap buffer
-		var hdcSource = this.SourceBitmap.Model.DC;
+		var hdcSource = this.SourceBitmap.Model.DC!;
 		using (var hdcScreen = UserApi.GetDC(nint.Zero))
 		{
 			UserApi.FillRect(hdcSource, GdiApi.GetStockObject(StockObject.GrayBrush), 0, 0, cxSrc, cySrc);
@@ -103,7 +108,7 @@ public partial class ScreenImageViewModel : ObservableObject
 		int cyDest = (int)(cySrc * zoomFactor);
 
 		// Stretch from the source bitmap buffer to our zoomed bitmap buffer
-		var hdcZoomed = this.ZoomedBitmap.Model.DC;
+		var hdcZoomed = this.ZoomedBitmap.Model.DC!;
 		using (GdiApi.SetStretchBltMode(hdcZoomed, StretchBltMode.ColorOnColor))
 		{
 			GdiApi.StretchBlt(

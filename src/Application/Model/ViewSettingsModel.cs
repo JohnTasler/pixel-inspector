@@ -85,16 +85,13 @@ public partial class ViewSettingsModel : ObservableObject
 	[property: XmlElement]
 	private WindowPlacementModel _windowPlacement = new();
 
-	partial void OnWindowPlacementChanging(WindowPlacementModel value)
+	partial void OnWindowPlacementChanged(WindowPlacementModel? oldValue, WindowPlacementModel newValue)
 	{
-		if (value is not null)
-			value.PropertyChanged -= this.WindowPlacement_PropertyChanged;
-	}
+		if (oldValue is not null)
+			oldValue.PropertyChanged -= this.WindowPlacement_PropertyChanged;
 
-	partial void OnWindowPlacementChanged(WindowPlacementModel value)
-	{
-		if (value is not null)
-			value.PropertyChanged += this.WindowPlacement_PropertyChanged;
+		if (newValue is not null)
+			newValue.PropertyChanged += this.WindowPlacement_PropertyChanged;
 	}
 
 	[ObservableProperty]
