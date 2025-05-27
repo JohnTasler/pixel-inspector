@@ -1,27 +1,27 @@
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Tasler.Windows.ComponentModel;
+using PixelInspector.Model;
 
 namespace PixelInspector.ViewModel;
 
 public partial class MoveToolViewModel
-	: ChildViewModelBase<MainViewModel>
+	: ObservableObject
 	, IToolMode
 	, IProvideSourceOrigin
 {
 	#region Instance Fields
+	private readonly ViewSettingsModel _model;
 	private Point _previousSourceOrigin;
 	private double _lastHorizontalChange;
 	private double _lastVerticalChange;
 	#endregion Instance Fields
 
 	#region Constructors
-	public MoveToolViewModel(MainViewModel parent)
-		: base(parent)
+	public MoveToolViewModel(ViewSettingsModel model)
 	{
+		_model = model;
 	}
 	#endregion Constructors
 
@@ -30,11 +30,11 @@ public partial class MoveToolViewModel
 	[ObservableProperty]
 	private Point _sourceOrigin;
 
-	partial void OnSourceOriginActualChanged(Point value)
-		=> this.SourceOrigin = new Point((int)value.X, (int)value.Y);
-
 	[ObservableProperty]
 	private Point _sourceOriginActual;
+
+	partial void OnSourceOriginActualChanged(Point value)
+		=> this.SourceOrigin = new Point((int)value.X, (int)value.Y);
 
 	#endregion Properties
 
@@ -60,7 +60,7 @@ public partial class MoveToolViewModel
 		_lastVerticalChange = e.VerticalChange;
 
 		var sourceOrigin = this.SourceOriginActual;
-		var zoomFactor = this.Parent.ViewSettings.Model.ZoomFactor;
+		var zoomFactor = _model.ZoomFactor;
 		var xOffset = -horizontalChange / zoomFactor;
 		var yOffset = -verticalChange / zoomFactor;
 
@@ -89,7 +89,7 @@ public partial class MoveToolViewModel
 	/// </summary>
 	public void EnterMode()
 	{
-		_previousSourceOrigin = this.SourceOriginActual = this.Parent.ViewSettings.Model.SourceOrigin;
+		_previousSourceOrigin = this.SourceOriginActual = _model.SourceOrigin;
 	}
 
 	/// <summary>
@@ -107,7 +107,7 @@ public partial class MoveToolViewModel
 		}
 		else
 		{
-			this.Parent.ViewSettings.Model.SourceOrigin = this.SourceOrigin;
+			_model.SourceOrigin = this.SourceOrigin;
 			this.EnterMode();
 		}
 	}

@@ -8,6 +8,7 @@ using CommunityToolkit.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using PixelInspector.Model;
 using Tasler;
 using Tasler.ComponentModel;
@@ -21,6 +22,7 @@ namespace PixelInspector.ViewModel;
 public partial class MainViewModel : ObservableObject
 {
 	#region Instance Fields
+	private readonly IHost _host;
 	private bool _isInTimerRefresh;
 	private DispatcherTimer? _refreshTimer;
 	private BitmapModel? _sourceBitmapBuffer;
@@ -32,8 +34,10 @@ public partial class MainViewModel : ObservableObject
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MainViewModel"/> class.
 	/// </summary>
-	public MainViewModel(ViewSettingsViewModel viewSettingsViewModel, ScreenImageViewModel screenImageViewModel)
+	public MainViewModel(IHost host, ViewSettingsViewModel viewSettingsViewModel, ScreenImageViewModel screenImageViewModel)
 	{
+		_host = host;
+
 		// Initial state
 		this.ApplicationState = new ApplicationStateLoading();
 
@@ -66,7 +70,10 @@ public partial class MainViewModel : ObservableObject
 		this.Selection = new SelectionViewModel(this);
 
 		// Choose the Select tool
-		this.ChooseToolSelectCommand.Execute(null);
+		Application.Current.Dispatcher.BeginInvoke(() =>
+		{
+			this.ChooseToolSelectCommand.Execute(null);
+		});
 
 		// Normal state
 		this.ApplicationState = new ApplicationStateRunning();
@@ -126,30 +133,27 @@ public partial class MainViewModel : ObservableObject
 
 	#region ToolState
 
-	partial void OnToolStateChanging(object? oldValue, object? newValue)
+	partial void OnToolStateChanged(object? oldValue, object? newValue)
 	{
 		// Revert the current tool mode, if any
 		var toolMode = oldValue as IToolMode;
 		if (toolMode is not null)
 			toolMode.ExitMode(true);
-	}
 
-	partial void OnToolStateChanged(object? value)
-	{
 		// Enter the new tool mode, if any
-		var toolMode = value as IToolMode;
+		toolMode = newValue as IToolMode;
 		if (toolMode is not null)
 			toolMode.EnterMode();
 
 		// Set the tool as the new SourceOriginProvider, if it is one
-		this.SourceOriginProvider = value as IProvideSourceOrigin ?? this.ViewSettings;
+		this.SourceOriginProvider = newValue as IProvideSourceOrigin ?? this.ViewSettings;
 
 		// Update the source mouse position
 		this.UpdateSourceMousePosition();
 	}
 
 	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(IsToolStateLocating), nameof(IsToolStateLocate), nameof(IsToolStateMove), nameof(IsToolStateSelect))]
+	[NotifyPropertyChangedFor(nameof(IsToolStateLocate), nameof(IsToolStateLocating), nameof(IsToolStateMove), nameof(IsToolStateSelect))]
 	private object? _toolState;
 
 	public bool IsToolStateLocate => this.ToolState is LocateToolViewModel;
@@ -332,14 +336,14 @@ public partial class MainViewModel : ObservableObject
 
 	#region ChooseToolLocateCommand
 	[RelayCommand]
-	private void ChooseToolLocate() => this.ToolState = new LocateToolViewModel(this);
+	private void ChooseToolLocate() => this.ToolState = this.LocateTool;
 	#endregion ChooseToolLocateCommand
 
 	#region ChooseToolLocatingCommand
 	[RelayCommand]
 	private void ChooseToolLocating(LocatingToolViewModel.Parameters parameters)
 	{
-		this.ToolState = HostedApplication.Current.Host.Services.GetService<LocatingToolViewModel>()?
+		this.ToolState = _host.Services.GetService<LocatingToolViewModel>()?
 			.Initialize(parameters);
 	}
 	#endregion ChooseToolLocatingCommand
@@ -358,21 +362,22 @@ public partial class MainViewModel : ObservableObject
 	[RelayCommand]
 	private void ShowOptions()
 	{
+		System.Console.Beep(880, 200);
 	}
 	#endregion ShowOptionsCommand
 
 	#region ShowAboutBoxCommand
 	[RelayCommand]
-	private void ShowAboutBox()
+	private static void ShowAboutBox()
 	{
-		System.Console.Beep();
+		System.Console.Beep(440, 200);
 	}
 	#endregion ShowAboutBoxCommand
 
 	#region CollectGarbageCommand
 
 	[RelayCommand]
-	private void CollectGarbage()
+	private static void CollectGarbage()
 	{
 		GC.Collect();
 		GC.WaitForPendingFinalizers();
@@ -387,16 +392,24 @@ public partial class MainViewModel : ObservableObject
 
 	#region Private Properties
 
-	private LocateToolViewModel LocateTool => _locateTool ??= new LocateToolViewModel(this);
+	private LocateToolViewModel LocateTool
+		=> _locateTool ??= _host.Services.GetService <LocateToolViewModel>()!;
 	private LocateToolViewModel? _locateTool;
 
-	private MoveToolViewModel MoveTool => _moveTool ??= new MoveToolViewModel(this);
+	private MoveToolViewModel MoveTool
+		=> _moveTool ??= _host.Services.GetService<MoveToolViewModel>()!;
 	private MoveToolViewModel? _moveTool;
 
-	private SelectToolViewModel SelectTool => _selectTool ??= new SelectToolViewModel(this);
+	private SelectToolViewModel SelectTool
+		=> _selectTool ??= _host.Services.GetService<SelectToolViewModel>()!;
 	private SelectToolViewModel? _selectTool;
 
 	#region SourceOriginProvider
+
+	[ObservableProperty]
+	[NotifyPropertyChangedFor(nameof(SourceOrigin))]
+	private IProvideSourceOrigin? _sourceOriginProvider;
+	private IPropertyObserverItem? _sourceOriginProviderObserver;
 
 	partial void OnSourceOriginProviderChanged(IProvideSourceOrigin? oldValue, IProvideSourceOrigin? newValue)
 	{
@@ -406,9 +419,8 @@ public partial class MainViewModel : ObservableObject
 		Point? previousSourceOrigin = oldValue?.SourceOrigin;
 
 		// Unsubscribe from property change events on the old value
-		if (_sourceOriginProviderObserver is not null)
+		using (_sourceOriginProviderObserver)
 		{
-			_sourceOriginProviderObserver.Unsubscribe();
 			_sourceOriginProviderObserver = null;
 		}
 
@@ -424,17 +436,15 @@ public partial class MainViewModel : ObservableObject
 			_sourceOriginProviderObserver.Refresh();
 	}
 
-	[ObservableProperty]
-	[NotifyPropertyChangedFor(nameof(SourceOrigin))]
-	private IProvideSourceOrigin? _sourceOriginProvider;
-	private IPropertyObserverItem? _sourceOriginProviderObserver;
-
 	#endregion SourceOriginProvider
 
 	#endregion Private Properties
 
 	private void RefreshBitmaps()
 	{
+		if (this.SourceOriginProvider is null)
+			return;
+
 		// Refresh the screen image
 		this.ScreenImage.Refresh(this.SourceOrigin);
 
