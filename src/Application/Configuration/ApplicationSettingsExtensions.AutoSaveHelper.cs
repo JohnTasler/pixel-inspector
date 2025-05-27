@@ -66,7 +66,7 @@ public static partial class ApplicationSettingsExtensions
 			this.Expire();
 
 			// Create a new DeferredAction if the specified deferral time has changed
-			if (this.DeferredAction?.Interval != deferralTimeSpan)
+			if (this.DeferredAction?.Interval != deferralTimeSpan && this.Settings is not null)
 				this.DeferredAction = new DispatcherTimerDeferredAction(deferralTimeSpan, this.Settings.Save);
 		}
 		#endregion
@@ -94,9 +94,10 @@ public static partial class ApplicationSettingsExtensions
 			// Get the specified property value object
 			var propertyValue = this.Settings?.PropertyValues[itemName];
 
-			// Set its value to the same thing, thus marking it as needing to be saved
+			// Set its value to itself, thus marking it as needing to be saved
 			// NOTE: Simply setting the IsDirty on the property value is insufficient.
-			propertyValue.PropertyValue = propertyValue.PropertyValue;
+			if (propertyValue is not null)
+				propertyValue.PropertyValue = propertyValue.PropertyValue;
 
 			// Trigger the deferred action to save the settings
 			this.DeferredAction?.Trigger();

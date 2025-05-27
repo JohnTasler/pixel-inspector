@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using PixelInspector.Interop.Gdi;
+using Tasler.Interop.Gdi;
 using Tasler.Windows;
 
 namespace PixelInspector;

@@ -8,10 +8,11 @@ using CommunityToolkit.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
-using PixelInspector.Interop.Gdi;
 using PixelInspector.Model;
 using Tasler;
 using Tasler.ComponentModel;
+using Tasler.Interop.Gdi;
+using Tasler.Interop.User;
 using Tasler.Text;
 using Tasler.Windows;
 

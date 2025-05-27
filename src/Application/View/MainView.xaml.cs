@@ -1,12 +1,11 @@
 using System.ComponentModel;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using Microsoft.Extensions.DependencyInjection;
-using PixelInspector.Interop.User;
 using PixelInspector.ViewModel;
 using Tasler.ComponentModel;
-using Tasler.ComponentModel.Hosting;
+using Tasler.Interop.User;
 using Tasler.Windows;
 
 namespace PixelInspector.View;
@@ -54,13 +53,14 @@ public partial class MainView : Window, INotifyPropertyChanged
 		Keyboard.Focus(this.mainContent);
 	}
 
-	private nint HwndSource_Hook(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled)
+	private nint HwndSource_Hook(nint hwndHandle, int msg, nint wParam, nint lParam, ref bool handled)
 	{
+		SafeHwnd hwnd = new() {Handle = hwndHandle };
 		var message = (WM)msg;
 		switch (message)
 		{
-			case WM.Move:
-			case WM.Size:
+			case WM.MOVE:
+			case WM.SIZE:
 				if (this.ViewModel is not null)
 				{
 					if (this.ViewModel.ViewSettings.Model.WindowPlacement is null)
@@ -69,7 +69,7 @@ public partial class MainView : Window, INotifyPropertyChanged
 				}
 				break;
 
-			case WM.ShowWindow:
+			case WM.SHOWWINDOW:
 				if (!this.HasSetWindowPlacement && this.ViewModel is not null)
 				{
 					this.ViewModel.ViewSettings.Model.WindowPlacement?.Set(hwnd);
@@ -77,7 +77,7 @@ public partial class MainView : Window, INotifyPropertyChanged
 				}
 				break;
 
-			case WM.Destroy:
+			case WM.DESTROY:
 				this.HwndSource?.RemoveHook(this.HwndSource_Hook);
 				break;
 		}

@@ -39,9 +39,9 @@ public class ScreenImageView : Panel, INotifyPropertyChanged
 		if (this.ViewModel is null)
 			return;
 
-		this._isRendering = true;
+		_isRendering = true;
 		_viewSettings.Model.RenderSize = this.RenderSize;
-		this._isRendering = false;
+		_isRendering = false;
 
 		// TODO: Account for DPI, etc.
 		// TODO: Figure out how to prevent multiple redraws of same size (if that is actually happening)
@@ -84,7 +84,7 @@ public class ScreenImageView : Panel, INotifyPropertyChanged
 		switch (e.PropertyName)
 		{
 			case nameof(ScreenImageViewModel.ZoomedBitmap):
-				if (!this._isRendering)
+				if (!_isRendering)
 					this.InvalidateVisual();
 				break;
 		}

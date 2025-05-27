@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.IO.MemoryMappedFiles;
-using PixelInspector.Interop.Gdi;
-using PixelInspector.Interop.User;
+using Tasler.Interop.Gdi;
+using Tasler.Interop.User;
 
 namespace PixelInspector.Model;
 
@@ -17,8 +17,8 @@ public class BitmapModel : IDisposable
 	private int? _width;
 	private int? _height;
 	private SafePrivateHdc? _hdc;
-	private SafeGdiObject? _hbm;
-	private SafeGdiObject? _hbmPrevious;
+	private SafeGdiBitmapOwned? _hbm;
+	private IDisposable? _hbmPreviousRestorer;
 	private MemoryMappedFile? _section;
 	private long _sectionCapacity;
 	private nint _ppvBits;
@@ -40,7 +40,7 @@ public class BitmapModel : IDisposable
 			if (_isDisposed)
 			{
 				Debug.Assert(_hdc is null);
-				Debug.Assert(_hbmPrevious is null);
+				Debug.Assert(_hbmPreviousRestorer is null);
 				Debug.Assert(_hbm is null);
 				Debug.Assert(_section is null);
 				Debug.Assert(_sectionCapacity == 0);
@@ -48,7 +48,7 @@ public class BitmapModel : IDisposable
 			}
 			else if (_hdc is not null && !_hdc.IsInvalid)
 			{
-				Debug.Assert(_hbmPrevious is not null && !_hbmPrevious.IsInvalid);
+				Debug.Assert(_hbmPreviousRestorer is not null);
 				Debug.Assert(_hbm is not null && !_hbm.IsInvalid);
 				Debug.Assert(_section is not null);
 				Debug.Assert(_sectionCapacity != 0);
@@ -59,7 +59,7 @@ public class BitmapModel : IDisposable
 		}
 	}
 
-	public SafePrivateHdc? DC
+	public SafePrivateHdc? Hdc
 	{
 		get
 		{
@@ -69,7 +69,7 @@ public class BitmapModel : IDisposable
 		}
 	}
 
-	public SafeGdiObject? Bitmap
+	public SafeGdiBitmapOwned? Bitmap
 	{
 		get
 		{
@@ -124,37 +124,36 @@ public class BitmapModel : IDisposable
 		if (_hbm is not null && !_hbm.IsInvalid)
 		{
 			Debug.Assert(_hdc is not null && !_hdc.IsInvalid);
-			Debug.Assert(_hbmPrevious is not null && !_hbmPrevious.IsInvalid);
+			Debug.Assert(_hbmPreviousRestorer is not null);
 			Debug.Assert(_section is not null);
 			Debug.Assert(_sectionCapacity != 0);
 
 			// Release the current bitmap
-			using (GdiApi.SelectObject(_hdc, _hbmPrevious))
-			using (_hbm)
-			using (_section)
+			using (IDisposable hbmPreviousRestore = _hbmPreviousRestorer, hbm = _hbm, section = _section)
 			{
 				_section = null;
 				GC.RemoveMemoryPressure(_sectionCapacity);
 				_sectionCapacity = 0;
 				_hbm = null;
+				_hbmPreviousRestorer = null;
 			}
 		}
 
 		// Create the memory DC if needed
 		if (_hdc is null || _hdc.IsInvalid)
 		{
-			using (var hdcScreen = UserApi.GetDC(nint.Zero))
-				_hdc = GdiApi.CreateCompatibleDC(hdcScreen);
+			using (var hdcScreen = SafeHwnd.Null.GetDC())
+				_hdc = hdcScreen.CreateCompatibleDC();
 		}
 
 		// Create a new bitmap section
 		_sectionCapacity = GetStride(cx) * cy;
 		_section = MemoryMappedFile.CreateNew(null, _sectionCapacity);
-		_hbm = GdiApi.CreateDIBSection(SafeHdc.Null, cx, -cy, BitsPerPixel, _section, ref _ppvBits);
+		_hbm = SafeHdc.Null.CreateDIBSection(cx, -cy, BitsPerPixel, _section, out _ppvBits);
 		GC.AddMemoryPressure(_sectionCapacity);
 
 		// Select the new bitmap into the memory DC
-		_hbmPrevious = GdiApi.Private.SelectObject(_hdc, _hbm);
+		_hbmPreviousRestorer = _hdc.SelectObject(_hbm);
 
 		// Save the new size
 		_width = cx;
@@ -164,7 +163,7 @@ public class BitmapModel : IDisposable
 	public int GetPixelColor(int x, int y)
 	{
 		this.VerifyNotDisposed();
-		return GdiApi.GetPixel(_hdc!, x, y);
+		return _hdc?.GetPixel(x, y) ?? 0x00FFFFFF;
 	}
 
 	public static int GetStride(int cx)
@@ -177,17 +176,17 @@ public class BitmapModel : IDisposable
 
 	public void Dispose()
 	{
-		if (!this.IsDisposed && _hdc is not null && _hbmPrevious is not null)
+		if (!this.IsDisposed && _hdc is not null && _hbmPreviousRestorer is not null)
 		{
 			using (_hdc)
 			using (_hbm)
-			using (_hbmPrevious)
+			using (_hbmPreviousRestorer)
 			using (_section)
-			using (GdiApi.SelectObject(_hdc, _hbmPrevious))
+			using (_hbmPreviousRestorer)
 			{
 				_section = null;
 				_sectionCapacity = 0;
-				_hbmPrevious = null;
+				_hbmPreviousRestorer = null;
 				_hbm = null;
 				_hdc = null;
 				_ppvBits = nint.Zero;

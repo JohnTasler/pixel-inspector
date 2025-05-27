@@ -5,11 +5,10 @@ using System.Windows.Interop;
 using CommunityToolkit.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
-using PixelInspector.Interop;
-using PixelInspector.Interop.Gdi;
-using PixelInspector.Interop.User;
 using PixelInspector.Model;
-using Tasler.Windows.ComponentModel;
+using Tasler.Interop;
+using Tasler.Interop.Gdi;
+using Tasler.Interop.User;
 
 namespace PixelInspector.ViewModel;
 
@@ -73,10 +72,10 @@ public partial class ScreenImageViewModel : ObservableObject
 		GdiApi.GdiFlush();
 
 		// Copy from the screen to our source bitmap buffer
-		var hdcSource = this.SourceBitmap.Model.DC!;
-		using (var hdcScreen = UserApi.GetDC(nint.Zero))
+		var hdcSource = this.SourceBitmap.Model.Hdc!;
+		using (var hdcScreen = SafeHwnd.Null.GetDC())
 		{
-			UserApi.FillRect(hdcSource, GdiApi.GetStockObject(StockObject.GrayBrush), 0, 0, cxSrc, cySrc);
+			hdcSource.FillRect(0, 0, cxSrc, cySrc, StockBrush.GrayBrush.GetStockBrush());
 
 			try
 			{
@@ -88,8 +87,8 @@ public partial class ScreenImageViewModel : ObservableObject
 			{
 #if DEBUG
 				{
-					bool isHdcSourceValid = GdiApi.GetPixel(hdcSource, 0, 0) != -1;
-					bool isHdcScreenValid = GdiApi.GetPixel(hdcScreen, 0, 0) != -1;
+					bool isHdcSourceValid = hdcSource.GetPixel(0, 0) != -1;
+					bool isHdcScreenValid = hdcScreen.GetPixel(0, 0) != -1;
 
 					Debug.WriteLine("{3}: ScreenImageViewModel.Refresh: BitBlt failed: {0} isHdcSourceValid={1} isHdcScreenValid={2}",
 						e.Message, isHdcSourceValid, isHdcScreenValid, s_invalidHandleCount++);
@@ -108,7 +107,7 @@ public partial class ScreenImageViewModel : ObservableObject
 		int cyDest = (int)(cySrc * zoomFactor);
 
 		// Stretch from the source bitmap buffer to our zoomed bitmap buffer
-		var hdcZoomed = this.ZoomedBitmap.Model.DC!;
+		var hdcZoomed = this.ZoomedBitmap.Model.Hdc!;
 		using (GdiApi.SetStretchBltMode(hdcZoomed, StretchBltMode.ColorOnColor))
 		{
 			GdiApi.StretchBlt(
@@ -152,7 +151,7 @@ public partial class ScreenImageViewModel : ObservableObject
 			//using (GdiApi.SetROP2(hdcZoomed, ROP2.CopyPen))
 			//using (var hpen = GdiApi.CreatePen(PenStyle.Solid, 1, 0x00FFFFFF, null))
 			//using (GdiApi.SelectObject(hdcZoomed, hpen))
-			using (GdiApi.SelectObject(hdc, GdiApi.GetStockObject(StockObject.BlackPen)))
+			using (GdiApi.SelectObject(hdc, StockPen.BlackPen.GetStockPen()))
 			{
 				// Compute the number of lines to draw
 				var horizontalLineCount = cyDest / (int)zoomFactor;
@@ -161,28 +160,28 @@ public partial class ScreenImageViewModel : ObservableObject
 
 				// Allocate arrays for the points in the lines and the count of points in each polyline
 				POINT[] points = new POINT[totalLineCount * 2];
-				int[] polyPoints = new int[totalLineCount];
+				uint[] polyPoints = new uint[totalLineCount];
 
 				// Calculate the horizontal grid line points
 				int i = 0;
 				for (int y = zoomFactor - 1; y < cyDest; y += zoomFactor)
 				{
-					points[i].x = 0;
-					points[i].y = y;
+					points[i].X = 0;
+					points[i].Y = y;
 					++i;
-					points[i].x = cxDest;
-					points[i].y = y;
+					points[i].X = cxDest;
+					points[i].Y = y;
 					++i;
 				}
 
 				// Calculate the vertical grid line points
 				for (int x = zoomFactor - 1; x < cxDest; x += zoomFactor)
 				{
-					points[i].x = x;
-					points[i].y = 0;
+					points[i].X = x;
+					points[i].Y = 0;
 					++i;
-					points[i].x = x;
-					points[i].y = cyDest;
+					points[i].X = x;
+					points[i].Y = cyDest;
 					++i;
 				}
 
@@ -203,7 +202,7 @@ public partial class ScreenImageViewModel : ObservableObject
 	#region Event Handlers
 	private void ComponentDispatcher_ThreadPreprocessMessage(ref MSG msg, ref bool handled)
 	{
-		if (msg.message == (int)WM.DisplayChange)
+		if (msg.message == (int)WM.DISPLAYCHANGE)
 		{
 			Debug.WriteLine("ScreenImageViewModel: WM_DISPLAYCHANGE wParam={0:X16} lParam={1:X16}", msg.wParam, msg.lParam);
 		}

@@ -1,7 +1,7 @@
 using System.Xml.Serialization;
 using CommunityToolkit.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
-using PixelInspector.Interop.User;
+using Tasler.Interop.User;
 
 namespace PixelInspector.Model;
 
@@ -17,10 +17,10 @@ public class WindowPlacementModel : ObservableObject
 		_windowPlacement = new WINDOWPLACEMENT();
 	}
 
-	public WindowPlacementModel(nint hwnd)
+	public WindowPlacementModel(SafeHwnd hwnd)
 	{
-		Guard.IsNotDefault(hwnd);
-		_windowPlacement = UserApi.GetWindowPlacement(hwnd);
+		Guard.IsNotDefault(hwnd.Handle);
+		_windowPlacement = hwnd.GetWindowPlacement();
 	}
 	#endregion Constructors
 
@@ -29,76 +29,75 @@ public class WindowPlacementModel : ObservableObject
 	[XmlAttribute]
 	public bool IsMaximized
 	{
-		get => _windowPlacement.showCmd == SW.ShowMaximized;
-		set => this.SetProperty(ref _windowPlacement.showCmd, value ? SW.ShowMaximized : SW.ShowNormal);
+		get => _windowPlacement.ShowCommand == SW.ShowMaximized;
+		set => this.SetProperty(ref _windowPlacement.ShowCommand, value ? SW.ShowMaximized : SW.ShowNormal);
 	}
 
 	[XmlAttribute]
 	public int MaximizedX
 	{
-		get => _windowPlacement.ptMaxPosition.x;
-		set => this.SetProperty(ref _windowPlacement.ptMaxPosition.x, value);
+		get => _windowPlacement.MaximizedPosition.X;
+		set => this.SetProperty(ref _windowPlacement.MaximizedPosition.X, value);
 	}
 
 	[XmlAttribute]
 	public int MaximizedY
 	{
-		get => _windowPlacement.ptMaxPosition.y;
-		set => this.SetProperty(ref _windowPlacement.ptMaxPosition.y, value);
+		get => _windowPlacement.MaximizedPosition.Y;
+		set => this.SetProperty(ref _windowPlacement.MaximizedPosition.Y, value);
 	}
 
 	[XmlAttribute]
 	public int Left
 	{
-		get => _windowPlacement.rcNormalPosition.left;
-		set => this.SetProperty(ref _windowPlacement.rcNormalPosition.left, value);
+		get => _windowPlacement.NormalPosition.Left;
+		set => this.SetProperty(ref _windowPlacement.NormalPosition.Left, value);
 	}
 
 	[XmlAttribute]
 	public int Top
 	{
-		get => _windowPlacement.rcNormalPosition.top;
-		set => this.SetProperty(ref _windowPlacement.rcNormalPosition.top, value);
+		get => _windowPlacement.NormalPosition.Top;
+		set => this.SetProperty(ref _windowPlacement.NormalPosition.Top, value);
 	}
 
 	[XmlAttribute]
 	public int Right
 	{
-		get => _windowPlacement.rcNormalPosition.right;
-		set => this.SetProperty(ref _windowPlacement.rcNormalPosition.right, value);
+		get => _windowPlacement.NormalPosition.Right;
+		set => this.SetProperty(ref _windowPlacement.NormalPosition.Right, value);
 	}
 
 	[XmlAttribute]
 	public int Bottom
 	{
-		get => _windowPlacement.rcNormalPosition.bottom;
-		set => this.SetProperty(ref _windowPlacement.rcNormalPosition.bottom, value);
+		get => _windowPlacement.NormalPosition.Bottom;
+		set => this.SetProperty(ref _windowPlacement.NormalPosition.Bottom, value);
 	}
 
 	#endregion Properties
 
 	#region Methods
 
-	public void Get(nint hwnd)
+	public void Get(SafeHwnd hwnd)
 	{
-		Guard.IsNotDefault(hwnd);
+		Guard.IsNotDefault(hwnd.Handle);
 
-		var wp = new WINDOWPLACEMENT();
-		UserApi.GetWindowPlacement(hwnd, wp);
+		var wp = hwnd.GetWindowPlacement();
 
-		this.IsMaximized = wp.showCmd == SW.ShowMaximized;
-		this.MaximizedX = wp.ptMaxPosition.x;
-		this.MaximizedY = wp.ptMaxPosition.y;
-		this.Left = wp.rcNormalPosition.left;
-		this.Top = wp.rcNormalPosition.top;
-		this.Right = wp.rcNormalPosition.right;
-		this.Bottom = wp.rcNormalPosition.bottom;
+		this.IsMaximized = wp.ShowCommand == SW.ShowMaximized;
+		this.MaximizedX = wp.MaximizedPosition.X;
+		this.MaximizedY = wp.MaximizedPosition.Y;
+		this.Left = wp.NormalPosition.Left;
+		this.Top = wp.NormalPosition.Top;
+		this.Right = wp.NormalPosition.Right;
+		this.Bottom = wp.NormalPosition.Bottom;
 	}
 
-	public void Set(nint hwnd)
+	public void Set(SafeHwnd hwnd)
 	{
-		Guard.IsNotDefault(hwnd);
-		UserApi.SetWindowPlacement(hwnd, _windowPlacement);
+		Guard.IsNotDefault(hwnd.Handle);
+		hwnd.SetWindowPlacement(ref _windowPlacement);
 	}
 
 	#endregion Methods

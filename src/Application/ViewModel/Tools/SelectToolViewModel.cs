@@ -1,7 +1,6 @@
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using CommunityToolkit.Mvvm.Input;
-using PixelInspector.Interop.User;
 using Tasler.Windows;
 using Tasler.Windows.ComponentModel;
 
@@ -37,8 +36,8 @@ public partial class SelectToolViewModel
 		// Get the drag rect
 		_dragRect = new Rect(_dragStart.X, _dragStart.Y, 0, 0);
 		_dragRect.Inflate(
-				Math.Abs(UserApi.GetSystemMetrics(SM.CxDrag)),
-				Math.Abs(UserApi.GetSystemMetrics(SM.CyDrag)));
+				Math.Abs(SystemParameters.MinimumHorizontalDragDistance),
+				Math.Abs(SystemParameters.MinimumVerticalDragDistance));
 
 		_lastHorizontalChange = _lastVerticalChange = 0;
 		this.Parent.Selection.UpdateZoomedRectangleActualFromInput(null);
