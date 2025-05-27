@@ -14,7 +14,7 @@ public interface IToolMode
 	/// <summary>
 	/// Called to exit the mode.
 	/// </summary>
-	/// <param name="isReverting">If set to <c>true</c> the tool should revert any changes it made;
+	/// <param name="isReverting">If set to <langword>true</langword> the tool should revert any changes it made;
 	/// otherwise, it should commit its changes.</param>
 	void ExitMode(bool isReverting);
 }
