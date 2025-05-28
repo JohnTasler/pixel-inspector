@@ -1,14 +1,13 @@
 using System.ComponentModel;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using PixelInspector.Configuration;
 using Microsoft.Extensions.Hosting;
 using PixelInspector.Model;
 using PixelInspector.Properties;
 using PixelInspector.View;
 using PixelInspector.ViewModel;
 using Tasler.ComponentModel;
+using Tasler.Configuration;
 using Tasler.Windows;
 
 namespace PixelInspector;
@@ -28,12 +27,17 @@ public partial class App
 
 	public static void ConfigureHostBuilder(IHostApplicationBuilder builder)
 	{
+		#if DEBUG
+		builder.Environment.EnvironmentName = Environments.Development;
+		#endif // DEBUG
+
 		// Add additional services and such
 		builder.Services
-			.AddActivatedSingleton<IInteractionService, InteractionService>()
+			.AddSingleton<IInteractionService, InteractionService>()
 
-			.AddActivatedKeyedSingleton<BitmapModel, BitmapModel>("Source")
-			.AddActivatedKeyedSingleton<BitmapModel, BitmapModel>("Zoomed")
+			.AddKeyedSingleton<BitmapModel, BitmapModel>("Source")
+			.AddKeyedSingleton<BitmapModel, BitmapModel>("Zoomed")
+			.AddActivatedSingleton<Settings, Settings>(p => Settings.Default)
 			.AddActivatedSingleton<ViewSettingsModel, ViewSettingsModel>(p => Settings.Default.LatestViewSettings)
 
 			.AddKeyedSingleton<BitmapViewModelBase, BitmapViewModelSource>("Source")
@@ -47,11 +51,11 @@ public partial class App
 			.AddSingleton<SelectToolViewModel, SelectToolViewModel>()
 
 			.AddSingleton<ScreenImageView, ScreenImageView>()
-			.AddTransient<SelectionView, SelectionView>()
-			.AddTransient<LocateToolView, LocateToolView>()
-			.AddTransient<LocatingToolView, LocatingToolView>()
-			.AddTransient<MoveToolView, MoveToolView>()
-			.AddTransient<SelectToolView, SelectToolView>()
+			.AddSingleton<SelectionView, SelectionView>()
+			.AddSingleton<LocateToolView, LocateToolView>()
+			.AddSingleton<LocatingToolView, LocatingToolView>()
+			.AddSingleton<MoveToolView, MoveToolView>()
+			.AddSingleton<SelectToolView, SelectToolView>()
 			;
 	}
 
