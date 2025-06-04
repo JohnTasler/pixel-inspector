@@ -64,8 +64,9 @@ public partial class MainView : Window, INotifyPropertyChanged
 				if (this.ViewModel is not null)
 				{
 					if (this.ViewModel.ViewSettings.Model.WindowPlacement is null)
-						this.ViewModel.ViewSettings.Model.WindowPlacement = new ();
-					this.ViewModel.ViewSettings.Model.WindowPlacement.Get(hwnd);
+						this.ViewModel.ViewSettings.Model.WindowPlacement = new(hwnd);
+					else
+						this.ViewModel.ViewSettings.Model.WindowPlacement.Get(hwnd);
 				}
 				break;
 

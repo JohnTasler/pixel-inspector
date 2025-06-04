@@ -3,11 +3,12 @@ using System.Windows.Controls.Primitives;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PixelInspector.Model;
+using Tasler.Windows.ComponentModel;
 
 namespace PixelInspector.ViewModel;
 
 public partial class MoveToolViewModel
-	: ObservableObject
+	: ChildViewModelBase<MainViewModel>
 	, IToolMode
 	, IProvideSourceOrigin
 {
@@ -19,7 +20,8 @@ public partial class MoveToolViewModel
 	#endregion Instance Fields
 
 	#region Constructors
-	public MoveToolViewModel(ViewSettingsModel model)
+	public MoveToolViewModel(MainViewModel mainViewModel, ViewSettingsModel model)
+		: base(mainViewModel)
 	{
 		_model = model;
 	}

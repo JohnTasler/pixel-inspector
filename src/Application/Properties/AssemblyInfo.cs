@@ -5,11 +5,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PixelInspector.Net")]
+[assembly: AssemblyTitle("PixelInspector")]
 [assembly: AssemblyDescription("Pixel inspection utility")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tasler Computing")]
-[assembly: AssemblyProduct("PixelInspector.NET")]
+[assembly: AssemblyProduct("PixelInspector")]
 [assembly: AssemblyCopyright("Copyright © John Tasler.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

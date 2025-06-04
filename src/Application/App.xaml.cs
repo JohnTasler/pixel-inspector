@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Configuration;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -50,11 +51,11 @@ public partial class App
 			.AddSingleton<MoveToolViewModel, MoveToolViewModel>()
 			.AddSingleton<SelectToolViewModel, SelectToolViewModel>()
 
-			.AddSingleton<ScreenImageView, ScreenImageView>()
-			.AddSingleton<SelectionView, SelectionView>()
 			.AddSingleton<LocateToolView, LocateToolView>()
 			.AddSingleton<LocatingToolView, LocatingToolView>()
 			.AddSingleton<MoveToolView, MoveToolView>()
+			.AddSingleton<ScreenImageView, ScreenImageView>()
+			.AddSingleton<SelectionView, SelectionView>()
 			.AddSingleton<SelectToolView, SelectToolView>()
 			;
 	}
@@ -73,13 +74,28 @@ public partial class App
 	/// <summary>
 	/// Application Entry Point
 	/// </summary>
-	[STAThread]
-	public static int Main(string[] args)
+	public static async Task<int> Main(string[] args)
 	{
-		PixelInspector.Properties.Settings.Default.SetAutoSaveDeferral(TimeSpan.FromSeconds(2));
-		int result = HostedApplication.MainCore<App, MainView, MainViewModel>(args);
-		PixelInspector.Properties.Settings.Default.ClearAutoSaveDeferral();
+		Thread.CurrentThread.SetApartmentState(ApartmentState.Unknown);
+		Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
+
+		Settings.Default.SettingsLoaded += Default_SettingsLoaded;
+		Settings.Default.SetAutoSaveDeferral(TimeSpan.FromSeconds(2));
+		int result = await MainCore<App, MainView, MainViewModel>(args);
+		Settings.Default.ClearAutoSaveDeferral();
 		return result;
+	}
+
+	private static void Default_SettingsLoaded(object sender, SettingsLoadedEventArgs e)
+	{
+		Settings.Default.SettingsLoaded -= Default_SettingsLoaded;
+
+		var viewSettings = Settings.Default.LatestViewSettings;
+		if (viewSettings is null)
+		{
+			// Create a new ViewSettingsModel if it doesn't exist
+			Settings.Default.LatestViewSettings = new();
+		}
 	}
 
 	protected override void OnStartup(StartupEventArgs e)

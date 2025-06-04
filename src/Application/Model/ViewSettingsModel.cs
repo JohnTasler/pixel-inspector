@@ -2,12 +2,15 @@ using System.ComponentModel;
 using System.Windows;
 using System.Xml.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Tasler.Windows.Model;
 
 namespace PixelInspector.Model;
 
 public partial class ViewSettingsModel : ObservableObject
 {
 	#region Constants
+	private const int c_defaultWidth = 525;
+	private const int c_defaultHeight = 350;
 	private const double c_defaultAutoRefreshIntervalMilliseconds = 200;
 	private const double c_defaultZoomFactor = 6;
 	private const ColorValueDisplayFormat c_defaultColorValueDisplayFormat = ColorValueDisplayFormat.Hex;
@@ -16,6 +19,7 @@ public partial class ViewSettingsModel : ObservableObject
 	#region Constructors
 	public ViewSettingsModel()
 	{
+		this.WindowPlacement = new(c_defaultWidth, c_defaultHeight);
 	}
 	#endregion Constructors
 
@@ -83,7 +87,7 @@ public partial class ViewSettingsModel : ObservableObject
 
 	[ObservableProperty]
 	[property: XmlElement]
-	private WindowPlacementModel _windowPlacement = new();
+	private WindowPlacementModel _windowPlacement;
 
 	partial void OnWindowPlacementChanged(WindowPlacementModel? oldValue, WindowPlacementModel newValue)
 	{
