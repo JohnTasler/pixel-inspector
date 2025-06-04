@@ -1,253 +1,232 @@
-﻿namespace PixelInspector.ViewModel
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Interop;
+using CommunityToolkit.Diagnostics;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
+using PixelInspector.Model;
+using Tasler.Interop;
+using Tasler.Interop.Gdi;
+using Tasler.Interop.User;
+
+namespace PixelInspector.ViewModel;
+
+public partial class ScreenImageViewModel : ObservableObject
 {
-    using System;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Windows;
-    using System.Windows.Interop;
-    using PixelInspector.Interop;
-    using PixelInspector.Interop.Gdi;
-    using PixelInspector.Interop.User;
-    using Tasler.ComponentModel;
+	#region Static Fields
+#if DEBUG
+	private static int s_invalidHandleCount;
+#endif // DEBUG
+	#endregion Static Fields
 
-    public class ScreenImageViewModel : ChildViewModel<MainViewModel>
-    {
-        #region Static Fields
-            #if DEBUG
-                private static int _invalidHandleCount;
-            #endif // DEBUG
-        #endregion Static Fields
+	#region Instance Fields
+	private ViewSettingsViewModel _viewSettings;
+	private BitmapViewModelBase _sourceBitmap;
+	private BitmapViewModelBase _zoomedBitmap;
+	#endregion Instance Fields
 
-        #region Instance Fields
-        private ViewSettingsViewModel _viewSettings;
-        #endregion Instance Fields
+	#region Constructors
+	public ScreenImageViewModel(
+		ViewSettingsViewModel viewSettings,
+		[FromKeyedServices("Source")] BitmapViewModelBase sourceBitmap,
+		[FromKeyedServices("Zoomed")] BitmapViewModelBase zoomedBitmap)
+	{
+		_viewSettings = viewSettings;
+		_sourceBitmap = sourceBitmap;
+		_zoomedBitmap = zoomedBitmap;
 
-        #region Constructors
-        public ScreenImageViewModel(MainViewModel parent)
-            : base(parent)
-        {
-            this.Parent_PropertyChanged(parent, new PropertyChangedEventArgs(nameof(parent.ViewSettings)));
+		viewSettings.Model.PropertyChanged += this.ViewSettings_PropertyChanged;
 
-            ComponentDispatcher.ThreadFilterMessage += this.ComponentDispatcher_ThreadPreprocessMessage;
-        }
-        #endregion Constructors
+		ComponentDispatcher.ThreadFilterMessage += this.ComponentDispatcher_ThreadPreprocessMessage;
+	}
+	#endregion Constructors
 
-        #region Properties
-        public bool IsRefreshNeeded
-        {
-            get { return _isRefreshNeeded; }
-            set { this.PropertyChanged.SetProperty(this, value, ref _isRefreshNeeded); }
-        }
-        private bool _isRefreshNeeded;
+	#region Properties
 
-        public BitmapViewModel SourceBitmap
-        {
-            get { return _sourceBitmap; }
-        }
-        private BitmapViewModel _sourceBitmap = new BitmapViewModel();
+	[ObservableProperty]
+	private bool _isRefreshNeeded;
 
-        public BitmapViewModel ZoomedBitmap
-        {
-            get { return _zoomedBitmap; }
-        }
-        private BitmapViewModel _zoomedBitmap = new BitmapViewModel();
-        #endregion Properties
+	public BitmapViewModelBase SourceBitmap =>  _sourceBitmap;
 
-        #region Methods
-        public void Refresh(Point sourceOrigin)
-        {
-            // Compute the origin and extents of the source rectangle
-            var sourceSize = _viewSettings.Model.SourceSize;
-            sourceSize.Width = Math.Min(sourceSize.Width, SystemParameters.VirtualScreenWidth);
-            sourceSize.Height = Math.Min(sourceSize.Height, SystemParameters.VirtualScreenHeight);
-            var sourceRect = new Rect(sourceOrigin, sourceSize);
-            int xSrc = (int)sourceRect.X;
-            int ySrc = (int)sourceRect.Y;
-            int cxSrc = (int)sourceRect.Width;
-            int cySrc = (int)sourceRect.Height;
+	public BitmapViewModelBase ZoomedBitmap => _zoomedBitmap;
 
-            // Flush the GDI pipeline
-            GdiApi.GdiFlush();
+	#endregion Properties
 
-            // Copy from the screen to our source bitmap buffer
-            var hdcSource = this.SourceBitmap.Model.DC;
-            using (var hdcScreen = UserApi.GetDC(IntPtr.Zero))
-            {
-                UserApi.FillRect(hdcSource, GdiApi.GetStockObject(StockObject.GrayBrush), 0, 0, cxSrc, cySrc);
+	#region Methods
+	public void Refresh(Point sourceOrigin)
+	{
+		Guard.IsNotNull(_viewSettings);
 
-                try
-                {
-                    GdiApi.BitBlt(
-                        hdcSource, 0, 0, cxSrc, cySrc,
-                        hdcScreen, xSrc, ySrc, ROP3.SrcCopy);
-                }
-                catch (Win32Exception e)
-                {
-                    #if DEBUG
-                    {
-                        bool isHdcSourceValid = GdiApi.GetPixel(hdcSource, 0, 0) != -1;
-                        bool isHdcScreenValid = GdiApi.GetPixel(hdcScreen, 0, 0) != -1;
+		// Compute the origin and extents of the source rectangle
+		var sourceSize = _viewSettings.Model.SourceSize;
+		sourceSize.Width = Math.Min(sourceSize.Width, SystemParameters.VirtualScreenWidth);
+		sourceSize.Height = Math.Min(sourceSize.Height, SystemParameters.VirtualScreenHeight);
+		var sourceRect = new Rect(sourceOrigin, sourceSize);
+		int xSrc = (int)sourceRect.X;
+		int ySrc = (int)sourceRect.Y;
+		int cxSrc = (int)sourceRect.Width;
+		int cySrc = (int)sourceRect.Height;
 
-                        Debug.WriteLine("{3}: ScreenImageViewModel.Refresh: BitBlt failed: {0} isHdcSourceValid={1} isHdcScreenValid={2}",
-                            e.Message, isHdcSourceValid, isHdcScreenValid, _invalidHandleCount++);
-                    }
-                    #endif // DEBUG
+		// Flush the GDI pipeline
+		GdiApi.GdiFlush();
 
-                    // Ignore (until it doesn't fail)
-                    // TODO: raise an event so that the MainViewModel can adjust its timer
-                    return;
-                }
-            }
+		// Copy from the screen to our source bitmap buffer
+		var hdcSource = this.SourceBitmap.Model.Hdc!;
+		using (var hdcScreen = SafeHwnd.Null.GetDC())
+		{
+			hdcSource.FillRect(0, 0, cxSrc, cySrc, StockBrush.GrayBrush.GetStockBrush());
 
-            // Compute the origin and extents of the zoomed rectangle
-            var zoomFactor = _viewSettings.Model.ZoomFactor;
-            int cxDest = (int)(cxSrc * zoomFactor);
-            int cyDest = (int)(cySrc * zoomFactor);
+			try
+			{
+				GdiApi.BitBlt(
+					hdcSource, 0, 0, cxSrc, cySrc,
+					hdcScreen, xSrc, ySrc, ROP3.SrcCopy);
+			}
+			catch (Win32Exception e)
+			{
+#if DEBUG
+				{
+					bool isHdcSourceValid = hdcSource.GetPixel(0, 0) != -1;
+					bool isHdcScreenValid = hdcScreen.GetPixel(0, 0) != -1;
 
-            // Stretch from the source bitmap buffer to our zoomed bitmap buffer
-            var hdcZoomed = this.ZoomedBitmap.Model.DC;
-            using (GdiApi.SetStretchBltMode(hdcZoomed, StretchBltMode.ColorOnColor))
-            {
-                GdiApi.StretchBlt(
-                    hdcZoomed, 0, 0, cxDest, cyDest,
-                    hdcSource, 0, 0, cxSrc, cySrc, ROP3.SrcCopy);
-            }
+					Debug.WriteLine("{3}: ScreenImageViewModel.Refresh: BitBlt failed: {0} isHdcSourceValid={1} isHdcScreenValid={2}",
+						e.Message, isHdcSourceValid, isHdcScreenValid, s_invalidHandleCount++);
+				}
+#endif // DEBUG
 
-            // Draw the pixel grid as needed
-            this.DrawPixelGrid(hdcZoomed, cxDest, cyDest);
+				// Ignore (until it doesn't fail)
+				// TODO: raise an event so that the MainViewModel can adjust its timer
+				return;
+			}
+		}
 
-            // Flush the GDI pipeline
-            GdiApi.GdiFlush();
+		// Compute the origin and extents of the zoomed rectangle
+		var zoomFactor = _viewSettings.Model.ZoomFactor;
+		int cxDest = (int)(cxSrc * zoomFactor);
+		int cyDest = (int)(cySrc * zoomFactor);
 
-            // Indvalidate the BitmapViewModel objects
-            this.SourceBitmap.InvalidateBitmapSource();
-            this.ZoomedBitmap.InvalidateBitmapSource();
+		// Stretch from the source bitmap buffer to our zoomed bitmap buffer
+		var hdcZoomed = this.ZoomedBitmap.Model.Hdc!;
+		using (GdiApi.SetStretchBltMode(hdcZoomed, StretchBltMode.ColorOnColor))
+		{
+			GdiApi.StretchBlt(
+				hdcZoomed, 0, 0, cxDest, cyDest,
+				hdcSource, 0, 0, cxSrc, cySrc, ROP3.SrcCopy);
+		}
 
-            // Reset the flag
-            this.IsRefreshNeeded = false;
+		// Draw the pixel grid as needed
+		this.DrawPixelGrid(hdcZoomed, cxDest, cyDest);
 
-            // Indicate changed bitmaps
-            this.PropertyChanged.Raise(this, nameof(ZoomedBitmap), nameof(SourceBitmap));
-        }
-        #endregion Methods
+		// Flush the GDI pipeline
+		GdiApi.GdiFlush();
 
-        #region Private Implementation
-        private void DrawPixelGrid(SafeHdc hdc, int cxDest, int cyDest)
-        {
-            // Draw the pixel grid onto the zoomed bitmap
-            var zoomFactor = (int)_viewSettings.Model.ZoomFactor;
-            if (_viewSettings.Model.IsGridVisibleWhenZoomed && zoomFactor > 1)
-            {
-                // Create the pen and select it into the HDC of the zoomed bitmap buffer
-                // TODO: Since this is a private DC, only create/select the pen when pen properties change
-                // TODO: Allow selectable pixel grid pen as a view setting.
-                //using (GdiApi.SetBkMode(hdcZoomed, BackgroundMode.Opaque))
-                //using (GdiApi.SetROP2(hdcZoomed, ROP2.CopyPen))
-                //using (var hpen = GdiApi.CreatePen(PenStyle.Solid, 1, 0x00FFFFFF, null))
-                //using (GdiApi.SelectObject(hdcZoomed, hpen))
-                using (GdiApi.SelectObject(hdc, GdiApi.GetStockObject(StockObject.BlackPen)))
-                {
-                    // Compute the number of lines to draw
-                    var horizontalLineCount = cyDest / (int)zoomFactor;
-                    var verticalLineCount = cxDest / (int)zoomFactor;
-                    var totalLineCount = horizontalLineCount + verticalLineCount;
+		// Indvalidate the BitmapViewModel objects
+		this.SourceBitmap.InvalidateBitmapSource();
+		this.ZoomedBitmap.InvalidateBitmapSource();
 
-                    // Allocate arrays for the points in the lines and the count of points in each polyline
-                    POINT[] points = new POINT[totalLineCount * 2];
-                    int[] polyPoints = new int[totalLineCount];
+		// Reset the flag
+		this.IsRefreshNeeded = false;
 
-                    // Calculate the horizontal grid line points
-                    int i = 0;
-                    for (int y = zoomFactor - 1; y < cyDest; y += zoomFactor)
-                    {
-                        points[i].x = 0;
-                        points[i].y = y;
-                        ++i;
-                        points[i].x = cxDest;
-                        points[i].y = y;
-                        ++i;
-                    }
+		// Indicate changed bitmaps
+		this.OnPropertyChanged(nameof(ZoomedBitmap));
+		this.OnPropertyChanged(nameof(SourceBitmap));
+	}
+	#endregion Methods
 
-                    // Calculate the vertical grid line points
-                    for (int x = zoomFactor - 1; x < cxDest; x += zoomFactor)
-                    {
-                        points[i].x = x;
-                        points[i].y = 0;
-                        ++i;
-                        points[i].x = x;
-                        points[i].y = cyDest;
-                        ++i;
-                    }
+	#region Private Implementation
+	private void DrawPixelGrid(SafeHdc hdc, int cxDest, int cyDest)
+	{
+		if (_viewSettings is null)
+			return;
 
-                    // Draw all the lines at once
-                    for (i = 0; i < polyPoints.Length; ++i)
-                        polyPoints[i] = 2;
-                    GdiApi.PolyPolyline(hdc, points, polyPoints);
-                }
-            }
-        }
+		// Draw the pixel grid onto the zoomed bitmap
+		var zoomFactor = (int)_viewSettings.Model.ZoomFactor;
+		if (_viewSettings.Model.IsGridVisibleWhenZoomed && zoomFactor > 1)
+		{
+			// Create the pen and select it into the HDC of the zoomed bitmap buffer
+			// TODO: Since this is a private DC, only create/select the pen when pen properties change
+			// TODO: Allow selectable pixel grid pen as a view setting.
+			//using (GdiApi.SetBkMode(hdcZoomed, BackgroundMode.Opaque))
+			//using (GdiApi.SetROP2(hdcZoomed, ROP2.CopyPen))
+			//using (var hpen = GdiApi.CreatePen(PenStyle.Solid, 1, 0x00FFFFFF, null))
+			//using (GdiApi.SelectObject(hdcZoomed, hpen))
+			using (GdiApi.SelectObject(hdc, StockPen.BlackPen.GetStockPen()))
+			{
+				// Compute the number of lines to draw
+				var horizontalLineCount = cyDest / (int)zoomFactor;
+				var verticalLineCount = cxDest / (int)zoomFactor;
+				var totalLineCount = horizontalLineCount + verticalLineCount;
 
-        private void ResizeSourceBitmap()
-        {
-            // Resize the SourceBitmap
-            _sourceBitmap.Size = _viewSettings.Model.SourceSize;
-        }
+				// Allocate arrays for the points in the lines and the count of points in each polyline
+				POINT[] points = new POINT[totalLineCount * 2];
+				uint[] polyPoints = new uint[totalLineCount];
 
-        private void ResizeZoomedBitmap()
-        {
-            // Resize the ZoomedBitmap
-            _zoomedBitmap.Size = _viewSettings.Model.RenderSize;
-        }
-        #endregion Private Implementation
+				// Calculate the horizontal grid line points
+				int i = 0;
+				for (int y = zoomFactor - 1; y < cyDest; y += zoomFactor)
+				{
+					points[i].X = 0;
+					points[i].Y = y;
+					++i;
+					points[i].X = cxDest;
+					points[i].Y = y;
+					++i;
+				}
 
-        #region Event Handlers
-        private void ComponentDispatcher_ThreadPreprocessMessage(ref MSG msg, ref bool handled)
-        {
-            if (msg.message == (int)WM.DisplayChange)
-            {
-                Debug.WriteLine("ScreenImageViewModel: WM_DISPLAYCHANGE wParam={0:X16} lParam={1:X16}", msg.wParam, msg.lParam);
-            }
-        }
+				// Calculate the vertical grid line points
+				for (int x = zoomFactor - 1; x < cxDest; x += zoomFactor)
+				{
+					points[i].X = x;
+					points[i].Y = 0;
+					++i;
+					points[i].X = x;
+					points[i].Y = cyDest;
+					++i;
+				}
 
-        private void Parent_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(this.Parent.ViewSettings):
-                    if (_viewSettings != null)
-                        ((INotifyPropertyChanged)_viewSettings.Model).PropertyChanged -= this.ViewSettings_PropertyChanged;
+				// Draw all the lines at once
+				for (i = 0; i < polyPoints.Length; ++i)
+					polyPoints[i] = 2;
+				GdiApi.PolyPolyline(hdc, points, polyPoints);
+			}
+		}
+	}
 
-                    _viewSettings = this.Parent.ViewSettings;
+	private void ResizeSourceBitmap() => _sourceBitmap.Size = _viewSettings!.Model.SourceSize;
 
-                    if (_viewSettings != null)
-                    {
-                        ((INotifyPropertyChanged)_viewSettings.Model).PropertyChanged += this.ViewSettings_PropertyChanged;
-                        this.ViewSettings_PropertyChanged(_viewSettings.Model, new PropertyChangedEventArgs(nameof(_viewSettings.Model.RenderSize)));
-                    }
-                    break;
-            }
-        }
+	private void ResizeZoomedBitmap() => _zoomedBitmap.Size = _viewSettings!.Model.RenderSize;
 
-        private void ViewSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(_viewSettings.Model.IsGridVisibleWhenZoomed):
-                    this.IsRefreshNeeded = true;
-                    break;
+	#endregion Private Implementation
 
-                case nameof(_viewSettings.Model.RenderSize):
-                    this.ResizeSourceBitmap();
-                    this.ResizeZoomedBitmap();
-                    this.IsRefreshNeeded = true;
-                    break;
+	#region Event Handlers
+	private void ComponentDispatcher_ThreadPreprocessMessage(ref MSG msg, ref bool handled)
+	{
+		if (msg.message == (int)WM.DISPLAYCHANGE)
+		{
+			Debug.WriteLine("ScreenImageViewModel: WM_DISPLAYCHANGE wParam={0:X16} lParam={1:X16}", msg.wParam, msg.lParam);
+		}
+	}
 
-                case nameof(_viewSettings.Model.ZoomFactor):
-                    this.ResizeSourceBitmap();
-                    this.IsRefreshNeeded = true;
-                    break;
-            }
-        }
-        #endregion Event Handlers
-    }
+	private void ViewSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		switch (e.PropertyName)
+		{
+			case nameof(ViewSettingsModel.IsGridVisibleWhenZoomed):
+				this.IsRefreshNeeded = true;
+				break;
+
+			case nameof(ViewSettingsModel.RenderSize):
+				this.ResizeSourceBitmap();
+				this.ResizeZoomedBitmap();
+				this.IsRefreshNeeded = true;
+				break;
+
+			case nameof(ViewSettingsModel.ZoomFactor):
+				this.ResizeSourceBitmap();
+				this.IsRefreshNeeded = true;
+				break;
+		}
+	}
+	#endregion Event Handlers
 }

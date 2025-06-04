@@ -1,15 +1,14 @@
-﻿namespace PixelInspector.ViewModel
+
+namespace PixelInspector.ViewModel;
+
+public class ApplicationStateLoading
 {
+}
 
-    public class ApplicationStateLoading
-    {
-    }
+public class ApplicationStateRunning
+{
+}
 
-    public class ApplicationStateRunning
-    {
-    }
-
-    public class ApplicationStateUnloading
-    {
-    }
+public class ApplicationStateUnloading
+{
 }

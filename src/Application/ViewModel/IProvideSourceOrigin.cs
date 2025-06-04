@@ -1,10 +1,9 @@
-﻿namespace PixelInspector.ViewModel
-{
-    using System.ComponentModel;
-    using System.Windows;
+using System.ComponentModel;
+using System.Windows;
 
-    public interface IProvideSourceOrigin : INotifyPropertyChanged
-    {
-        Point SourceOrigin { get; }
-    }
+namespace PixelInspector.ViewModel;
+
+public interface IProvideSourceOrigin : INotifyPropertyChanged
+{
+	Point SourceOrigin { get; }
 }

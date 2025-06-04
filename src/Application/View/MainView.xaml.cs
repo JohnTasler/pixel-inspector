@@ -1,149 +1,144 @@
-﻿namespace PixelInspector.View
+using System.ComponentModel;
+using System.Reflection.Metadata;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interop;
+using PixelInspector.ViewModel;
+using Tasler.ComponentModel;
+using Tasler.Interop.User;
+using Tasler.Windows;
+
+namespace PixelInspector.View;
+
+/// <summary>
+/// Interaction logic for MainView.xaml, a view of <see cref="MainViewModel"/>.
+/// </summary>
+public partial class MainView : Window, INotifyPropertyChanged
 {
-    using System;
-    using System.ComponentModel;
-    using System.Windows;
-    using System.Windows.Input;
-    using System.Windows.Interop;
-    using PixelInspector.Interop.User;
-    using PixelInspector.ViewModel;
+	#region Constructors
+	/// <summary>
+	/// Initializes a new instance of the <see cref="MainView"/> class.
+	/// </summary>
+	public MainView(MainViewModel viewModel)
+	{
+		this.InitializeComponent();
+		this.Loaded += this.MainView_Loaded;
+		this.HookDataContextAsViewModel(() => this.PropertyChanged?.Raise(this, nameof(this.ViewModel)));
+		this.DataContext = viewModel;
+	}
+	#endregion Constructors
 
-    /// <summary>
-    /// Interaction logic for MainView.xaml, a view of <see cref="MainViewModel"/>.
-    /// </summary>
-    public partial class MainView : Window
-    {
-        #region Constructors
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MainView"/> class.
-        /// </summary>
-        public MainView()
-        {
-            this.InitializeComponent();
-            this.Loaded += this.this_Loaded;
-            this.DataContextChanged += this.this_DataContextChanged;
-        }
-        #endregion Constructors
+	#region Overrides
+	protected override void OnSourceInitialized(EventArgs e)
+	{
+		this.HwndSource = (HwndSource)HwndSource.FromVisual(this);
+		this.HwndSource?.AddHook(this.HwndSource_Hook);
+		base.OnSourceInitialized(e);
+	}
+	#endregion Overrides
 
-        #region Overrides
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            this.HwndSource = (HwndSource)HwndSource.FromVisual(this);
-            this.HwndSource.AddHook(this.HwndSource_Hook);
-            base.OnSourceInitialized(e);
-        }
-        #endregion Overrides
+	#region Events
+	public event PropertyChangedEventHandler? PropertyChanged;
+	#endregion Events
 
-        #region Private Implementation
-        private bool HasSetWindowPlacement { get; set; }
-        private MainViewModel ViewModel { get; set; }
-        private HwndSource HwndSource { get; set; }
-        #endregion Private Implementation
+	#region Private Implementation
+	private bool HasSetWindowPlacement { get; set; }
+	public MainViewModel ViewModel => (MainViewModel)this.DataContext;
+	private HwndSource? HwndSource { get; set; }
+	#endregion Private Implementation
 
-        #region Event Handlers
-        private void this_Loaded(object sender, RoutedEventArgs e)
-        {
-            Keyboard.Focus(this.mainContent);
-        }
+	#region Event Handlers
+	private void MainView_Loaded(object? sender, RoutedEventArgs e)
+	{
+		Keyboard.Focus(this.mainContent);
+	}
 
-        private void this_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (e.OldValue is INotifyPropertyChanged oldViewModel)
-                oldViewModel.PropertyChanged -= this.ViewModel_PropertyChanged;
+	private nint HwndSource_Hook(nint hwndHandle, int msg, nint wParam, nint lParam, ref bool handled)
+	{
+		SafeHwnd hwnd = new() {Handle = hwndHandle };
+		var message = (WM)msg;
+		switch (message)
+		{
+			case WM.MOVE:
+			case WM.SIZE:
+				if (this.ViewModel is not null)
+				{
+					if (this.ViewModel.ViewSettings.Model.WindowPlacement is null)
+						this.ViewModel.ViewSettings.Model.WindowPlacement = new(hwnd);
+					else
+						this.ViewModel.ViewSettings.Model.WindowPlacement.Get(hwnd);
+				}
+				break;
 
-            this.ViewModel = e.NewValue as MainViewModel;
-            if (this.ViewModel != null)
-                ((INotifyPropertyChanged)this.ViewModel).PropertyChanged += this.ViewModel_PropertyChanged;
+			case WM.SHOWWINDOW:
+				if (!this.HasSetWindowPlacement && this.ViewModel is not null)
+				{
+					this.ViewModel.ViewSettings.Model.WindowPlacement?.Set(hwnd);
+					this.HasSetWindowPlacement = true;
+				}
+				break;
 
-            this.InvalidateVisual();
-        }
+			case WM.DESTROY:
+				this.HwndSource?.RemoveHook(this.HwndSource_Hook);
+				break;
+		}
 
-        private IntPtr HwndSource_Hook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            var message = (WM)msg;
-            switch (message)
-            {
-                case WM.Move:
-                case WM.Size:
-                    if (this.ViewModel != null)
-                    {
-                        if (this.ViewModel.ViewSettings.Model.WindowPlacement == null)
-                            this.ViewModel.ViewSettings.Model.WindowPlacement = new Model.WindowPlacementModel();
-                        this.ViewModel.ViewSettings.Model.WindowPlacement.Get(hwnd);
-                    }
-                    break;
+		return nint.Zero;
+	}
 
-                case WM.ShowWindow:
-                    if (!this.HasSetWindowPlacement && this.ViewModel != null)
-                    {
-                        if (this.ViewModel.ViewSettings.Model.WindowPlacement != null)
-                            this.ViewModel.ViewSettings.Model.WindowPlacement.Set(hwnd);
-                        this.HasSetWindowPlacement = true;
-                    }
-                    break;
+	private void MainContent_PreviewMouseMove(object? sender, MouseEventArgs e)
+	{
+		if (this.ViewModel is not null)
+			this.ViewModel.ZoomedMousePosition = e.GetPosition(this.mainContent);
+	}
 
-                case WM.Destroy:
-                    this.HwndSource.RemoveHook(this.HwndSource_Hook);
-                    break;
-            }
+	private void MainContent_MouseEnter(object? sender, MouseEventArgs e)
+	{
+		if (this.ViewModel is not null)
+			this.ViewModel.IsMouseInZoomedBounds = true;
+	}
 
-            return IntPtr.Zero;
-        }
+	private void MainContent_MouseLeave(object? sender, MouseEventArgs e)
+	{
+		if (this.ViewModel is not null)
+			this.ViewModel.IsMouseInZoomedBounds = false;
+	}
 
-        private void mainContent_PreviewMouseMove(object sender, MouseEventArgs e)
-        {
-            if (this.ViewModel != null)
-                this.ViewModel.ZoomedMousePosition = e.GetPosition(this.mainContent);
-        }
+	private void MainContent_MouseWheel(object? sender, MouseWheelEventArgs e)
+	{
+		if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+		{
+			var command = e.Delta > 0
+				? this.ViewModel.ViewSettings.IncreaseZoomCommand
+				: this.ViewModel.ViewSettings.DecreaseZoomCommand;
+			if (command.CanExecute(null))
+				command.Execute(null);
+		}
+	}
 
-        private void mainContent_MouseEnter(object sender, MouseEventArgs e)
-        {
-            if (this.ViewModel != null)
-                this.ViewModel.IsMouseInZoomedBounds = true;
-        }
+	private void MainContent_PreviewMouseLeftButtonDown(object? sender, MouseButtonEventArgs e)
+	{
+		if (e.ClickCount == 2)
+		{
+			e.Handled = true;
 
-        private void mainContent_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (this.ViewModel != null)
-                this.ViewModel.IsMouseInZoomedBounds = false;
-        }
+			this.ViewModel.ChooseToolLocatingCommand.Execute(
+				new LocatingToolViewModel.Parameters
+				{
+					Offset = e.GetPosition((IInputElement)e.Source),
+					IsFromMouseClick = true
+				}
+			);
+		}
+	}
 
-        private void mainContent_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-                var command = e.Delta > 0
-                    ? this.ViewModel.ViewSettings.IncreaseZoomCommand
-                    : this.ViewModel.ViewSettings.DecreaseZoomCommand;
-                if (command.CanExecute(null))
-                    command.Execute(null);
-            }
-        }
-
-        private void mainContent_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount == 2)
-            {
-                e.Handled = true;
-
-                this.ViewModel.ChooseToolLocatingCommand.Execute(
-                    new LocatingToolViewModel.Parameters
-                    {
-                        Offset = e.GetPosition((IInputElement)e.Source),
-                        IsFromMouseClick = true
-                    }
-                );
-            }
-        }
-
-        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "ApplicationState":
-                    break;
-            }
-        }
-        #endregion Event Handlers
-    }
+	private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		switch (e.PropertyName)
+		{
+			case nameof(this.ViewModel.ApplicationState):
+				break;
+		}
+	}
+	#endregion Event Handlers
 }

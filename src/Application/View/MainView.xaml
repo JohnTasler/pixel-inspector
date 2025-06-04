@@ -1,143 +1,145 @@
-﻿<Window
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-  xmlns:vw="clr-namespace:PixelInspector.View"
-  xmlns:vm="clr-namespace:PixelInspector.ViewModel"
+<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+	xmlns:taz="urn:tasler-dotnet-framework"
+	xmlns:vw="clr-namespace:PixelInspector.View"
+	xmlns:vm="clr-namespace:PixelInspector.ViewModel"
 
-  x:Class="PixelInspector.View.MainView"
-  d:DataContext="{d:DesignInstance vm:MainViewModel}"
-  TextOptions.TextFormattingMode="Display" UseLayoutRounding="True"
-  FocusManager.FocusedElement="{Binding ElementName=mainContent}"
+	x:Class="PixelInspector.View.MainView"
+	d:DataContext="{d:DesignInstance vm:MainViewModel}"
+	TextOptions.TextFormattingMode="Display" UseLayoutRounding="True"
+	FocusManager.FocusedElement="{Binding ElementName=mainContent}"
 
-  Background="{DynamicResource MainViewBackgroundBrush}"
-  Left="680" Top="330"
-  Width="525" Height="350"
-  MinWidth="280" MinHeight="120"
-  Title="Pixel Inspector"
-  >
-  <Window.Style>
-    <Style TargetType="Window">
-      <Setter Property="Topmost" Value="{Binding ViewSettings.Model.IsAlwaysOnTop,Mode=OneWay}"/>
-      <Setter Property="ResizeMode" Value="CanResizeWithGrip"/>
+	Background="{DynamicResource MainViewBackgroundBrush}"
+	Left="680" Top="330"
+	Width="525" Height="350"
+	MinWidth="280" MinHeight="120"
+	Title="Pixel Inspector"
+	>
+	<Window.Style>
+		<Style TargetType="Window">
+			<Setter Property="Topmost" Value="{Binding ViewSettings.Model.IsAlwaysOnTop,Mode=OneWay}"/>
+			<Setter Property="ResizeMode" Value="CanResizeWithGrip"/>
+			<Setter Property="Tag" Value="{Binding DesiredSize, RelativeSource={x:Static RelativeSource.Self}, Converter={x:Static taz:TypeValueConverter.Instance}}" />
 
-      <Style.Triggers>
-        <Trigger Property="WindowState" Value="Minimized">
-          <Setter Property="Topmost" Value="False"/>
-        </Trigger>
+			<Style.Triggers>
+				<Trigger Property="WindowState" Value="Minimized">
+					<Setter Property="Topmost" Value="False"/>
+				</Trigger>
 
-        <DataTrigger Binding="{Binding ViewSettings.Model.IsStatusBarVisible}" Value="False">
-          <Setter Property="ResizeMode" Value="CanResize"/>
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
-  </Window.Style>
+				<DataTrigger Binding="{Binding ViewSettings.Model.IsStatusBarVisible}" Value="False">
+					<Setter Property="ResizeMode" Value="CanResize"/>
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+	</Window.Style>
 
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="Auto"/>
-    </Grid.RowDefinitions>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
 
-    <vw:MainViewMenuBar
-      Grid.Row="0" x:Name="menuBar"
-      />
+		<vw:MainViewMenuBar
+			Grid.Row="0" x:Name="menuBar"
+			/>
 
-    <Grid
-      Grid.Row="1" x:Name="mainContent"
-      KeyboardNavigation.TabNavigation="Cycle" FocusManager.IsFocusScope="True"
-      LayoutTransform="{Binding DpiTransform}" ClipToBounds="True"
-      PreviewMouseMove="mainContent_PreviewMouseMove"
-      MouseEnter="mainContent_MouseEnter"
-      MouseLeave="mainContent_MouseLeave"
-      MouseWheel="mainContent_MouseWheel"
-      PreviewMouseLeftButtonDown="mainContent_PreviewMouseLeftButtonDown"
-      >
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="Auto"/>
-      </Grid.ColumnDefinitions>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="Auto"/>
-      </Grid.RowDefinitions>
+		<Grid
+			Grid.Row="1" x:Name="mainContent"
+			KeyboardNavigation.TabNavigation="Cycle" FocusManager.IsFocusScope="True"
+			LayoutTransform="{Binding DpiTransform}" ClipToBounds="True"
+			PreviewMouseMove="MainContent_PreviewMouseMove"
+			MouseEnter="MainContent_MouseEnter"
+			MouseLeave="MainContent_MouseLeave"
+			MouseWheel="MainContent_MouseWheel"
+			PreviewMouseLeftButtonDown="MainContent_PreviewMouseLeftButtonDown"
+			>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
 
-      <vw:ScreenImageView DataContext="{Binding ScreenImage}" />
+			<taz:HostedView Type="{x:Type vw:ScreenImageView}" DataContext="{Binding ScreenImage}" />
 
-      <ContentPresenter Content="{Binding ToolState}">
-        <ContentPresenter.Resources>
-          <DataTemplate DataType="{x:Type vm:MoveToolViewModel}">
-            <vw:MoveToolView />
-          </DataTemplate>
-          <DataTemplate DataType="{x:Type vm:SelectToolViewModel}">
-            <vw:SelectToolView />
-          </DataTemplate>
-          <DataTemplate DataType="{x:Type vm:LocateToolViewModel}">
-            <vw:LocateToolView />
-          </DataTemplate>
-          <DataTemplate DataType="{x:Type vm:LocatingToolViewModel}">
-            <vw:LocatingToolView />
-          </DataTemplate>
-        </ContentPresenter.Resources>
-      </ContentPresenter>
+			<ContentPresenter Content="{Binding ToolState}">
+				<ContentPresenter.Resources>
+					<DataTemplate DataType="{x:Type vm:MoveToolViewModel}">
+						<taz:HostedView Type="{x:Type vw:MoveToolView}" />
+					</DataTemplate>
+					<DataTemplate DataType="{x:Type vm:SelectToolViewModel}">
+						<taz:HostedView Type="{x:Type vw:SelectToolView}" />
+					</DataTemplate>
+					<DataTemplate DataType="{x:Type vm:LocateToolViewModel}">
+						<taz:HostedView Type="{x:Type vw:LocateToolView}" />
+					</DataTemplate>
+					<DataTemplate DataType="{x:Type vm:LocatingToolViewModel}">
+						<taz:HostedView Type="{x:Type vw:LocatingToolView}" />
+					</DataTemplate>
+				</ContentPresenter.Resources>
+			</ContentPresenter>
 
-      <!--<ScrollBar
-        x:Name="verticalScrollBar"
-        Grid.Column="1" Grid.Row="0"
-        Orientation="Vertical"
-        Minimum="0" Maximum="1079"
-        SmallChange="1" LargeChange="10"
-        Value="540"
-        />
-      <ScrollBar
-        x:Name="horizontalScrollBar"
-        Grid.Column="0" Grid.Row="1"
-        Orientation="Horizontal"
-        Minimum="0" Maximum="1919"
-        SmallChange="1" LargeChange="10"
-        Value="960"
-        />
-      <Rectangle
-        Grid.Column="1" Grid.Row="1"
-        Fill="{Binding Background,ElementName=verticalScrollBar}"
-        />-->
+			<!--<ScrollBar
+				x:Name="verticalScrollBar"
+				Grid.Column="1" Grid.Row="0"
+				Orientation="Vertical"
+				Minimum="0" Maximum="1079"
+				SmallChange="1" LargeChange="10"
+				Value="540"
+				/>
+			<ScrollBar
+				x:Name="horizontalScrollBar"
+				Grid.Column="0" Grid.Row="1"
+				Orientation="Horizontal"
+				Minimum="0" Maximum="1919"
+				SmallChange="1" LargeChange="10"
+				Value="960"
+				/>
+			<Rectangle
+				Grid.Column="1" Grid.Row="1"
+				Fill="{Binding Background,ElementName=verticalScrollBar}"
+				/>-->
 
-      <Grid.InputBindings>
+			<Grid.InputBindings>
 
-        <KeyBinding Gesture="Ctrl+S" Command="{Binding SaveAsCommand}"/>
-        <KeyBinding Gesture="Ctrl+P" Command="{Binding PrintCommand}"/>
-        <KeyBinding Gesture="Ctrl+C" Command="{Binding CopyCommand}"/>
-        <KeyBinding Gesture="F5" Command="{Binding RefreshCommand}"/>
+				<KeyBinding Gesture="Ctrl+S" Command="{Binding SaveAsCommand}"/>
+				<KeyBinding Gesture="Ctrl+P" Command="{Binding PrintCommand}"/>
+				<KeyBinding Gesture="Ctrl+C" Command="{Binding CopyCommand}"/>
+				<KeyBinding Gesture="F5" Command="{Binding RefreshCommand}"/>
 
-        <KeyBinding Gesture="Ctrl+F5" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsAutoRefreshing"/>
-        <KeyBinding Gesture="Ctrl+T" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsAlwaysOnTop"/>
-        <KeyBinding Gesture="Ctrl+G" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsGridVisibleWhenZoomed"/>
+				<KeyBinding Gesture="Ctrl+F5" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsAutoRefreshing"/>
+				<KeyBinding Gesture="Ctrl+T" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsAlwaysOnTop"/>
+				<KeyBinding Gesture="Ctrl+G" Command="{Binding ViewSettings.ToggleSwitchCommand}" CommandParameter="IsGridVisibleWhenZoomed"/>
 
-        <KeyBinding Gesture="Alt+1" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="1"/>
-        <KeyBinding Gesture="Alt+2" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="2"/>
-        <KeyBinding Gesture="Alt+3" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="3"/>
-        <KeyBinding Gesture="Alt+4" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="4"/>
-        <KeyBinding Gesture="Alt+5" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="5"/>
-        <KeyBinding Gesture="Alt+6" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="6"/>
-        <KeyBinding Gesture="Alt+7" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="7"/>
-        <KeyBinding Gesture="Alt+8" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="8"/>
-        <KeyBinding Gesture="Alt+0" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="10"/>
+				<KeyBinding Gesture="Alt+1" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="1"/>
+				<KeyBinding Gesture="Alt+2" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="2"/>
+				<KeyBinding Gesture="Alt+3" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="3"/>
+				<KeyBinding Gesture="Alt+4" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="4"/>
+				<KeyBinding Gesture="Alt+5" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="5"/>
+				<KeyBinding Gesture="Alt+6" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="6"/>
+				<KeyBinding Gesture="Alt+7" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="7"/>
+				<KeyBinding Gesture="Alt+8" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="8"/>
+				<KeyBinding Gesture="Alt+0" Command="{Binding ViewSettings.SetZoomFactorCommand}" CommandParameter="10"/>
 
-        <KeyBinding Gesture="Ctrl+PgUp" Command="{Binding ViewSettings.IncreaseZoomCommand}"/>
-        <KeyBinding Gesture="Ctrl+PgDn" Command="{Binding ViewSettings.DecreaseZoomCommand}"/>
+				<KeyBinding Gesture="Ctrl+PgUp" Command="{Binding ViewSettings.IncreaseZoomCommand}"/>
+				<KeyBinding Gesture="Ctrl+PgDn" Command="{Binding ViewSettings.DecreaseZoomCommand}"/>
 
-        <KeyBinding Gesture="Ctrl+Alt+F12" Command="{Binding GarbageCollectCommand}"/>
+				<KeyBinding Gesture="Ctrl+Alt+F12" Command="{Binding CollectGarbageCommand}"/>
 
-        <KeyBinding Key="C" Command="{Binding ChooseToolLocateCommand}"/>
-        <KeyBinding Key="L" Command="{Binding ChooseToolLocateCommand}"/>
-        <KeyBinding Key="M" Command="{Binding ChooseToolMoveCommand}"/>
-        <KeyBinding Key="S" Command="{Binding ChooseToolSelectCommand}"/>
+				<KeyBinding Key="C" Command="{Binding ChooseToolLocateCommand}"/>
+				<KeyBinding Key="L" Command="{Binding ChooseToolLocateCommand}"/>
+				<KeyBinding Key="M" Command="{Binding ChooseToolMoveCommand}"/>
+				<KeyBinding Key="S" Command="{Binding ChooseToolSelectCommand}"/>
 
-      </Grid.InputBindings>
-    </Grid>
+			</Grid.InputBindings>
+		</Grid>
 
-    <vw:MainViewStatusBar Grid.Row="2" />
-  </Grid>
+		<vw:MainViewStatusBar Grid.Row="2" />
+	</Grid>
 </Window>

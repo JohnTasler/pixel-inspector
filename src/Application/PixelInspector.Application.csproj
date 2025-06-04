@@ -1,362 +1,92 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{83DC7F04-3BE5-48FC-ABD8-56A74F1106C4}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PixelInspector</RootNamespace>
-    <AssemblyName>PixelInspector</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Debug\PixelInspector.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\vs15\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisRuleDirectories>;C:\vs15\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\PixelInspector.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\vs15\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisRuleDirectories>;C:\vs15\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>View\Images\Position.ico</ApplicationIcon>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Windows.Shell">
-      <HintPath>Libraries\Microsoft.Windows.Shell.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Configuration\ApplicationSettingsExtensions.cs" />
-    <Compile Include="Configuration\ApplicationSettingsExtensions.AutoSaveHelper.cs" />
-    <Compile Include="Controls\EventService.cs" />
-    <Compile Include="Controls\SelectionBoxControl.cs" />
-    <Compile Include="Controls\Thumb.cs" />
-    <Compile Include="View\SelectionView.xaml.cs">
-      <DependentUpon>SelectionView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Interop\User\UserStructs.cs" />
-    <Compile Include="Model\BitmapModel.cs" />
-    <Compile Include="Interop\Gdi\GdiStructs.cs" />
-    <Compile Include="Interop\Gdi\SafeGdiObject.cs" />
-    <Compile Include="Interop\Gdi\SafeHdc.cs" />
-    <Compile Include="Interop\DefStructs.cs" />
-    <Compile Include="Interop\User\UserEnums.cs" />
-    <Compile Include="Interop\User\SafeWindowHdc.cs" />
-    <Compile Include="Interop\Gdi\GdiEnums.cs" />
-    <Compile Include="Interop\Gdi\GdiApi.cs" />
-    <Compile Include="Interop\Gdi\SafePrivateHdc.cs" />
-    <Compile Include="Interop\User\UserApi.cs" />
-    <Compile Include="Model\ColorValueDisplayFormat.cs" />
-    <Compile Include="Model\WindowPlacementModel.cs" />
-    <Compile Include="Model\ViewSettingsModel.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="ViewModel\ApplicationStates.cs" />
-    <Compile Include="ViewModel\BitmapViewModel.cs" />
-    <Compile Include="ViewModel\SelectionViewModel.cs" />
-    <Compile Include="ViewModel\IProvideSourceOrigin.cs" />
-    <Compile Include="ViewModel\ScreenImageViewModel.cs" />
-    <Compile Include="ViewModel\Tools\LocatingToolViewModel.cs" />
-    <Compile Include="ViewModel\Tools\IToolMode.cs" />
-    <Compile Include="ViewModel\Tools\MoveToolViewModel.cs" />
-    <Compile Include="ViewModel\Tools\SelectToolViewModel.cs" />
-    <Compile Include="ViewModel\Tools\LocateToolViewModel.cs" />
-    <Compile Include="View\MainViewZoomSlider.xaml.cs">
-      <DependentUpon>MainViewZoomSlider.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\DragWindow.xaml.cs">
-      <DependentUpon>DragWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\MainViewStatusBar.xaml.cs">
-      <DependentUpon>MainViewStatusBar.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\MainViewMenuBar.xaml.cs">
-      <DependentUpon>MainViewMenuBar.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Tools\LocatingToolView.xaml.cs">
-      <DependentUpon>LocatingToolView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Tools\LocateToolView.xaml.cs">
-      <DependentUpon>LocateToolView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ToolViewUserControl.cs" />
-    <Compile Include="View\ScreenImageView.cs" />
-    <Compile Include="View\Tools\MoveToolView.xaml.cs">
-      <DependentUpon>MoveToolView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Tools\SelectToolView.xaml.cs">
-      <DependentUpon>SelectToolView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\VisualStyles\VisualStyleDictionaryExtension.cs" />
-    <Page Include="View\SelectionView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\MainViewZoomSlider.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\DragWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\MainViewStatusBar.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\MainView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewSettingsViewModel.cs" />
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="View\MainView.xaml.cs">
-      <DependentUpon>MainView.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="View\MainViewMenuBar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Tools\LocatingToolView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Tools\LocateToolView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Tools\MoveToolView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Tools\SelectToolView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Classic\Brushes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Classic\Metrics.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Classic\ResizeGripStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Classic\StatusBarStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Classic\_Styles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Common\Brushes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Common\SliderStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Common\Metrics.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Common\_Styles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\NonClassic\Brushes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\NonClassic\StatusBarStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\NonClassic\Metrics.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\NonClassic\ResizeGripStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\NonClassic\_Styles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Common\ToolBarStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Common\MenuStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Common\WindowStyles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\VisualStyles\Themes\Classic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Themes\Aero.NormalColor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Themes\Aero2.NormalColor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Themes\AeroLite.NormalColor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Themes\Royale.NormalColor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Themes\Luna.Metallic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Themes\Luna.Homestead.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\VisualStyles\Themes\Luna.NormalColor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="View\Images\refresh_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Libraries\Microsoft.Windows.Shell.dll" />
-    <Content Include="Libraries\Microsoft.Windows.Shell.pdb" />
-    <Resource Include="View\Cursors\Select.cur" />
-    <Resource Include="View\Images\Selection.ico" />
-    <Resource Include="View\Images\ZoomIn-16.png" />
-    <Resource Include="View\Images\ZoomOut-16.png" />
-    <Resource Include="View\Images\Position.ico" />
-    <Resource Include="View\Cursors\Locate.cur" />
-    <None Include="Libraries\Microsoft.Windows.Shell.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.ComponentModel\Tasler.ComponentModel.csproj">
-      <Project>{2d4e35a3-754d-4e8e-b52c-aa2d0dd9e059}</Project>
-      <Name>Tasler.ComponentModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.Core\Tasler.Core.csproj">
-      <Project>{6692957c-4e2b-415b-a03a-4b3dbcac071b}</Project>
-      <Name>Tasler.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.Interop\Tasler.Interop.csproj">
-      <Project>{ca6287d9-6f8b-4f6d-8d44-d8359a43d644}</Project>
-      <Name>Tasler.Interop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.UI.Wpf\Tasler.UI.Wpf.csproj">
-      <Project>{cc6be222-de4b-412a-9743-80c187f43ee1}</Project>
-      <Name>Tasler.UI.Wpf</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ComponentModel\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AssemblyName>PixelInspector</AssemblyName>
+		<RootNamespace>PixelInspector</RootNamespace>
+		<ProjectGuid>{83DC7F04-3BE5-48FC-ABD8-56A74F1106C4}</ProjectGuid>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<!--<ProduceReferenceAssembly>false</ProduceReferenceAssembly>-->
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Libraries\**" />
+	  <EmbeddedResource Remove="Libraries\**" />
+	  <None Remove="Libraries\**" />
+	  <Page Remove="Libraries\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ApplicationDefinition Remove="App.xaml" />
+		<None Remove="View\Cursors\Locate.cur" />
+		<None Remove="View\Cursors\Select.cur" />
+		<None Remove="View\Images\Position.ico" />
+		<None Remove="View\Images\refresh_icon.png" />
+		<None Remove="View\Images\Selection.ico" />
+		<None Remove="View\Images\ZoomIn-16.png" />
+		<None Remove="View\Images\ZoomOut-16.png" />
+	  <Page Include="App.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DesignTime>True</DesignTime>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+		<Compile Update="Properties\Settings.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+		</Compile>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<None Update="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+			<SubType>Designer</SubType>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="View\Cursors\Locate.cur" />
+	  <Resource Include="View\Cursors\Select.cur" />
+	  <Resource Include="View\Images\Position.ico" />
+	  <Resource Include="View\Images\refresh_icon.png" />
+	  <Resource Include="View\Images\Selection.ico" />
+	  <Resource Include="View\Images\ZoomIn-16.png" />
+	  <Resource Include="View\Images\ZoomOut-16.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.ComponentModel\Tasler.ComponentModel.csproj">
+			<Project>{2d4e35a3-754d-4e8e-b52c-aa2d0dd9e059}</Project>
+			<Name>Tasler.ComponentModel</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.Core\Tasler.Core.csproj">
+			<Project>{6692957c-4e2b-415b-a03a-4b3dbcac071b}</Project>
+			<Name>Tasler.Core</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.Interop\Tasler.Interop.csproj">
+			<Project>{ca6287d9-6f8b-4f6d-8d44-d8359a43d644}</Project>
+			<Name>Tasler.Interop</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.UI.Wpf\Tasler.UI.Wpf.csproj">
+			<Project>{cc6be222-de4b-412a-9743-80c187f43ee1}</Project>
+			<Name>Tasler.UI.Wpf</Name>
+		</ProjectReference>
+	</ItemGroup>
+
+	<!--<ItemGroup>
+		<PackageReference Include="Microsoft.XmlSerializer.Generator" Version="9.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<DotNetCliToolReference Include="Microsoft.XmlSerializer.Generator" Version="9.0.5" />
+	</ItemGroup>-->
+
 </Project>

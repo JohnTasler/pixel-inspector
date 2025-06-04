@@ -1,25 +1,25 @@
-﻿<Application
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:app="clr-namespace:PixelInspector"
-  xmlns:taz="urn:tasler-dot-net-framework"
+<taz:HostedApplication
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:app="clr-namespace:PixelInspector"
+	xmlns:taz="urn:tasler-dotnet-framework"
 
-  x:Class="PixelInspector.App"
-  >
-  <Application.Resources>
-    <ResourceDictionary>
+	x:Class="PixelInspector.App"
+	>
+	<taz:HostedApplication.Resources>
+		<ResourceDictionary>
 
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="{app:VisualStyleDictionary SubFolder='View/VisualStyles'}"/>
-      </ResourceDictionary.MergedDictionaries>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="{app:VisualStyleDictionary SubFolder='View/VisualStyles'}"/>
+			</ResourceDictionary.MergedDictionaries>
 
-      <taz:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-      <taz:BooleanToVisibilityConverter x:Key="BooleanToVisibleHiddenConverter" TrueValue="Visible" FalseValue="Hidden"/>
-      <taz:BooleanToVisibilityConverter x:Key="BooleanToVisibleCollapsedConverter" TrueValue="Visible" FalseValue="Collapsed"/>
+			<taz:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+			<taz:BooleanToVisibilityConverter x:Key="BooleanToVisibleHiddenConverter" TrueValue="Visible" FalseValue="Hidden"/>
+			<taz:BooleanToVisibilityConverter x:Key="BooleanToVisibleCollapsedConverter" TrueValue="Visible" FalseValue="Collapsed"/>
 
-      <!-- This prevents an optimization that limits the nested resource dictionary depth -->
-      <Style TargetType="{x:Type Rectangle}" />
+			<!-- This prevents an optimization that limits the nested resource dictionary depth -->
+			<Style TargetType="{x:Type Rectangle}" />
 
-    </ResourceDictionary>
-  </Application.Resources>
-</Application>
+		</ResourceDictionary>
+	</taz:HostedApplication.Resources>
+</taz:HostedApplication>

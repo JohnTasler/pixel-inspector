@@ -1,9 +1,9 @@
-﻿namespace PixelInspector.Model
+
+namespace PixelInspector.Model;
+
+public enum ColorValueDisplayFormat
 {
-    public enum ColorValueDisplayFormat
-    {
-        Decimal,
-        HexWithHash,
-        Hex,
-    }
+	Decimal,
+	HexWithHash,
+	Hex,
 }

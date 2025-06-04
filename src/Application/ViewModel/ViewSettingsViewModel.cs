@@ -1,204 +1,124 @@
-﻿namespace PixelInspector.ViewModel
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using PixelInspector.Model;
+using Tasler.ComponentModel;
+
+namespace PixelInspector.ViewModel;
+
+public partial class ViewSettingsViewModel : ObservableObject, IProvideSourceOrigin
 {
-    using System;
-    using System.ComponentModel;
-    using System.Diagnostics;
-    using System.Windows;
-    using System.Windows.Input;
-    using PixelInspector.Model;
-    using Tasler.ComponentModel;
+	#region Constructors
+	public ViewSettingsViewModel(ViewSettingsModel model)
+	{
+		_model = model;
 
-    public class ViewSettingsViewModel
-        : ChildViewModel<MainViewModel>
-        , IProvideSourceOrigin
-    {
-        #region Constructors
-        public ViewSettingsViewModel(MainViewModel parent, ViewSettingsModel model)
-            : base(parent)
-        {
-            _model = model;
+		// Subscribe to model property changes and reflect as our own
+		_model.Subscribe(nameof(model.AutoRefreshMilliseconds), s => this.OnPropertyChanged(nameof(this.AutoRefreshInterval)));
+		_model.Subscribe(nameof(model.SourceOrigin), s => this.OnPropertyChanged(nameof(this.SourceOrigin)));
+	}
+	#endregion Constructors
 
-            // Subscribe to model property changes and reflect as our own
-            _model.Subscribe(nameof(model.AutoRefreshMilliseconds), s => this.PropertyChanged.Raise(this, nameof(this.AutoRefreshInterval)));
-            _model.Subscribe(nameof(model.SourceOrigin           ), s => this.PropertyChanged.Raise(this, nameof(this.SourceOrigin)));
-        }
-        #endregion Constructors
+	#region Properties
 
-        #region Properties
+	[ObservableProperty]
+	private ViewSettingsModel _model;
 
-        public ViewSettingsModel Model
-        {
-            get { return _model; }
-            set { this.PropertyChanged.SetProperty(this, value, ref _model, nameof(Model)); }
-        }
-        private ViewSettingsModel _model;
+	public TimeSpan AutoRefreshInterval
+	{
+		get => TimeSpan.FromMilliseconds(this.Model.AutoRefreshMilliseconds);
+		set => this.Model.AutoRefreshMilliseconds = value.TotalMilliseconds;
+	}
 
-        public TimeSpan AutoRefreshInterval
-        {
-            get { return TimeSpan.FromMilliseconds(this.Model.AutoRefreshMilliseconds); }
-            set { this.Model.AutoRefreshMilliseconds = value.TotalMilliseconds; }
-        }
+	#endregion Properties
 
-        #endregion Properties
+	#region SetZoomFactorCommand
 
-        #region SetZoomFactorCommand
+	private bool CanSetZoomFactor(string parameter)
+	{
+		return int.TryParse(parameter, out var zoomFactor) && 1 <= zoomFactor && zoomFactor <= 32;
+	}
 
-        /// <summary>
-        /// Gets the SetZoomFactor command.
-        /// </summary>
-        public ICommand SetZoomFactorCommand
-        {
-            get
-            {
-                return this.setZoomFactorCommand ??
-                    (this.setZoomFactorCommand = new RelayCommand<string>(this.SetZoomFactorCommandExecute, this.SetZoomFactorCommandCanExecute));
-            }
-        }
-        private RelayCommand<string> setZoomFactorCommand;
+	[RelayCommand(CanExecute = nameof(CanSetZoomFactor))]
+	private void SetZoomFactor(string parameter)
+	{
+		var zoomFactor = int.Parse(parameter);
+		this.Model.ZoomFactor = zoomFactor;
+	}
 
-        private bool SetZoomFactorCommandCanExecute(string parameter)
-        {
-            int zoomFactor;
-            return int.TryParse(parameter, out zoomFactor) && 1 <= zoomFactor && zoomFactor <= 32;
-        }
+	#endregion SetZoomFactorCommand
 
-        private void SetZoomFactorCommandExecute(string parameter)
-        {
-            var zoomFactor = int.Parse(parameter);
-            this.Model.ZoomFactor = zoomFactor;
-        }
+	#region IncreaseZoomCommand
 
-        #endregion SetZoomFactorCommand
+	private bool CanIncreaseZoom()
+	{
+		return this.Model.ZoomFactor < 32;
+	}
 
-        #region IncreaseZoomCommand
+	[RelayCommand(CanExecute = nameof(CanIncreaseZoom))]
+	private void IncreaseZoom()
+	{
+		if (this.Model.ZoomFactor < 1)
+			this.Model.ZoomFactor = 1.0;
+		else
+			++this.Model.ZoomFactor;
+	}
 
-        /// <summary>
-        /// Gets the IncreaseZoom command.
-        /// </summary>
-        public ICommand IncreaseZoomCommand
-        {
-            get
-            {
-                return this.increaseZoomCommand ??
-                    (this.increaseZoomCommand = new RelayCommand(
-                        this.IncreaseZoomCommandExecute, this.IncreaseZoomCommandCanExecute));
-            }
-        }
-        private RelayCommand increaseZoomCommand;
+	#endregion IncreaseZoomCommand
 
-        private bool IncreaseZoomCommandCanExecute()
-        {
-            return this.Model.ZoomFactor < 32;
-        }
+	#region DecreaseZoomCommand
 
-        private void IncreaseZoomCommandExecute()
-        {
-            if (this.Model.ZoomFactor < 1)
-                this.Model.ZoomFactor = 1.0;
-            else
-                ++this.Model.ZoomFactor;
-        }
+	private bool CanDecreaseZoom()
+	{
+		return this.Model.ZoomFactor > 1.0;
+	}
 
-        #endregion IncreaseZoomCommand
+	[RelayCommand(CanExecute = nameof(CanDecreaseZoom))]
+	private void DecreaseZoom()
+	{
+		if (this.Model.ZoomFactor > 1)
+			--this.Model.ZoomFactor;
+	}
 
-        #region DecreaseZoomCommand
+	#endregion DecreaseZoomCommand
 
-        /// <summary>
-        /// Gets the DecreaseZoom command.
-        /// </summary>
-        public ICommand DecreaseZoomCommand
-        {
-            get
-            {
-                return this.decreaseZoomCommand ??
-                    (this.decreaseZoomCommand = new RelayCommand(
-                        this.DecreaseZoomCommandExecute, this.DecreaseZoomCommandCanExecute));
-            }
-        }
-        private RelayCommand decreaseZoomCommand;
+	#region ToggleSwitchCommand
 
-        private bool DecreaseZoomCommandCanExecute()
-        {
-            return this.Model.ZoomFactor > 1.0;
-        }
+	private bool CanToggleSwitch(string propertyName)
+	{
+		var propertyDescriptor = TypeDescriptor.GetProperties(this.Model)[propertyName];
+		Debug.Assert(propertyDescriptor is not null && propertyDescriptor.PropertyType == typeof(bool) && !propertyDescriptor.IsReadOnly);
+		return propertyDescriptor is not null && propertyDescriptor.PropertyType == typeof(bool) && !propertyDescriptor.IsReadOnly;
+	}
 
-        private void DecreaseZoomCommandExecute()
-        {
-            if (this.Model.ZoomFactor > 1)
-                --this.Model.ZoomFactor;
-        }
+	[RelayCommand(CanExecute = nameof(CanToggleSwitch))]
+	private void ToggleSwitch(string propertyName)
+	{
+		var propertyDescriptor = TypeDescriptor.GetProperties(this.Model)[propertyName];
+		var value = (bool)(propertyDescriptor?.GetValue(this.Model)?? false);
+		propertyDescriptor?.SetValue(this.Model, !value);
+	}
 
-        #endregion DecreaseZoomCommand
+	#endregion ToggleSwitchCommand
 
-        #region ToggleSwitchCommand
+	#region SetColorValueDisplayFormatCommand
 
-        /// <summary>
-        /// Gets the ToggleSwitch command.
-        /// </summary>
-        public ICommand ToggleSwitchCommand
-        {
-            get
-            {
-                return this.toggleSwitchCommand ??
-                    (this.toggleSwitchCommand = new RelayCommand<string>(
-                        this.ToggleSwitchCommandExecute, this.ToggleSwitchCommandCanExecute));
-            }
-        }
-        private RelayCommand<string> toggleSwitchCommand;
+	private bool CanSetColorValueDisplayFormat(ColorValueDisplayFormat parameter)
+		=> typeof(ColorValueDisplayFormat).IsEnumDefined(parameter);
 
-        private bool ToggleSwitchCommandCanExecute(string propertyName)
-        {
-            var propertyDescriptor = TypeDescriptor.GetProperties(this.Model)[propertyName];
-            Debug.Assert(propertyDescriptor != null && propertyDescriptor.PropertyType == typeof(bool) && !propertyDescriptor.IsReadOnly);
-            return propertyDescriptor != null && propertyDescriptor.PropertyType == typeof(bool) && !propertyDescriptor.IsReadOnly;
-        }
+	[RelayCommand(CanExecute = nameof(CanSetColorValueDisplayFormat))]
+	private void SetColorValueDisplayFormat(ColorValueDisplayFormat parameter)
+	{
+		this.Model.ColorValueDisplayFormat = parameter;
+	}
 
-        private void ToggleSwitchCommandExecute(string propertyName)
-        {
-            var propertyDescriptor = TypeDescriptor.GetProperties(this.Model)[propertyName];
-            var value = (bool)propertyDescriptor.GetValue(this.Model);
-            propertyDescriptor.SetValue(this.Model, !value);
-        }
+	#endregion SetColorValueDisplayFormatCommand
 
-        #endregion ToggleSwitchCommand
+	#region IProvideSourceOrigin Members
 
-        #region SetColorValueDisplayFormatCommand
+	public Point SourceOrigin => this.Model.SourceOrigin;
 
-        /// <summary>
-        /// Gets the SetColorValueDisplayFormat command.
-        /// </summary>
-        public ICommand SetColorValueDisplayFormatCommand
-        {
-            get
-            {
-                return _setColorValueDisplayFormatCommand ??
-                    (_setColorValueDisplayFormatCommand =
-                        new RelayCommand<ColorValueDisplayFormat?>(
-                            this.SetColorValueDisplayFormatCommandExecute,
-                            this.SetColorValueDisplayFormatCommandCanExecute));
-            }
-        }
-        private RelayCommand<ColorValueDisplayFormat?> _setColorValueDisplayFormatCommand;
-
-        private bool SetColorValueDisplayFormatCommandCanExecute(ColorValueDisplayFormat? parameter)
-        {
-            return parameter.HasValue && typeof(ColorValueDisplayFormat).IsEnumDefined(parameter.Value);
-        }
-
-        private void SetColorValueDisplayFormatCommandExecute(ColorValueDisplayFormat? parameter)
-        {
-            this.Model.ColorValueDisplayFormat = parameter.Value;
-        }
-
-        #endregion SetColorValueDisplayFormatCommand
-
-        #region IProvideSourceOrigin Members
-
-        public Point SourceOrigin
-        {
-            get { return this.Model.SourceOrigin; }
-        }
-
-        #endregion IProvideSourceOrigin Members
-    }
+	#endregion IProvideSourceOrigin Members
 }

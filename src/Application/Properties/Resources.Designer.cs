@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PixelInspector.Properties
-{
-
-
+namespace PixelInspector.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,7 +19,7 @@ namespace PixelInspector.Properties
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,38 +61,11 @@ namespace PixelInspector.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The expression body is not a unary expression..
+        ///   Looks up a localized string similar to The specified ownerElement is not yet hosted within a Window..
         /// </summary>
-        internal static string PropertySupport_BodyNotUnaryExpression_Exception {
+        internal static string OwnerElementNotYetHosted {
             get {
-                return ResourceManager.GetString("PropertySupport_BodyNotUnaryExpression_Exception", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The member access expression does not access a property.
-        /// </summary>
-        internal static string PropertySupport_ExpressionNotProperty_Exception {
-            get {
-                return ResourceManager.GetString("PropertySupport_ExpressionNotProperty_Exception", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The expression is not a member access expression..
-        /// </summary>
-        internal static string PropertySupport_NotMemberAccessExpression_Exception {
-            get {
-                return ResourceManager.GetString("PropertySupport_NotMemberAccessExpression_Exception", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The referenced property is a static property..
-        /// </summary>
-        internal static string PropertySupport_StaticExpression_Exception {
-            get {
-                return ResourceManager.GetString("PropertySupport_StaticExpression_Exception", resourceCulture);
+                return ResourceManager.GetString("OwnerElementNotYetHosted", resourceCulture);
             }
         }
     }
