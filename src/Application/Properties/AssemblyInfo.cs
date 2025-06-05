@@ -7,7 +7,6 @@ using System.Windows;
 // associated with an assembly.
 [assembly: AssemblyTitle("PixelInspector")]
 [assembly: AssemblyDescription("Pixel inspection utility")]
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Tasler Computing")]
 [assembly: AssemblyProduct("PixelInspector")]
 [assembly: AssemblyCopyright("Copyright © John Tasler.")]
