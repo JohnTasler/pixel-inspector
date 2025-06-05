@@ -47,7 +47,7 @@ public partial class LocatingToolViewModel
 	/// </summary>
 	public void EnterMode()
 	{
-		SourceOrigin = this.Parent.ViewSettings.Model.SourceOrigin;
+		this.SourceOrigin = this.Parent.ViewSettings.Model.SourceOrigin;
 		_previousToolState = this.Parent.ToolState;
 	}
 
@@ -63,16 +63,15 @@ public partial class LocatingToolViewModel
 
 		if (isReverting)
 		{
-			// TODO: Restore previous bitmap images
+			// TODO: Restore previous bitmap images?
 		}
 		else
 		{
 			this.Parent.ViewSettings.Model.SourceOrigin = this.SourceOrigin;
 		}
 
-		using var scope = new DisposeScopeExit(() => _isExiting = true, () => _isExiting = false);
-
-		this.Parent.ToolState = _previousToolState;
+		using (new DisposeScopeExit(() => _isExiting = true, () => _isExiting = false))
+			this.Parent.ToolState = _previousToolState;
 	}
 
 	#endregion IToolMode Members

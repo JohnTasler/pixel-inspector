@@ -1,9 +1,6 @@
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using PixelInspector.ViewModel;
-using Tasler.ComponentModel;
-using Tasler.Windows;
 
 namespace PixelInspector.View;
 
@@ -18,7 +15,6 @@ public partial class LocateToolView : ToolViewUserControl
 	public LocateToolView(LocateToolViewModel viewModel)
 	{
 		this.InitializeComponent();
-		this.HookDataContextAsViewModel(() => this.RaisePropertyChanged(nameof(this.ViewModel)));
 		this.DataContext = viewModel;
 	}
 
