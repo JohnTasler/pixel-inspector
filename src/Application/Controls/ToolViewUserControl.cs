@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Tasler.ComponentModel;
+using Tasler.Windows;
 
 namespace PixelInspector;
 
@@ -23,14 +24,24 @@ public class ToolViewUserControl : UserControl, INotifyPropertyChanged
 		this.Focusable = true;
 		this.FocusVisualStyle = null;
 		this.Loaded += this.UserControl_Loaded;
+		this.HookDataContextAsViewModel(_propertyChanged);
 	}
 	#endregion Constructors
 
 	#region Events
-	public event PropertyChangedEventHandler? PropertyChanged;
+	public event PropertyChangedEventHandler? PropertyChanged
+	{
+		add
+		{
+			bool wasNull = _propertyChanged is null;
+			_propertyChanged += value;
+			if (wasNull)
+				this.HookDataContextAsViewModel(_propertyChanged);
+		}
+		remove => _propertyChanged -= value;
+	}
+	private PropertyChangedEventHandler? _propertyChanged;
 	#endregion Events
-
-	protected void RaisePropertyChanged(string propertyName) => this.PropertyChanged?.Raise(this, propertyName);
 
 	#region Event Handlers
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Diagnostics;
 using Tasler;
 
 namespace PixelInspector.Controls;
@@ -11,7 +12,7 @@ public static class EventService
 	#region Event Bindings
 	public static IList GetEventBindings(FrameworkElement element)
 	{
-		ValidateArgument.IsNotNull(element, nameof(element));
+		Guard.IsNotNull(element);
 
 		var list = element.GetValue(EventBindingsProperty) as IList;
 		if (list is null)
@@ -31,7 +32,7 @@ public static class EventService
 	}
 
 	private static readonly DependencyProperty EventBindingsProperty =
-					DependencyProperty.RegisterAttached("EventBindingsPrivate", typeof(IList), typeof(EventService));
+		DependencyProperty.RegisterAttached("EventBindingsPrivate", typeof(IList), typeof(EventService));
 
 	private static void EventBindings_CollectionChanged(FrameworkElement element, NotifyCollectionChangedEventArgs e)
 	{
@@ -51,7 +52,7 @@ public static class EventService
 			}
 		}
 
-		// TODO: Check e.OldItems
+		// TODO: Check e.OldItems?
 
 	}
 	#endregion Event Bindings

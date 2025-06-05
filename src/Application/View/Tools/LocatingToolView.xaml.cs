@@ -1,6 +1,5 @@
 using System.Windows;
 using PixelInspector.ViewModel;
-using Tasler.Windows;
 
 namespace PixelInspector.View;
 
@@ -16,9 +15,8 @@ public partial class LocatingToolView : ToolViewUserControl
 	public LocatingToolView(LocatingToolViewModel viewModel)
 	{
 		this.InitializeComponent();
-		this.HookDataContextAsViewModel(this.RaiseDataContextPropertyChanged);
-		this.DataContext = viewModel;
 		this.Loaded += this.View_Loaded;
+		this.DataContext = viewModel;
 	}
 	#endregion Constructors
 
@@ -45,13 +43,6 @@ public partial class LocatingToolView : ToolViewUserControl
 		window.Show();
 	}
 
-	private void RaiseDataContextPropertyChanged()
-	{
-		this.RaisePropertyChanged(nameof(this.ViewModel));
-
-		if (this.ViewModel is not null && this.IsLoaded)
-			this.EnterDragWindow(this.ViewModel.Offset, this.ViewModel.IsFromMouseClick);
-	}
 	#endregion Private Implementation
 
 	#region Event Handlers

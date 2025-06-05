@@ -13,7 +13,7 @@ public partial class MoveToolViewModel
 	, IProvideSourceOrigin
 {
 	#region Instance Fields
-	private readonly ViewSettingsModel _model;
+	private readonly ViewSettingsModel _viewSettingsModel;
 	private Point _previousSourceOrigin;
 	private double _lastHorizontalChange;
 	private double _lastVerticalChange;
@@ -23,7 +23,7 @@ public partial class MoveToolViewModel
 	public MoveToolViewModel(MainViewModel mainViewModel, ViewSettingsModel model)
 		: base(mainViewModel)
 	{
-		_model = model;
+		_viewSettingsModel = model;
 	}
 	#endregion Constructors
 
@@ -62,7 +62,7 @@ public partial class MoveToolViewModel
 		_lastVerticalChange = e.VerticalChange;
 
 		var sourceOrigin = this.SourceOriginActual;
-		var zoomFactor = _model.ZoomFactor;
+		var zoomFactor = _viewSettingsModel.ZoomFactor;
 		var xOffset = -horizontalChange / zoomFactor;
 		var yOffset = -verticalChange / zoomFactor;
 
@@ -91,7 +91,7 @@ public partial class MoveToolViewModel
 	/// </summary>
 	public void EnterMode()
 	{
-		_previousSourceOrigin = this.SourceOriginActual = _model.SourceOrigin;
+		_previousSourceOrigin = this.SourceOriginActual = _viewSettingsModel.SourceOrigin;
 	}
 
 	/// <summary>
@@ -109,7 +109,7 @@ public partial class MoveToolViewModel
 		}
 		else
 		{
-			_model.SourceOrigin = this.SourceOrigin;
+			_viewSettingsModel.SourceOrigin = this.SourceOrigin;
 			this.EnterMode();
 		}
 	}

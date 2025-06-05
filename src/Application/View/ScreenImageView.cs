@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using PixelInspector.ViewModel;
-using	Tasler.ComponentModel;
 using	Tasler.Windows;
 
 namespace PixelInspector.View;
@@ -19,8 +18,8 @@ public class ScreenImageView : Panel, INotifyPropertyChanged
 	public ScreenImageView(ScreenImageViewModel viewModel, ViewSettingsViewModel viewSettings)
 	{
 		_viewSettings = viewSettings;
-		this.HookDataContextAsViewModel(() => this.PropertyChanged?.Raise(this, nameof(this.ViewModel)));
 		this.DataContext = viewModel;
+		this.HookDataContextAsViewModel(_propertyChanged);
 	}
 	#endregion Constructors
 
@@ -71,7 +70,18 @@ public class ScreenImageView : Panel, INotifyPropertyChanged
 	#endregion Overrides
 
 	#region Events
-	public event PropertyChangedEventHandler? PropertyChanged;
+	public event PropertyChangedEventHandler? PropertyChanged
+	{
+		add
+		{
+			bool wasNull = _propertyChanged is null;
+			_propertyChanged += value;
+			if (wasNull)
+				this.HookDataContextAsViewModel(_propertyChanged);
+		}
+		remove => _propertyChanged -= value;
+	}
+	private PropertyChangedEventHandler? _propertyChanged;
 	#endregion Events
 
 	#region Properties

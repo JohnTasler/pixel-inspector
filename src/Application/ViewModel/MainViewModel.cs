@@ -13,9 +13,7 @@ using PixelInspector.Model;
 using Tasler;
 using Tasler.ComponentModel;
 using Tasler.Interop.Gdi;
-using Tasler.Interop.User;
 using Tasler.Text;
-using Tasler.Windows;
 
 namespace PixelInspector.ViewModel;
 
@@ -94,7 +92,7 @@ public partial class MainViewModel : ObservableObject
 
 	#region ViewSettings
 
-	partial void OnViewSettingsChanging(ViewSettingsViewModel value)
+	partial void OnViewSettingsChanged(ViewSettingsViewModel value)
 	{
 		if (_viewSettingsObservers is not null)
 		{
@@ -103,10 +101,7 @@ public partial class MainViewModel : ObservableObject
 
 			_viewSettingsObservers = null;
 		}
-	}
 
-	partial void OnViewSettingsChanged(ViewSettingsViewModel value)
-	{
 		this.ResetRefreshTimer();
 
 		_viewSettingsObservers =
@@ -133,18 +128,19 @@ public partial class MainViewModel : ObservableObject
 
 	#region ToolState
 
-	partial void OnToolStateChanged(object? oldValue, object? newValue)
+	partial void OnToolStateChanging(object? oldValue, object? newValue)
 	{
 		// Revert the current tool mode, if any
-		var toolMode = oldValue as IToolMode;
-		if (toolMode is not null)
-			toolMode.ExitMode(true);
+		if (oldValue is IToolMode oldToolMode)
+			oldToolMode.ExitMode(true);
 
 		// Enter the new tool mode, if any
-		toolMode = newValue as IToolMode;
-		if (toolMode is not null)
-			toolMode.EnterMode();
+		if (newValue is IToolMode newToolMode)
+			newToolMode.EnterMode();
+	}
 
+	partial void OnToolStateChanged(object? oldValue, object? newValue)
+	{
 		// Set the tool as the new SourceOriginProvider, if it is one
 		this.SourceOriginProvider = newValue as IProvideSourceOrigin ?? this.ViewSettings;
 
@@ -176,11 +172,14 @@ public partial class MainViewModel : ObservableObject
 
 	partial void OnApplicationStateChanged(object? value)
 	{
-		using (_sourceBitmapBuffer)
-		using (_zoomedBitmapBuffer)
+		if (value is ApplicationStateUnloading)
 		{
-			_sourceBitmapBuffer = null;
-			_zoomedBitmapBuffer = null;
+			using (_sourceBitmapBuffer)
+			using (_zoomedBitmapBuffer)
+			{
+				_sourceBitmapBuffer = null;
+				_zoomedBitmapBuffer = null;
+			}
 		}
 	}
 
@@ -462,7 +461,6 @@ public partial class MainViewModel : ObservableObject
 
 	private void ResetRefreshTimer()
 	{
-
 		CommandManager.InvalidateRequerySuggested();
 
 		if (this.ViewSettings.Model.IsAutoRefreshing)

@@ -23,8 +23,8 @@ public partial class MainView : Window, INotifyPropertyChanged
 	{
 		this.InitializeComponent();
 		this.Loaded += this.MainView_Loaded;
-		this.HookDataContextAsViewModel(() => this.PropertyChanged?.Raise(this, nameof(this.ViewModel)));
 		this.DataContext = viewModel;
+		this.HookDataContextAsViewModel(_propertyChanged);
 	}
 	#endregion Constructors
 
@@ -38,7 +38,18 @@ public partial class MainView : Window, INotifyPropertyChanged
 	#endregion Overrides
 
 	#region Events
-	public event PropertyChangedEventHandler? PropertyChanged;
+	public event PropertyChangedEventHandler? PropertyChanged
+	{
+		add
+		{
+			bool wasNull = _propertyChanged is null;
+			_propertyChanged += value;
+			if (wasNull)
+				this.HookDataContextAsViewModel(_propertyChanged);
+		}
+		remove => _propertyChanged -= value;
+	}
+	private PropertyChangedEventHandler? _propertyChanged;
 	#endregion Events
 
 	#region Private Implementation

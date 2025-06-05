@@ -155,6 +155,7 @@ Global
 		..\tasler-dotnet\Source\Tasler.AssemblyInfo.Shared\Tasler.AssemblyInfo.Shared.projitems*{6692957c-4e2b-415b-a03a-4b3dbcac071b}*SharedItemsImports = 5
 		..\tasler-dotnet\Source\Tasler.UI.Shared\Tasler.UI.Shared.projitems*{91d821fa-1b55-428b-c101-ec0f7cadcedb}*SharedItemsImports = 13
 		..\tasler-dotnet\Source\Tasler.AssemblyInfo.Shared\Tasler.AssemblyInfo.Shared.projitems*{ca6287d9-6f8b-4f6d-8d44-d8359a43d644}*SharedItemsImports = 5
+		..\tasler-dotnet\Source\Tasler.AssemblyInfo.Shared\Tasler.AssemblyInfo.Shared.projitems*{cc6be222-de4b-412a-9743-80c187f43ee1}*SharedItemsImports = 5
 		..\tasler-dotnet\Source\Tasler.UI.Shared\Tasler.UI.Shared.projitems*{cc6be222-de4b-412a-9743-80c187f43ee1}*SharedItemsImports = 5
 		..\tasler-dotnet\Source\Tasler.AssemblyInfo.Shared\Tasler.AssemblyInfo.Shared.projitems*{f89efd64-da27-8816-8ac3-bb025a3ab736}*SharedItemsImports = 13
 	EndGlobalSection

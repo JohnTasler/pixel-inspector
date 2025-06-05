@@ -39,8 +39,8 @@ public class LocateToolViewModel
 		if (_isExiting)
 			return;
 
-		using var scope = new DisposeScopeExit(() => _isExiting = true, () => _isExiting = false);
-		this.Parent.ToolState = _previousToolState;
+		using (new DisposeScopeExit(() => _isExiting = true, () => _isExiting = false))
+			this.Parent.ToolState = _previousToolState;
 	}
 
 	#endregion IToolMode Members
