@@ -8,13 +8,17 @@
 		<TargetFramework>net9.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>true</SelfContained>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<ApplicationIcon>View\Images\Application.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Libraries\**" />
-	  <EmbeddedResource Remove="Libraries\**" />
-	  <None Remove="Libraries\**" />
-	  <Page Remove="Libraries\**" />
+		<Compile Remove="Libraries\**" />
+		<EmbeddedResource Remove="Libraries\**" />
+		<None Remove="Libraries\**" />
+		<Page Remove="Libraries\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -26,7 +30,8 @@
 		<None Remove="View\Images\Selection.ico" />
 		<None Remove="View\Images\ZoomIn-16.png" />
 		<None Remove="View\Images\ZoomOut-16.png" />
-	  <Page Include="App.xaml" />
+		<Content Include="View\Images\Application.ico" />
+		<Page Include="App.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -52,13 +57,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Resource Include="View\Cursors\Locate.cur" />
-	  <Resource Include="View\Cursors\Select.cur" />
-	  <Resource Include="View\Images\Position.ico" />
-	  <Resource Include="View\Images\refresh_icon.png" />
-	  <Resource Include="View\Images\Selection.ico" />
-	  <Resource Include="View\Images\ZoomIn-16.png" />
-	  <Resource Include="View\Images\ZoomOut-16.png" />
+		<Resource Include="View\Cursors\Locate.cur" />
+		<Resource Include="View\Cursors\Select.cur" />
+		<Resource Include="View\Images\Position.ico" />
+		<Resource Include="View\Images\refresh_icon.png" />
+		<Resource Include="View\Images\Selection.ico" />
+		<Resource Include="View\Images\ZoomIn-16.png" />
+		<Resource Include="View\Images\ZoomOut-16.png" />
 	</ItemGroup>
 
 	<ItemGroup>
