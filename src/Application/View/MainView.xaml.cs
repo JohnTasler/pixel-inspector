@@ -1,10 +1,8 @@
 using System.ComponentModel;
-using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using PixelInspector.ViewModel;
-using Tasler.ComponentModel;
 using Tasler.Interop.User;
 using Tasler.Windows;
 
@@ -32,7 +30,7 @@ public partial class MainView : Window, INotifyPropertyChanged
 	protected override void OnSourceInitialized(EventArgs e)
 	{
 		this.HwndSource = (HwndSource)HwndSource.FromVisual(this);
-		this.HwndSource?.AddHook(this.HwndSource_Hook);
+		this.HwndSource.AddHook(this.HwndSource_Hook);
 		base.OnSourceInitialized(e);
 	}
 	#endregion Overrides

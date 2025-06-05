@@ -22,7 +22,6 @@
 		<Style TargetType="Window">
 			<Setter Property="Topmost" Value="{Binding ViewSettings.Model.IsAlwaysOnTop,Mode=OneWay}"/>
 			<Setter Property="ResizeMode" Value="CanResizeWithGrip"/>
-			<Setter Property="Tag" Value="{Binding DesiredSize, RelativeSource={x:Static RelativeSource.Self}, Converter={x:Static taz:TypeValueConverter.Instance}}" />
 
 			<Style.Triggers>
 				<Trigger Property="WindowState" Value="Minimized">
