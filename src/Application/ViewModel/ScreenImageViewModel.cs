@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Interop;
 using CommunityToolkit.Diagnostics;
@@ -83,6 +84,7 @@ public partial class ScreenImageViewModel : ObservableObject
 					hdcSource, 0, 0, cxSrc, cySrc,
 					hdcScreen, xSrc, ySrc, ROP3.SrcCopy);
 			}
+#pragma warning disable CS0168 // Variable is declared but never used
 			catch (Win32Exception e)
 			{
 #if DEBUG
@@ -99,6 +101,7 @@ public partial class ScreenImageViewModel : ObservableObject
 				// TODO: raise an event so that the MainViewModel can adjust its timer
 				return;
 			}
+#pragma warning restore CS0168 // Variable is declared but never used
 		}
 
 		// Compute the origin and extents of the zoomed rectangle

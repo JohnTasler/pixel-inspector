@@ -1,6 +1,7 @@
 <Solution>
   <Configurations>
     <Platform Name="Any CPU" />
+    <Platform Name="arm64" />
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
@@ -37,9 +38,7 @@
   </Folder>
   <Folder Name="/tasler-dotnet/Source/Text Templates/">
     <Project Path="../tasler-dotnet/Source/Tasler.AssemblyInfo.Shared/Tasler.AssemblyInfo.Shared.shproj" />
-    <Project Path="../tasler-dotnet/Source/Tasler.AssemblyInfo/Tasler.AssemblyInfo.csproj">
-      <Platform Solution="Release|x64" Project="x64" />
-    </Project>
+    <Project Path="../tasler-dotnet/Source/Tasler.AssemblyInfo/Tasler.AssemblyInfo.csproj" />
     <Project Path="../tasler-dotnet/Source/Tasler.TextTemplates/Tasler.TextTemplates.Shared.shproj" />
   </Folder>
   <Project Path="src/Application/PixelInspector.Application.csproj" />
