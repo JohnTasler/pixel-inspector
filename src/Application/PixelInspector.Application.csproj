@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<AssemblyName>PixelInspector</AssemblyName>
@@ -8,12 +8,37 @@
 		<TargetFramework>net9.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<AppDesignerFolder>Properties</AppDesignerFolder>
-		<PublishSingleFile>true</PublishSingleFile>
-		<SelfContained>true</SelfContained>
-		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<ApplicationIcon>View\Images\Application.ico</ApplicationIcon>
+
+		<XmlDocWarnings>1570;1573;1574;1591</XmlDocWarnings>
+		<EnableXmlDocWarnings>false</EnableXmlDocWarnings>
+		<NoWarn Condition="!$(EnableXmlDocWarnings)">$(NoWarn);$(XmlDocWarnings)</NoWarn>
 	</PropertyGroup>
 
+	<!-- Version information attributes -->
+	<PropertyGroup>
+		<Company>Tasler.Computing</Company>
+		<Copyright>Copyright © John Tasler.</Copyright>
+		<Title>Pixel Inspector</Title>
+		<Description>Pixel inspection utility</Description>
+		<Product>Pixel Inspector</Product>
+		<ProductName>Pixel Inspector</ProductName>
+		<Version>0.6.0.0</Version>
+		<FileVersion>$(Version)</FileVersion>
+		<InformationalVersion>$(Version)</InformationalVersion>
+		<ProductVersion>$(Version)</ProductVersion>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+	</PropertyGroup>
+
+	<!-- Default publish options -->
+	<PropertyGroup>
+		<GenerateDocumentationFile Condition="'$(Configuration)'=='Release'">true</GenerateDocumentationFile>
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>false</SelfContained>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<!-- Remove the Libraries directory from the project -->
 	<ItemGroup>
 		<Compile Remove="Libraries\**" />
 		<EmbeddedResource Remove="Libraries\**" />
@@ -21,20 +46,35 @@
 		<Page Remove="Libraries\**" />
 	</ItemGroup>
 
+	<!-- Application XAML compilation -->
 	<ItemGroup>
 		<ApplicationDefinition Remove="App.xaml" />
-		<None Remove="View\Cursors\Locate.cur" />
-		<None Remove="View\Cursors\Select.cur" />
-		<None Remove="View\Images\Position.ico" />
-		<None Remove="View\Images\refresh_icon.png" />
-		<None Remove="View\Images\Selection.ico" />
-		<None Remove="View\Images\ZoomIn-16.png" />
-		<None Remove="View\Images\ZoomOut-16.png" />
-		<Content Include="View\Images\Application.ico" />
 		<Page Include="App.xaml" />
 	</ItemGroup>
 
+	<!-- Resources-->
 	<ItemGroup>
+		<Content Include="View\Images\Application.ico" />
+		<Resource Include="View\Cursors\Locate.cur" />
+		<Resource Include="View\Cursors\Select.cur" />
+		<Resource Include="View\Images\Position.ico" />
+		<Resource Include="View\Images\refresh_icon.png" />
+		<Resource Include="View\Images\Selection.ico" />
+		<Resource Include="View\Images\ZoomIn-16.png" />
+		<Resource Include="View\Images\ZoomOut-16.png" />
+	</ItemGroup>
+
+	<!-- Localization and Settings -->
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<None Update="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+			<SubType>Designer</SubType>
+		</None>
 		<Compile Update="Properties\Resources.Designer.cs">
 			<AutoGen>True</AutoGen>
 			<DesignTime>True</DesignTime>
@@ -45,46 +85,9 @@
 			<DependentUpon>Settings.settings</DependentUpon>
 			<DesignTimeSharedInput>True</DesignTimeSharedInput>
 		</Compile>
-		<EmbeddedResource Update="Properties\Resources.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-		<None Update="Properties\Settings.settings">
-			<Generator>SettingsSingleFileGenerator</Generator>
-			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
-			<SubType>Designer</SubType>
-		</None>
 	</ItemGroup>
 
-	<ItemGroup>
-		<Resource Include="View\Cursors\Locate.cur" />
-		<Resource Include="View\Cursors\Select.cur" />
-		<Resource Include="View\Images\Position.ico" />
-		<Resource Include="View\Images\refresh_icon.png" />
-		<Resource Include="View\Images\Selection.ico" />
-		<Resource Include="View\Images\ZoomIn-16.png" />
-		<Resource Include="View\Images\ZoomOut-16.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.ComponentModel\Tasler.ComponentModel.csproj">
-			<Project>{2d4e35a3-754d-4e8e-b52c-aa2d0dd9e059}</Project>
-			<Name>Tasler.ComponentModel</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.Core\Tasler.Core.csproj">
-			<Project>{6692957c-4e2b-415b-a03a-4b3dbcac071b}</Project>
-			<Name>Tasler.Core</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.Interop\Tasler.Interop.csproj">
-			<Project>{ca6287d9-6f8b-4f6d-8d44-d8359a43d644}</Project>
-			<Name>Tasler.Interop</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.UI.Wpf\Tasler.UI.Wpf.csproj">
-			<Project>{cc6be222-de4b-412a-9743-80c187f43ee1}</Project>
-			<Name>Tasler.UI.Wpf</Name>
-		</ProjectReference>
-	</ItemGroup>
-
+	<!-- Package references -->
 	<!--<ItemGroup>
 		<PackageReference Include="Microsoft.XmlSerializer.Generator" Version="9.0.5" />
 	</ItemGroup>
@@ -92,5 +95,25 @@
 	<ItemGroup>
 		<DotNetCliToolReference Include="Microsoft.XmlSerializer.Generator" Version="9.0.5" />
 	</ItemGroup>-->
+
+	<!-- Project references -->
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.ComponentModel\Tasler.ComponentModel.csproj">
+			<Project>{2D4E35A3-754D-4E8E-B52C-AA2D0DD9E059}</Project>
+			<Name>Tasler.ComponentModel</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.Core\Tasler.Core.csproj">
+			<Project>{6692957C-4E2B-415B-A03A-4B3DBCAC071B}</Project>
+			<Name>Tasler.Core</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.Interop\Tasler.Interop.csproj">
+			<Project>{CA6287D9-6F8B-4F6D-8D44-D8359A43D644}</Project>
+			<Name>Tasler.Interop</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\tasler-dotnet\Source\Tasler.UI.Wpf\Tasler.UI.Wpf.csproj">
+			<Project>{CC6BE222-DE4B-412A-9743-80C187F43EE1}</Project>
+			<Name>Tasler.UI.Wpf</Name>
+		</ProjectReference>
+	</ItemGroup>
 
 </Project>

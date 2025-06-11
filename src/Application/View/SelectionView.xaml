@@ -5,7 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
 	xmlns:app="clr-namespace:PixelInspector"
 	xmlns:controls="clr-namespace:PixelInspector.Controls"
-	xmlns:taz="urn:tasler-dotnet-framework"
+	xmlns:taz="urn:tasler-dotnet-ui"
 	xmlns:vm="clr-namespace:PixelInspector.ViewModel"
 
 	x:Class="PixelInspector.View.SelectionView"

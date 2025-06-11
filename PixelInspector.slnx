@@ -5,7 +5,7 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Folder Name="/-/">
+  <Folder Name="/- pixel-inspector/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path="Directory.Build.props" />
@@ -13,7 +13,7 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/tasler-dotnet/" />
-  <Folder Name="/tasler-dotnet/-/">
+  <Folder Name="/tasler-dotnet/- tasler-dotnet/">
     <File Path="../tasler-dotnet/.editorconfig" />
     <File Path="../tasler-dotnet/.gitattributes" />
     <File Path="../tasler-dotnet/.gitignore" />

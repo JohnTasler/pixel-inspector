@@ -10,8 +10,6 @@ public class VisualStyleDictionaryExtension : ThemeDictionaryExtension
 	/// <summary>
 	/// Initializes a new instance of the <see cref="VisualStyleDictionaryExtension"/> class.
 	/// </summary>
-	/// <param name="assemblyName">Name of the assembly.</param>
-	/// <param name="subFolder">The sub folder to insert before the <c>Themes</c> subfolder.</param>
 	public VisualStyleDictionaryExtension()
 	{
 	}
@@ -40,7 +38,17 @@ public class VisualStyleDictionaryExtension : ThemeDictionaryExtension
 	/// <returns>
 	/// The object value to set on the property where the extension is applied.
 	/// </returns>
-	/// <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Windows.ThemeDictionaryExtension.AssemblyName"/> property is null. You must set this value during construction or before using the <see cref="M:System.Windows.ThemeDictionaryExtension.ProvideValue(System.IServiceProvider)"/>  method.-or-<paramref name="serviceProvide"/>r is null or does not provide a service for <see cref="T:System.Windows.Markup.IXamlTypeResolver"/>.-or-<paramref name="serviceProvider"/> specifies a target type that does not match <see cref="P:System.Windows.ResourceDictionary.Source"/>.</exception>
+	/// <exception cref="T:System.InvalidOperationException">
+	///   The <see cref="P:System.Windows.ThemeDictionaryExtension.AssemblyName"/> property is null.
+	///   You must set this value during construction or before using the
+	///   <see cref="M:System.Windows.ThemeDictionaryExtension.ProvideValue(System.IServiceProvider)"/> method.
+	///   <para>-or-</para>
+	///   <paramref name="serviceProvider"/>r is <see langword="null"/> or does not provide a service for
+	///   <see cref="T:System.Windows.Markup.IXamlTypeResolver"/>.
+	///   <para>-or-</para>
+	///   <paramref name="serviceProvider"/> specifies a target type that does not match
+	///   <see cref="P:System.Windows.ResourceDictionary.Source"/>.
+	/// </exception>
 	public override object ProvideValue(IServiceProvider serviceProvider)
 	{
 		// Use the name of the entry assembly, if not specified
