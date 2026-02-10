@@ -1,0 +1,3 @@
+[submodule "modules/tasler-dotnet"]
+	path = modules/tasler-dotnet
+	url = https://github.com/JohnTasler/tasler-dotnet.git
