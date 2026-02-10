@@ -5,7 +5,7 @@
 		<RootNamespace>PixelInspector</RootNamespace>
 		<ProjectGuid>{83DC7F04-3BE5-48FC-ABD8-56A74F1106C4}</ProjectGuid>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net9.0-windows</TargetFramework>
+		<TargetFramework>net10.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<AppDesignerFolder>Properties</AppDesignerFolder>
 		<ApplicationIcon>View\Images\Application.ico</ApplicationIcon>
