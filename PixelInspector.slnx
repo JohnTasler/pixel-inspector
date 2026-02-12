@@ -14,32 +14,45 @@
   </Folder>
   <Folder Name="/tasler-dotnet/" />
   <Folder Name="/tasler-dotnet/- tasler-dotnet/">
-    <File Path="../tasler-dotnet/.editorconfig" />
-    <File Path="../tasler-dotnet/.gitattributes" />
-    <File Path="../tasler-dotnet/.gitignore" />
-    <File Path="../tasler-dotnet/Directory.Build.props" />
-    <File Path="../tasler-dotnet/LICENSE" />
-    <File Path="../tasler-dotnet/nuget.config" />
+    <File Path="modules/tasler-dotnet/.editorconfig" />
+    <File Path="modules/tasler-dotnet/.gitattributes" />
+    <File Path="modules/tasler-dotnet/.gitignore" />
+    <File Path="modules/tasler-dotnet/Directory.Build.props" />
+    <File Path="modules/tasler-dotnet/LICENSE" />
+    <File Path="modules/tasler-dotnet/nuget.config" />
   </Folder>
   <Folder Name="/tasler-dotnet/Source/">
-    <Project Path="../tasler-dotnet/Source/Tasler.ComponentModel/Tasler.ComponentModel.csproj">
-      <Platform Solution="Release|x64" Project="x64" />
+    <Project Path="modules/tasler-dotnet/Source/Tasler.ComponentModel/Tasler.ComponentModel.csproj">
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
     </Project>
-    <Project Path="../tasler-dotnet/Source/Tasler.Core/Tasler.Core.csproj">
-      <Platform Solution="Release|x64" Project="x64" />
+    <Project Path="modules/tasler-dotnet/Source/Tasler.Core/Tasler.Core.csproj">
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
     </Project>
-    <Project Path="../tasler-dotnet/Source/Tasler.Interop/Tasler.Interop.csproj">
-      <Platform Solution="Release|x64" Project="x64" />
+    <Project Path="modules/tasler-dotnet/Source/Tasler.Interop.Shell/Tasler.Interop.Shell.csproj" Id="4090fb61-0858-4ae8-a30d-b34464a9505f">
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
     </Project>
-    <Project Path="../tasler-dotnet/Source/Tasler.UI.Shared/Tasler.UI.Shared.shproj" />
-    <Project Path="../tasler-dotnet/Source/Tasler.UI.Wpf/Tasler.UI.Wpf.csproj">
-      <Platform Solution="Release|x64" Project="x64" />
+    <Project Path="modules/tasler-dotnet/Source/Tasler.Interop/Tasler.Interop.csproj">
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="modules/tasler-dotnet/Source/Tasler.UI.Shared/Tasler.UI.Shared.shproj" />
+    <Project Path="modules/tasler-dotnet/Source/Tasler.UI.Wpf/Tasler.UI.Wpf.csproj">
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
     </Project>
   </Folder>
   <Folder Name="/tasler-dotnet/Source/Text Templates/">
-    <Project Path="../tasler-dotnet/Source/Tasler.AssemblyInfo.Shared/Tasler.AssemblyInfo.Shared.shproj" />
-    <Project Path="../tasler-dotnet/Source/Tasler.AssemblyInfo/Tasler.AssemblyInfo.csproj" />
-    <Project Path="../tasler-dotnet/Source/Tasler.TextTemplates/Tasler.TextTemplates.Shared.shproj" />
+    <Project Path="modules/tasler-dotnet/Source/Tasler.AssemblyInfo.Shared/Tasler.AssemblyInfo.Shared.shproj" />
+    <Project Path="modules/tasler-dotnet/Source/Tasler.AssemblyInfo/Tasler.AssemblyInfo.csproj" />
+    <Project Path="modules/tasler-dotnet/Source/Tasler.TextTemplates/Tasler.TextTemplates.Shared.shproj" />
   </Folder>
   <Project Path="src/Application/PixelInspector.Application.csproj" />
 </Solution>

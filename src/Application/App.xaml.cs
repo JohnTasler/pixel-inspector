@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using PixelInspector.Model;
 using PixelInspector.Properties;
 using PixelInspector.View;
@@ -58,6 +59,11 @@ public partial class App
 			.AddSingleton<SelectionView, SelectionView>()
 			.AddSingleton<SelectToolView, SelectToolView>()
 			;
+
+		// Configure logging
+		builder.Logging
+			.ClearProviders()
+			.AddDebug();
 	}
 
 	public static void Populate(IViewModelMapper mapper)
