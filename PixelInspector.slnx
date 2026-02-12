@@ -23,17 +23,30 @@
   </Folder>
   <Folder Name="/tasler-dotnet/Source/">
     <Project Path="modules/tasler-dotnet/Source/Tasler.ComponentModel/Tasler.ComponentModel.csproj">
-      <Platform Solution="Release|x64" Project="x64" />
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
     </Project>
     <Project Path="modules/tasler-dotnet/Source/Tasler.Core/Tasler.Core.csproj">
-      <Platform Solution="Release|x64" Project="x64" />
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="modules/tasler-dotnet/Source/Tasler.Interop.Shell/Tasler.Interop.Shell.csproj" Id="4090fb61-0858-4ae8-a30d-b34464a9505f">
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
     </Project>
     <Project Path="modules/tasler-dotnet/Source/Tasler.Interop/Tasler.Interop.csproj">
-      <Platform Solution="Release|x64" Project="x64" />
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
     </Project>
     <Project Path="modules/tasler-dotnet/Source/Tasler.UI.Shared/Tasler.UI.Shared.shproj" />
     <Project Path="modules/tasler-dotnet/Source/Tasler.UI.Wpf/Tasler.UI.Wpf.csproj">
-      <Platform Solution="Release|x64" Project="x64" />
+      <Platform Solution="*|arm64" Project="arm64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
     </Project>
   </Folder>
   <Folder Name="/tasler-dotnet/Source/Text Templates/">
